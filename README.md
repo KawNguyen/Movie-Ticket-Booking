@@ -1,9 +1,60 @@
+# MovieTicketBooking
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Prerequisites
 
-First, run the development server:
+Before you begin, ensure you have:
+- Node.js installed (v18 or higher)
+- PostgreSQL database server running
+- npm, yarn, pnpm, or bun package manager
 
+## Initial Setup
+
+1. **Environment Setup**
+
+Create a `.env` file in the root directory with the following variables:
+```env
+# Database
+DATABASE_URL=
+
+# Next Auth
+AUTH_URL="http://localhost:3000"
+```
+
+2. **Database Setup**
+
+Initialize and generate the Prisma client:
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Push the schema to your database
+npx prisma db push
+```
+
+3. **Generate Auth Secret**
+
+Generate a secure authentication secret:
+```bash
+# Generate a random secret for NextAuth
+npx auth secret
+```
+
+4. **Install Dependencies**
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+## Development Server
+
+Run the development server:
 ```bash
 npm run dev
 # or
@@ -16,9 +67,24 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/app` - Next.js application routes and pages
+- `/components` - Reusable React components
+- `/lib` - Utility functions and shared logic
+- `/prisma` - Database schema and migrations
+- `/types` - TypeScript type definitions
+- `/actions` - Server actions and API routes
+
+## Features
+
+This project uses:
+- [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font)
+- NextAuth.js for authentication
+- Prisma as the ORM
+- PostgreSQL as the database
+- Tailwind CSS for styling
+- shadcn/ui for UI components
 
 ## Learn More
 
@@ -34,4 +100,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Movie-Ticket-Booking
