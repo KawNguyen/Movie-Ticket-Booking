@@ -1,48 +1,35 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
+import { routes } from "@/constants";
 
-const routes = [
-  {
-    name: "Home",
-    href: "/",
-  },
-  {
-    name: "Showtimes",
-    href: "/showtimes",
-  },
-  {
-    name: "Our Theatre",
-    href: "/our-theatre",
-  },
-  {
-    name: "Store",
-    href: "/store",
-  },
-  {
-    name: "About Us",
-    href: "/about-us",
-  },
-  {
-    name: "Contact",
-    href: "/contact",
-  },
-  {
-    name: "Sign In",
-    href: "/sign-in",
-  },
-];
+
 
 const Header = () => {
   const pathname = usePathname();
-  console.log(pathname);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="h-20 flex items-center">
+    <header
+      className={cn(
+        "h-20 flex items-center w-full fixed z-50 transition-colors duration-300",
+        isScrolled ? "bg-black/50" : ""
+      )}
+    >
       <div className="container">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-4xl">
@@ -62,7 +49,7 @@ const Header = () => {
                 {route.name}
               </Link>
             ))}
-            <Search className="text-bunker-600 hover:text-white duration-300 cursoir-pointer" />
+            <Search className="text-bunker-600 hover:text-white duration-300 cursor-pointer" />
             <Button className="bg-brand-800 hover:bg-brand-700 text-white">
               Join
             </Button>

@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./components/providers/providers";
 import { heebo } from "@/lib/font";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,6 +22,7 @@ export default function RootLayout({
         <Providers>
           <Header />
           {children}
+          <Footer/>
         </Providers>
       </body>
     </html>
