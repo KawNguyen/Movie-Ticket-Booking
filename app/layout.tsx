@@ -4,7 +4,6 @@ import "./globals.css";
 import Providers from "./components/providers/providers";
 import { heebo } from "@/lib/font";
 import Header from "@/components/Header";
-import '@fortawesome/fontawesome-free/css/all.min.css';
 
 export const metadata: Metadata = {
   title: "Create Next App",
