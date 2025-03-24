@@ -8,8 +8,6 @@ import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { routes } from "@/constants";
 
-
-
 const Header = () => {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -27,7 +25,7 @@ const Header = () => {
     <header
       className={cn(
         "h-20 flex items-center w-full fixed z-50 transition-colors duration-300",
-        isScrolled ? "bg-black/50" : ""
+        isScrolled ? "bg-black/80" : ""
       )}
     >
       <div className="container">
@@ -49,6 +47,10 @@ const Header = () => {
                 {route.name}
               </Link>
             ))}
+            
+            <Link href="/login" className="text-white">
+              Login
+            </Link>
             <Search className="text-bunker-600 hover:text-white duration-300 cursor-pointer" />
             <Button className="bg-brand-800 hover:bg-brand-700 text-white">
               Join
