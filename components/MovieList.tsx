@@ -15,6 +15,7 @@ const MovieList = ({ data }: MovieListProps) => {
                 return (
                     <MovieCard
                         key={item.id + index}
+                        id={item.id}
                         title={item.title}
                         year={item.release_date}
                         rating={item.vote_average}

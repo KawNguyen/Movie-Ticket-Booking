@@ -1,14 +1,18 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import { AspectRatio } from "./ui/aspect-ratio";
+import { useRouter } from "next/navigation";
 
 export default function MovieCard({
+  id,
   title,
   year,
   rating,
   imageUrl,
 }: MovieCardProps) {
+  const router = useRouter();
   return (
     <div className="lg:w-64 w-48 bg-gray-900 text-white rounded-2xl shadow-lg p-4 flex flex-col">
       <AspectRatio ratio={1} className="relative w-full overflow-hidden rounded-lg">
@@ -29,7 +33,11 @@ export default function MovieCard({
       </div>
 
       <div className="flex justify-between items-center mt-4 ">
-        <Button variant="default" className="bg-purple-600 hover:bg-purple-700 text-white">
+        <Button 
+          variant="default" 
+          className="bg-purple-600 hover:bg-purple-700 text-white"
+          onClick={() => router.push(`/movie/${id}`)}
+        >
           More Info
         </Button>
 
