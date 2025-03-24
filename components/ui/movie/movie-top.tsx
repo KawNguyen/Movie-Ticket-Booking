@@ -1,72 +1,89 @@
-// components/Top.tsx
+"use client";
 import React from "react";
+import Image from "next/image";
 import { ThumbsUp, Star, Ticket, Heart, Calendar, Clock } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-interface TopProps {
-  movie: any;
-  cast: Array<{ id: number; name: string; profile_path: string | null }>;
-}
-
-const movieTop: React.FC<TopProps> = ({ movie, cast }) => {
+const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
   return (
     <div className="relative">
-      <img
-        alt={movie?.title || "Movie poster"}
-        className="absolute inset-0 w-full h-full object-cover opacity-20"
-        src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-      />
+      {/* Background Image */}
+      <div className="absolute inset-0 w-full h-full">
+        <Image
+          alt={movie?.title || "Movie poster"}
+          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+          layout="fill"
+          objectFit="cover"
+          className="opacity-20"
+        />
+      </div>
+
+      {/* Nội dung chính */}
       <div className="relative container mx-auto p-4">
-        <div className="flex flex-col md:flex-row items-start md:items-center p-4 ">
-          <img
-            alt={movie.title}
-            className="w-64 h-auto mb-4 md:mb-0 md:mr-6"
-            src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
-          />
-          <div>
-            <h1 className="text-2xl font-bold">{movie.title}</h1>
-            <p className="text-gray-400">
-              {movie.genres.map((g: { name: string }) => g.name).join(", ")}
-            </p>
-            <div className="flex items-center space-x-2 mt-2">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 transition duration-300">
-                <ThumbsUp className="inline mr-2 h-4 w-4" />
+        <Card className="bg-gray-900/80 shadow-lg p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center">
+          {/* Poster phim */}
+          <div className="relative w-48 h-72 md:w-64 md:h-96 mb-4 md:mb-0 md:mr-6">
+            <Image
+              alt={movie.title}
+              src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+              layout="fill"
+              objectFit="cover"
+              className="rounded-lg"
+            />
+          </div>
+
+          {/* Thông tin phim */}
+          <CardContent className="w-full">
+            <h1 className="text-2xl font-bold text-white">{movie.title}</h1>
+            <p className="text-gray-400">{movie.genres.map((g: { name: string }) => g.name).join(", ")}</p>
+
+            {/* Các nút hành động */}
+            <div className="flex items-center space-x-2 mt-3">
+              <Button variant="outline">
+                <ThumbsUp className="mr-2 h-4 w-4" />
                 Like
-              </button>
-              <button className="bg-gray-700 text-white px-4 py-2 rounded-full shadow-lg hover:bg-gray-800 transition duration-300">
-                <Star className="inline mr-2 h-4 w-4" />
+              </Button>
+              <Button variant="secondary">
+                <Star className="mr-2 h-4 w-4" />
                 Rate
-              </button>
-              <button className="bg-red-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-red-600 transition duration-300">
-                <Ticket className="inline mr-2 h-4 w-4" />
+              </Button>
+              <Button className="bg-red-500 hover:bg-red-600">
+                <Ticket className="mr-2 h-4 w-4" />
                 Book Tickets
-              </button>
+              </Button>
             </div>
+
+            {/* Mô tả phim */}
             <p className="mt-4 text-gray-300">{movie.overview}</p>
-            <div className="flex items-center space-x-4 mt-4">
-              <div className="flex items-center space-x-1">
-                <Heart className="h-4 w-4" />
-                <span>{movie.vote_average * 10}%</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Calendar className="h-4 w-4" />
-                <span>{movie.release_date}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Clock className="h-4 w-4" />
-                <span>{movie.runtime} phút</span>
-              </div>
+
+            {/* Badge hiển thị thông tin phim */}
+            <div className="flex flex-wrap gap-2 mt-4">
+              <Badge variant="secondary">
+                <Heart className="h-4 w-4 mr-1" />
+                {(movie.vote_average * 10).toFixed(2)}%
+              </Badge>
+              <Badge>
+                <Calendar className="h-4 w-4 mr-1" />
+                {movie.release_date}
+              </Badge>
+              <Badge variant="outline" className="text-white">
+                <Clock className="h-4 w-4 mr-1" />
+                {movie.runtime} minutes
+              </Badge>
             </div>
+
+            {/* Diễn viên */}
             <div className="mt-4">
               <p className="text-gray-400">Cast</p>
-              <p className="text-white">
-                {cast.map((actor) => actor.name).join(", ")}
-              </p>
+              <p className="text-white">{cast?.map((actor) => actor.name).join(", ")}</p>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 };
 
-export default movieTop;
+export default MovieTop;
