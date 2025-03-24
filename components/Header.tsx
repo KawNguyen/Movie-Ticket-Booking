@@ -12,6 +12,7 @@ import { routes } from "@/constants";
 const Header = () => {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,8 +52,9 @@ const Header = () => {
           <Button className="bg-brand-800 hover:bg-brand-700 text-white">Sign In</Button>
         </div>
 
+        {/* Mobile Menu */}
         <div className="block lg:hidden">
-          <Sheet>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Menu size={32} />
             </SheetTrigger>
@@ -64,6 +66,7 @@ const Header = () => {
                     key={route.name}
                     href={route.href}
                     className="text-lg hover:text-brand-500"
+                    onClick={() => setIsSheetOpen(false)} // Đóng sheet khi click vào route
                   >
                     {route.name}
                   </Link>
@@ -73,7 +76,6 @@ const Header = () => {
             </SheetContent>
           </Sheet>
         </div>
-
       </div>
     </header>
   );
