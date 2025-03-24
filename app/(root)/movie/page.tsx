@@ -1,10 +1,10 @@
-// page.tsx
 "use client";
-import React, { useEffect, useState } from "react";
+
 import Top from "@/components/ui/movie/movie-top";
 import Bottom from "@/components/ui/movie/movie-bottom";
+import { useEffect, useState } from "react";
 
-function page() {
+function MovieDetail() {
   const [movie, setMovie] = useState<any | null>(null);
   const [cast, setCast] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState("trailer");
@@ -34,4 +34,4 @@ function page() {
   );
 }
 
-export default page;
+export default MovieDetail;
