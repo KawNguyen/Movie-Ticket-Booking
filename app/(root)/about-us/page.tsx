@@ -1,108 +1,86 @@
-import { Mail, Phone } from 'lucide-react'
-import React from 'react'
+"use client"
+import { Pagination } from 'swiper/modules';
+import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 const AboutUsPage = () => {
     return (
-        <div>
-            <div className="my-10 sm:my-20 px-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 container mx-auto gap-6">
-                    <div className="p-4">
-                        <img
-                            src="https://i.pinimg.com/736x/a3/f4/10/a3f4109aba040cefc6def1ed137869ab.jpg"
-                            alt="about_us"
-                            className="w-full sm:h-[300px] md:h-full object-cover rounded-lg"
-                        />
-                    </div>
-                    <div className="text-center sm:text-left">
-                        <p className="text-2xl sm:text-3xl font-bold py-4">ABOUT KLLL</p>
-                        <p className="text-sm sm:text-base md:text-2xl py-4">
-                            Welcome to our Movie Ticket Booking platform! We are dedicated to making your movie experience smooth,
-                            convenient, and enjoyable. Our mission is to provide a user-friendly platform where you can explore the latest films,
-                            check showtimes, and book your tickets effortlessly. With secure payment options and real-time seat selection,
-                            we ensure that you get the best seats for your favorite movies. Whether you're planning a fun outing with friends
-                            or a cozy movie night with family, we are here to make it hassle-free. Thank you for choosing us as your trusted movie booking partner!
-                        </p>
+        <div className="space-y-20 mb-20">
+            <div className="relative">
+                <img
+                    src="https://i.pinimg.com/736x/cf/c5/82/cfc58298514581ecbb82dce74f1bfa58.jpg"
+                    alt="about_us"
+                    className="w-full h-[300px] md:h-[500px] lg:h-[800px] object-cover"
+                />
+                <div className="absolute top-0 w-full h-32 md:h-60 flex flex-col items-center justify-center text-white">
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-[0.3em]">
+                        About Us
+                    </h1>
+                </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 h-full md:h-[500px] m-4 md:m-10">
+                <div className="col-span-8">
+                    <div className="relative bg-[url('https://i.pinimg.com/736x/88/ce/50/88ce50ed47ab29d969d91492a98d6d41.jpg')] bg-cover bg-center rounded-lg h-[300px] md:h-full">
+                        <Swiper
+                            pagination={{
+                                dynamicBullets: true,
+                            }}
+                            modules={[Pagination]}
+                            className="h-full"
+                        >
+                            <SwiperSlide>
+                                <div className="flex items-center justify-center h-28 md:h-20 text-black text-xl md:text-4xl font-bold">
+                                    <h1 className='tracking-[0.3em]'>About Us</h1>
+                                </div>
+                                <div className="flex items-center justify-center h-10 md:h-60 px-4">
+                                    <p className="text-black text-[12px] md:text-xl font-bold text-center max-w-[calc(100%-60px)] md:max-w-[calc(100%-280px)] md:mr-6">
+                                        Welcome to [Your Cinema Name]! At [Your Cinema Name], we bring the magic of cinema closer to you.
+                                        From the latest Hollywood blockbusters to beloved classics, we provide a seamless ticket booking experience,
+                                        ensuring your movie nights are always special.
+                                    </p>
+                                </div>
+                            </SwiperSlide>
+                            <SwiperSlide>
+                                <div className="flex items-center justify-center h-28 md:h-20 text-black text-xl md:text-4xl font-bold">
+                                    <h1 className='tracking-[0.3em]'>Our Offer</h1>
+                                </div>
+                                <div className="flex items-center justify-center h-10 md:h-60 px-4">
+                                    <ul className="text-black text-[12px] md:text-xl font-bold text-center max-w-[calc(100%-80px)] overflow-y-scroll md:overflow-hidden md:max-w-[calc(100%-160px)] md:space-y-2">
+                                        <p>Latest Movie Releases: Stay updated with the hottest films and exclusive premieres.</p>
+                                        <p>Exclusive Discounts: Enjoy special promotions and deals on tickets and combos.</p>
+                                        <p>Flexible Booking: Select your preferred seats and showtimes with ease.</p>
+                                        {/* <p>Catering to All: Experience 2D, 3D, and IMAX movies at their best.</p> */}
+                                    </ul>
+                                </div>
+                            </SwiperSlide>
+                            <SwiperSlide>
+                                <div className="flex items-center justify-center h-28 md:h-20 text-black text-xl md:text-4xl font-bold">
+                                    <h1 className='tracking-[0.3em]'>Our Vision</h1>
+                                </div>
+                                <div className="flex items-center justify-center h-10 md:h-60 px-4">
+                                    <p className="text-black text-[12px] md:text-xl font-bold text-center max-w-[calc(100%-80px)] md:max-w-[calc(100%-300px)] md:mr-6">
+                                        At [Your Cinema Name], we believe in creating a world where everyone can experience the joy of cinema.
+                                        Our vision is to provide a platform that not only makes ticket booking simple and fast but also enhances the
+                                        way people connect with movies and unforgettable cinematic experiences.
+                                    </p>
+                                </div>
+                            </SwiperSlide>
+                        </Swiper>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 container mx-auto gap-6 pt-10">
-                    <div className="text-center sm:text-left">
-                        <p className="text-2xl sm:text-3xl font-bold py-4">Our Mission</p>
-                        <p className="text-sm sm:text-base md:text-2xl">
-                            Our mission is to revolutionize the movie-going experience by providing a seamless, reliable, and user-friendly platform
-                            for booking tickets. We aim to save time, reduce hassle, and enhance convenience by offering real-time seat selection,
-                            secure payment options, and up-to-date information on the latest movies and showtimes. Through innovation and customer focus,
-                            we strive to make every movie experience enjoyable and stress-free for our users.
-                        </p>
-                    </div>
-                    <div className="p-4">
-                        <img
-                            src="https://i.pinimg.com/736x/9c/17/59/9c17594c5352b591761f9c17bf8e0ee7.jpg"
-                            alt="about_us"
-                            className="w-full sm:h-[300px] md:h-full object-cover rounded-lg"
-                        />
-                    </div>
-                </div>
-
-                {/* Vision */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 container mx-auto gap-6">
-                    <div className="p-4">
-                        <img
-                            src="https://i.pinimg.com/736x/6f/b9/b7/6fb9b70e7dd86c9bba5b32231166f42d.jpg"
-                            alt="about_us"
-                            className="w-full sm:h-[300px] md:h-full object-cover rounded-lg"
-                        />
-                    </div>
-                    <div className="text-center sm:text-left">
-                        <p className="text-2xl sm:text-3xl font-bold py-4">Our Vision</p>
-                        <p className="text-sm sm:text-base md:text-2xl">
-                            Our vision is to become the leading platform for movie ticket bookings, transforming how people experience cinema.
-                            We aspire to connect movie lovers with theaters worldwide, offering cutting-edge technology, personalized recommendations,
-                            and seamless integration with entertainment services. By fostering convenience, innovation, and accessibility,
-                            we aim to create a future where everyone can enjoy the magic of movies with just a few clicks.
-                        </p>
-                    </div>
-                </div>
-                <div className="container grid grid-cols-1 sm:grid-cols-2 py-10 gap-6 text-xl">
-                    <div>
-                        <p className="text-center sm:text-left text-2xl sm:text-2xl font-bold">
-                            KLLL CINEMA
-                        </p>
-                        <p className="py-4 text-center sm:text-left">
-                            GET IN TOUCH! WE'D LIKE TO HEAR FROM YOU.
-                        </p>
-                        <div className="py-6 text-center sm:text-left">
-                            <p className="italic">@KLLL INC</p>
-                            <p>180 Cao Lo Street, Ward 4, District 8, Vietnam</p>
-                        </div>
-                        <div className="flex flex-wrap gap-4 items-center justify-center sm:justify-start text-sm sm:text-lg py-2">
-                            <Phone size={20} />
-                            <p>Phone Number:</p>
-                            <p className="text-base sm:text-xl">
-                                +84 792039633 || +84 708672018 || 
-                            </p>
-                        </div>
-                        <div className="flex flex-wrap gap-4 items-center justify-center sm:justify-start text-sm sm:text-lg py-2">
-                            <Mail size={24} />
-                            <p>Mail:</p>
-                            <p className="text-lg text-center">
-                                tranhailoc7@gmail.com khoanguyencool12@gmail.com
-                            </p>
-                        </div>
-                    </div>
-                    <div>
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3445.2719686863547!2d106.67529067436607!3d10.738028859902176!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752fad027e3727%3A0x2a77b414e887f86d!2zMTgwIMSQLiBDYW8gTOG7lywgUGjGsOG7nW5nIDQsIFF14bqtbiA4LCBI4buTIENow60gTWluaCwgVmlldG5hbQ!5e1!3m2!1sen!2s!4v1732634649738!5m2!1sen!2s"
-                            width="100%"
-                            height="400"
-                            className="border-0"
-                            allowFullScreen
-                            loading="lazy"
-                        ></iframe>
-                    </div>
+                <div className="hidden md:col-span-4 md:flex md:justify-center md:items-center">
+                    <img
+                        src="https://i.pinimg.com/736x/33/c1/ef/33c1ef54b6e934505767c7d7d50a5bd3.jpg"
+                        alt="about_us_image"
+                        className="w-full h-full  md:h-full max-w-[500px] rounded-md object-cover"
+                    />
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default AboutUsPage
+export default AboutUsPage;
