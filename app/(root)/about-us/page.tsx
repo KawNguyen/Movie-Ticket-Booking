@@ -1,5 +1,5 @@
 "use client"
-import { Pagination } from 'swiper/modules';
+import { Autoplay, Pagination } from 'swiper/modules';
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -25,10 +25,15 @@ const AboutUsPage = () => {
                 <div className="col-span-8">
                     <div className="relative bg-[url('https://i.pinimg.com/736x/88/ce/50/88ce50ed47ab29d969d91492a98d6d41.jpg')] bg-cover bg-center rounded-lg h-[300px] md:h-full">
                         <Swiper
+                            loop={true}
+                            autoplay={{
+                                delay: 3000, // Thời gian giữa các slide, tính bằng ms (3000ms = 3s)
+                                disableOnInteraction: false, // Vẫn tiếp tục autoplay ngay cả khi người dùng tương tác
+                            }}
                             pagination={{
                                 dynamicBullets: true,
                             }}
-                            modules={[Pagination]}
+                            modules={[Pagination,Autoplay]}
                             className="h-full"
                         >
                             <SwiperSlide>
