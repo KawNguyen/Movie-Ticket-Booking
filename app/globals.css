@@ -90,6 +90,13 @@
   }
 }
 
-html::-webkit-scrollbar, body::-webkit-scrollbar {
+/* Ẩn scrollbar trên WebKit (Chrome, Safari) */
+::-webkit-scrollbar {
   display: none;
+}
+
+/* Đảm bảo body không bị overflow ngoài ý muốn */
+body {
+  -ms-overflow-style: none; /* Ẩn scrollbar trên IE và Edge */
+  scrollbar-width: none; /* Ẩn scrollbar trên Firefox */
 }

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { Star } from "lucide-react";
 import Image from "next/image";
+import { AspectRatio } from "./ui/aspect-ratio";
 
 export default function MovieCard({
   title,
@@ -10,9 +10,8 @@ export default function MovieCard({
   imageUrl,
 }: MovieCardProps) {
   return (
-    <div className="w-64 bg-gray-900 text-white rounded-2xl shadow-lg p-4 flex flex-col justify-between">
-      {/* Movie Poster */}
-      <AspectRatio ratio={1} className="relative w-full h-48 overflow-hidden rounded-lg">
+    <div className="lg:w-64 w-48 bg-gray-900 text-white rounded-2xl shadow-lg p-4 flex flex-col">
+      <AspectRatio ratio={1} className="relative w-full overflow-hidden rounded-lg">
         <Image
           src={imageUrl}
           alt={title}
@@ -22,21 +21,18 @@ export default function MovieCard({
         />
       </AspectRatio>
 
-      {/* Movie Info */}
       <div className="mt-3">
-        <h2 className="font-semibold">{title}</h2>
-        <p className="text-gray-400 text-sm">
+        <h2 className="font-semibold h-12">{title}</h2>
+        <h3 className="text-gray-400 text-sm">
           {year}
-        </p>
+        </h3>
       </div>
 
-      {/* Bottom Section */}
       <div className="flex justify-between items-center mt-4 ">
         <Button variant="default" className="bg-purple-600 hover:bg-purple-700 text-white">
-          Get Ticket
+          More Info
         </Button>
 
-        {/* Rating */}
         <div className="flex items-center">
           <Star color="yellow" fill="yellow" size={16} />
           <span className="ml-1 text-white font-medium">{rating.toFixed(1)}</span>

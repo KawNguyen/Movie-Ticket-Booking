@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@radix-ui/react-label";
+import { Textarea } from "@/components/ui/textarea";
+
 interface FeedbackProps {
     data: TopRatedMovie[];
 }
@@ -9,6 +13,7 @@ interface FeedbackProps {
 const Feedback = ({ data }: FeedbackProps) => {
     const [rating, setRating] = useState<string>("");
     const [feedback, setFeedback] = useState<string>("");
+    const [vote, setVote] = useState<string>("");
 
     const movieTitle = data?.[0]?.title || "this movie";
 
@@ -16,73 +21,61 @@ const Feedback = ({ data }: FeedbackProps) => {
         e.preventDefault();
         console.log("Rating:", rating);
         console.log("Feedback:", feedback);
+        console.log("Voted Movie:", vote);
     };
 
     return (
-        <div className="bg-gray-900 p-6 rounded-lg container max-w-4xl mx-auto flex flex-col md:flex-row gap-8">
-            {/* Feedback Form */}
-            <div className=" rounded-lg w-full">
+        <div className="rounded-lg container mx-auto flex flex-col md:flex-row justify-between gap-8">
+            <div className="rounded-lg w-full">
                 <h2 className="text-white text-lg font-semibold mb-4">
-                    How do you rate the ${movieTitle} movie?
+                    How do you rate the {movieTitle} movie?
                 </h2>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Rating Selection */}
-                    <div className="flex space-x-4 text-white">
+                <form onSubmit={handleSubmit} className="space-y-4 flex flex-col">
+                    <RadioGroup value={rating} onValueChange={setRating} className="text-white flex">
                         {["Bad", "Good", "Average", "Excellent"].map((option) => (
-                            <label key={option} className="flex items-center space-x-2 cursor-pointer">
-                                <input
-                                    type="radio"
-                                    name="rating"
-                                    value={option}
-                                    checked={rating === option}
-                                    onChange={(e) => setRating(e.target.value)}
-                                    className="hidden"
-                                />
-                                <div
-                                    className={`w-4 h-4 rounded-full border-2 border-white flex items-center justify-center ${rating === option ? "bg-purple-500" : "bg-transparent"
-                                        }`}
-                                />
-                                <span>{option}</span>
-                            </label>
+                            <div key={option} className="flex items-center space-x-2">
+                                <RadioGroupItem value={option} id={option} className="border-white" />
+                                <Label htmlFor={option} className="text-white">{option}</Label>
+                            </div>
                         ))}
-                    </div>
+                    </RadioGroup>
 
-                    {/* Feedback Textarea */}
-                    <textarea
-                        className="w-full bg-gray-700 text-white p-2 rounded-md h-24"
+                    <Textarea
+                        className="bg-gray-700 text-white min-h-32 resize-none"
                         placeholder="Your feedback helps others decide which films to watch..."
                         value={feedback}
                         onChange={(e) => setFeedback(e.target.value)}
                     />
 
-                    {/* Submit Button */}
-                    <Button type="submit" className="bg-purple-600 hover:bg-purple-500 text-white justify-start w-max">
+                    <Button type="submit" className="bg-purple-600 hover:bg-purple-500 text-white self-end w-max">
                         Submit
                     </Button>
                 </form>
             </div>
 
-            {/* Vote for Movie Section */}
-            <div className="bg-gray-800 p-6 rounded-lg w-full">
+            <div className="rounded-lg w-full">
                 <h2 className="text-white text-lg font-semibold mb-4">Vote For Movie</h2>
 
-
-                <div className="space-y-3">
-                    {data?.slice(0, 5).map((movie: { title: string, vote_count: number }) => (
+                <RadioGroup value={vote} onValueChange={setVote} className="text-white space-y-2">
+                    {data?.slice(0, 5).map((movie) => (
                         <div
                             key={movie.title}
-                            className="flex justify-between items-center bg-gray-700 p-3 rounded-md cursor-pointer hover:bg-gray-600 transition"
+                            className="flex justify-between items-center p-3 rounded-md cursor-pointer hover:bg-gray-600 transition"
                         >
-                            <span>
-                                {movie.title}
-                            </span>
-                            <p>
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value={movie.title} id={movie.title} className="border-white" />
+                                <Label htmlFor={movie.title} className="text-white">
+                                    {movie.title}
+                                </Label>
+                            </div>
+
+                            <div className="px-2 py-[1px] flex justify-center items-center bg-gray-400 text-white text-sm rounded-xl">
                                 {movie.vote_count}
-                            </p>
+                            </div>
                         </div>
                     ))}
-                </div>
+                </RadioGroup>
             </div>
         </div>
     );

@@ -2,8 +2,8 @@ import Advertisement from "@/components/Advertisement";
 import Feedback from "@/components/Feedback";
 import HomeHero from "@/components/HomeHero";
 import MovieList from "@/components/MovieList";
-import React from "react";
 import { fetchTmdbData } from "@/lib/tmdb";
+
 const HomePage = async () => {
   const nowPlaying = await fetchTmdbData("movie/now_playing");
   const upcoming = await fetchTmdbData("movie/upcoming");
