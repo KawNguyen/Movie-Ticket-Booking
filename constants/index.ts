@@ -14,10 +14,9 @@ export const FIELD_TYPES = {
 
 export const routes = [
   { name: "Home", href: "/" },
-  { name: "Showtimes", href: "/showtimes" },
-  { name: "Our Theatre", href: "/our-theatre" },
-  { name: "Store", href: "/store" },
+  { name: "Now Showing", href: "/now-showing" },
+  { name: "Comming Soon", href: "/comming-soon" },
   { name: "About Us", href: "/about-us" },
   { name: "Contact", href: "/contact" },
-  { name: "Sign In", href: "/sign-in" },
+  // { name: "Sign In", href: "/sign-in" },
 ];
