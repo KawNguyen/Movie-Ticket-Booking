@@ -16,7 +16,6 @@ datasource db {
 enum UserRole {
   CUSTOMER
   ADMIN
-  THEATER_MANAGER
 }
 
 model Account {
@@ -70,4 +69,64 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model Movie {
+  id               Int      @id @default(autoincrement())
+  adult            Boolean
+  backdrop_path    String?
+  genre_ids        Json
+  original_language String
+  original_title   String
+  overview         String
+  popularity       Float
+  poster_path      String?
+  release_date     String
+  title            String
+  video            Boolean
+  vote_average     Float
+  vote_count       Int
+  showtimes        Showtime[]
+
+  @@map("movies")
+}
+
+// Screening Room Model
+model ScreeningRoom {
+  id       Int    @id @default(autoincrement())
+  name     String
+  capacity Int
+  showtimes Showtime[]
+
+  @@map("screening_rooms")
+}
+
+// Showtime Model (Linking Movies and Screening Rooms)
+model Showtime {
+  id              Int            @id @default(autoincrement())
+  movieId         Int
+  screeningRoomId Int
+  startTime       DateTime
+  price           Float
+
+  movie           Movie          @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  screeningRoom   ScreeningRoom  @relation(fields: [screeningRoomId], references: [id], onDelete: Cascade)
+  bookings        Booking[]
+
+  @@map("showtimes")
+}
+
+// Booking Model (User Reservations)
+model Booking {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  showtimeId Int
+  seats      Int
+  totalPrice Float
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  showtime   Showtime @relation(fields: [showtimeId], references: [id], onDelete: Cascade)
+
+  @@map("bookings")
 }

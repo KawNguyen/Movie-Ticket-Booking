@@ -11,6 +11,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { DoorOpen } from "lucide-react";
 
+
 interface HomeHeroProps {
   data: TopRatedMovie[];
 }
@@ -66,7 +67,7 @@ const HomeHero = ({ data }: HomeHeroProps) => {
                     {item.overview}
                   </span>
                   <Link
-                    href={``}
+                    href={`/movie/${item.id}`}
                     className={`transform transition-all duration-1000 ease-out ${activeIndex === index
                       ? "opacity-100 delay-1000"
                       : "opacity-0"
