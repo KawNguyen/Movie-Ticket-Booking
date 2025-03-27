@@ -10,7 +10,7 @@ interface MovieListProps {
 const MovieList = ({ data }: MovieListProps) => {
     const limitedItems = data.slice(0, 5);
     return (
-        <div className="w-fulll grid lg:grid-cols-5 grid-cols-2 gap-4 place-items-center"> 
+        <div className="w-fulll grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3  2xl:grid-cols-5 gap-6 place-items-center"> 
             {limitedItems?.map((item: any, index: number) => {
                 return (
                     <MovieCard
