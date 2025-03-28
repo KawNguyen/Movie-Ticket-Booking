@@ -19,6 +19,7 @@ const MovieList = ({ data }: MovieListProps) => {
                         title={item.title}
                         year={item.release_date}
                         rating={item.vote_average}
+                        duration={item.runtime}
                         imageUrl={`${IMG_URL}/${item.poster_path}`}
                     />
                 );

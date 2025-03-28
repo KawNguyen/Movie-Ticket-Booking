@@ -1,32 +1,29 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+import React from 'react'
 
 interface SidebarProps {
-  isOpen: boolean;
-  toggleSidebar: () => void;
-  activePage: string;
-  setActivePage: (page: string) => void;
-  menuItems: { name: string; key: string; icon: React.ElementType }[];
+  navItems?: any[]
+  setActiveTab?: (tabName: string) => void
 }
 
-export default function Sidebar({ isOpen, toggleSidebar, activePage, setActivePage, menuItems }: SidebarProps) {
+const Sidebar = ({navItems, setActiveTab}: SidebarProps) => {
+
   return (
-    <div className={`h-full transition-all ${isOpen ? "w-64" : "w-16"} bg-gray-900 text-white flex flex-col`}>
-      <Button variant="ghost" className="m-2" onClick={toggleSidebar}>
-        {isOpen ? <ChevronLeft /> : <ChevronRight />}
-      </Button>
-      <nav className="flex-1">
-        {menuItems.map((item) => (
-          <Button
-            key={item.key}
-            className={`w-full flex gap-2 px-4 py-2 ${activePage === item.key ? "bg-gray-700" : ""}`}
-            onClick={() => setActivePage(item.key)}
+    <nav className='h-full w-52 p-4 border-x border-dotted'>
+      <span className='text-lg font-semibold p-2'>Dashboard</span>
+      <div className='mt-4 flex flex-col gap-2'>
+        {navItems?.map((item,index)=>(
+          <div
+            key={item + index}
+            className="w-full p-2 hover:bg-gray-800 rounded-md cursor-pointer"
+            onClick={() => setActiveTab?.(item.name)}
           >
-            <item.icon />
-            {isOpen && <span>{item.name}</span>}
-          </Button>
+            {item.name}
+          </div>
         ))}
-      </nav>
-    </div>
-  );
+      </div>
+    </nav>
+  )
 }
+
+export default Sidebar

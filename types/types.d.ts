@@ -33,8 +33,10 @@ interface MovieCardProps {
   title: string;
   year: string;
   rating: number;
+  duration: number;
   imageUrl: string;
 }
+
 interface DetailsProps {
   movie: any;
   cast: Array<{ id: number; name: string; profile_path: string | null }>;

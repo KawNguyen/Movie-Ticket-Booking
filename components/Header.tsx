@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import { Search, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,18 +15,17 @@ const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
-  console.log(session?.user?.role);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <header className={`h-16 flex items-center w-full z-50 px-4 lg:px-0 ${isScrolled ? "bg-black/90 fixed" : ""}`}>
+    <header className={`h-16 flex items-center w-full z-50 px-4 lg:px-0 backdrop-blur-lg bg-black/70 border-b border-dotted ${isScrolled ? "fixed" : ""}`}>
       <div className="container flex items-center justify-between">
         <Link href="/" className="text-2xl md:text-4xl">LOGO</Link>
 
@@ -42,21 +41,25 @@ const Header = () => {
           {session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 focus:outline-none">
-                  <Image
-                    src={session.user.image || "/default-avatar.jpg"}
-                    alt="User Avatar"
-                    width={32}
-                    height={32}
-                    className="rounded-full border border-gray-500"
-                  />
-                </button>
+                <Button variant="ghost" className="p-0 rounded-full hover:bg-muted/0">
+                  {session.user.image ? (
+                    <Image
+                      src={session.user.image}
+                      alt="User Avatar"
+                      width={32}
+                      height={32}
+                      className="rounded-full border border-gray-500"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-gray-500 rounded-full"></div>
+                  )}
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => router.push("/profile")}>Profile</DropdownMenuItem>
-                {session.user.role == "ADMIN" ? (
+                {session.user.role === "ADMIN" ? (
                   <DropdownMenuItem onClick={() => router.push("/dashboard")}>Dashboard</DropdownMenuItem>
-                ):(
+                ) : (
                   <DropdownMenuItem onClick={() => router.push("/orders")}>Order History</DropdownMenuItem>
                 )}
                 <DropdownMenuItem onClick={() => signOut()} className="text-red-500">Sign Out</DropdownMenuItem>
@@ -70,7 +73,9 @@ const Header = () => {
         {/* Mobile Menu */}
         <div className="block lg:hidden">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger asChild><Menu size={32} /></SheetTrigger>
+            <SheetTrigger asChild>
+              <Button variant="ghost" className="p-0"><Menu size={32} /></Button>
+            </SheetTrigger>
             <SheetContent side="right" className="bg-black text-white flex flex-col">
               <Search className="mt-4 cursor-pointer" />
               {routes.map((route) => (
@@ -81,13 +86,17 @@ const Header = () => {
               {session?.user ? (
                 <>
                   <div className="flex items-center gap-2 mt-4">
-                    <Image
-                      src={session.user.image || "/default-avatar.jpg"}
-                      alt="User Avatar"
-                      width={40}
-                      height={40}
-                      className="rounded-full border border-gray-500"
-                    />
+                    {session.user.image ? (
+                      <Image
+                        src={session.user.image}
+                        alt="User Avatar"
+                        width={40}
+                        height={40}
+                        className="rounded-full border border-gray-500"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 bg-gray-500 rounded-full"></div>
+                    )}
                     <span>{session.user.name}</span>
                   </div>
                   <Button variant="ghost" onClick={() => router.push("/profile")}>Profile</Button>
