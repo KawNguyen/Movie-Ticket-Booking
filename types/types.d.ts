@@ -11,6 +11,16 @@ interface AuthActionResult {
   message?: string;
 }
 
+interface NavItem {
+  name: string;
+  icon: React.ReactNode;
+}
+
+interface SidebarProps {
+  navItems?: NavItem[];
+  setActiveTab?: (tabName: string) => void;
+}
+
 interface TopRatedMovie {
   adult: boolean;
   backdrop_path: string | null;

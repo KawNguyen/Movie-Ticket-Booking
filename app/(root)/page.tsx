@@ -1,32 +1,19 @@
 import Advertisement from "@/components/Advertisement";
 import Feedback from "@/components/Feedback";
 import HomeHero from "@/components/HomeHero";
-import MovieList from "@/components/MovieList";
+import RowContent from "@/components/RowContent";
 import { fetchTmdbData } from "@/lib/tmdb";
 
 const HomePage = async () => {
   const nowPlaying = await fetchTmdbData("movie/now_playing");
-  const upcoming = await fetchTmdbData("movie/upcoming");
+
   return (
     <main className="w-full h-full space-y-10">
-      <HomeHero data={nowPlaying.results} />
+      <HomeHero status="Now Showing" />
       
       <div className="container space-y-10">
-        <div className="space-y-6">
-          <div className="flex justify-between">
-            <span className="text-xl font-bold text-white">Now Showing</span>
-            <span> View All</span>
-          </div>
-          <MovieList data={nowPlaying.results} />
-        </div>
-
-        <div className="space-y-6">
-          <div className="flex justify-between">
-            <span className="text-xl font-bold text-white">Comming Soon</span>
-            <span> View All</span>
-          </div>
-          <MovieList data={upcoming.results} />
-        </div>
+        <RowContent status="Now Showing" />
+        <RowContent status="Coming Soon" />
       </div>
 
       <Advertisement

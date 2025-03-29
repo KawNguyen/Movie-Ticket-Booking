@@ -4,6 +4,12 @@ export const getMovies = async () => {
   return response.json();
 };
 
+export const getMoviesByStatus = async (status: string) => {
+  const response = await fetch(`/api/movies?status=${status}`);
+  if (!response.ok) throw new Error('Failed to fetch movies by status');
+  return response.json();
+};
+
 export const addMovie = async (movie: Movie) => {
   const response = await fetch('/api/movies', {
     method: 'POST',

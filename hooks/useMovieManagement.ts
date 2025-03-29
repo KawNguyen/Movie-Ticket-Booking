@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { getMovies, addMovie, deleteMovie, updateMovieStatus } from '@/lib/api/movies';
+import { getMovies, addMovie, deleteMovie, updateMovieStatus, getMoviesByStatus } from '@/lib/api/movies';
 
 export const useMovieManagement = () => {
   const [selectedMovies, setSelectedMovies] = useState<Movie[]>([]);
@@ -18,6 +18,23 @@ export const useMovieManagement = () => {
         variant: "destructive",
       });
       setSelectedMovies([]);
+    }
+  }, [toast]);
+
+  const fetchMoviesByStatus = useCallback(async (status: string) => {
+    try {
+      const data = await getMoviesByStatus(status);
+      setSelectedMovies(Array.isArray(data) ? data : []);
+      return data;
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch movies by status",
+        variant: "destructive",
+      });
+      setSelectedMovies([]);
+      return [];
     }
   }, [toast]);
 
@@ -82,6 +99,7 @@ export const useMovieManagement = () => {
   return {
     selectedMovies,
     fetchMovies,
+    fetchMoviesByStatus,
     handleAddMovie,
     handleRemoveMovie,
     handleStatusChange,

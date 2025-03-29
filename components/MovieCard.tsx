@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import Image from "next/image";
@@ -11,11 +11,15 @@ export default function MovieCard({
   year,
   rating,
   imageUrl,
+  duration,
 }: MovieCardProps) {
   const router = useRouter();
   return (
     <div className="lg:w-64 w-48 bg-gray-900 text-white rounded-2xl shadow-lg p-4 flex flex-col">
-      <AspectRatio ratio={1} className="relative w-full overflow-hidden rounded-lg">
+      <AspectRatio
+        ratio={1}
+        className="relative w-full overflow-hidden rounded-lg"
+      >
         <Image
           src={imageUrl}
           alt={title}
@@ -25,16 +29,17 @@ export default function MovieCard({
         />
       </AspectRatio>
 
-      <div className="mt-3">
-        <h2 className="font-semibold h-12">{title}</h2>
-        <h3 className="text-gray-400 text-sm">
-          {year}
-        </h3>
+      <div className="mt-3 grid-cols-subgrid">
+        <h2 className="font-semibold">{title}</h2>
+        <div className="flex gap-2">
+          <h3 className="text-gray-400 text-sm">{year}</h3>
+          <p className="text-gray-400 text-sm">{duration} min</p>
+        </div>
       </div>
 
       <div className="flex justify-between items-center mt-4 ">
-        <Button 
-          variant="default" 
+        <Button
+          variant="default"
           className="bg-purple-600 hover:bg-purple-700 text-white"
           onClick={() => router.push(`/movie/${id}`)}
         >
@@ -43,7 +48,9 @@ export default function MovieCard({
 
         <div className="flex items-center">
           <Star color="yellow" fill="yellow" size={16} />
-          <span className="ml-1 text-white font-medium">{rating.toFixed(1)}</span>
+          <span className="ml-1 text-white font-medium">
+            {rating.toFixed(1)}
+          </span>
         </div>
       </div>
     </div>

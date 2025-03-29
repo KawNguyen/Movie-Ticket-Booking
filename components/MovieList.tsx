@@ -4,7 +4,7 @@ import MovieCard from "./MovieCard";
 const IMG_URL = "https://image.tmdb.org/t/p/w500"
 
 interface MovieListProps {
-    data: TopRatedMovie[];
+    data: MovieCardProps[];
 }
 
 const MovieList = ({ data }: MovieListProps) => {

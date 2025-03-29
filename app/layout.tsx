@@ -23,7 +23,7 @@ export default function RootLayout({
         <Toaster />
         <Providers>
           <Header />
-          {children}
+          <main className="pt-16">{children}</main>
           <Footer />
         </Providers>
       </body>
