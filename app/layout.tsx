@@ -21,8 +21,8 @@ export default function RootLayout({
       <body className={`${heebo.className} antialiased bg-black text-white`}>
         <Providers>
           <Header />
-          {children}
-          <Footer/>
+          <main className="pt-16">{children}</main>
+          <Footer />
         </Providers>
       </body>
     </html>
