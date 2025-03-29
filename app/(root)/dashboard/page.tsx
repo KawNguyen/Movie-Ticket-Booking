@@ -2,6 +2,7 @@
 
 import MovieManagement from "@/components/dashboard/MovieManagement"
 import RoomManagement from "@/components/dashboard/RoomManagement"
+import ShowTimeManagement from "@/components/dashboard/ShowTimeManagement"
 import Sidebar from "@/components/Sidebar"
 import { useState } from "react"
 
@@ -21,7 +22,7 @@ const Page = () => {
         <div className="mt-4 w-full">
           {activeTab === "Movie" && <MovieManagement />}
           {activeTab === "Room" && <RoomManagement/>}
-          {activeTab === "Showtime" && <div>Showtime</div>}
+          {activeTab === "Showtime" && <ShowTimeManagement/>}
         </div>
       </div>
     </main>

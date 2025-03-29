@@ -37,6 +37,45 @@ interface MovieCardProps {
   imageUrl: string;
 }
 
+interface Movie  {
+  id: number;
+  title: string;
+  poster_path: string;
+  release_date: string;
+  overview: string;
+  status?: string;
+  runtime?: number;
+  genres?: { id: number; name: string }[];
+  vote_average?: number;
+  tagline?: string;
+};
+
+interface ScreeningRoom {
+  id: number;
+  name: string;
+  capacity: number;
+  showtimes?: {
+    id: number;
+    startTime: string;
+    movie: {
+      id: number;
+      title: string;
+    };
+    price: number;
+    bookedSeats: number;
+  }[];
+};
+
+interface Showtime  {
+  id: number;
+  movieId: number;
+  movie: Movie;
+  screeningRoomId: number;
+  screeningRoom: ScreeningRoom;
+  startTime: string;
+  price: number;
+};
+
 interface DetailsProps {
   movie: any;
   cast: Array<{ id: number; name: string; profile_path: string | null }>;

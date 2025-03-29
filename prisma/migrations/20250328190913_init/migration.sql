@@ -51,12 +51,9 @@ CREATE TABLE "verification_tokens" (
 
 -- CreateTable
 CREATE TABLE "movies" (
-    "id" INTEGER NOT NULL,
-    "poster_path" TEXT,
+    "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
-    "release_date" TEXT NOT NULL,
-    "runtime" DOUBLE PRECISION NOT NULL,
-    "vote_average" DOUBLE PRECISION NOT NULL,
+    "runtime" INTEGER NOT NULL,
     "status" TEXT NOT NULL,
 
     CONSTRAINT "movies_pkey" PRIMARY KEY ("id")
@@ -78,6 +75,7 @@ CREATE TABLE "showtimes" (
     "screeningRoomId" INTEGER NOT NULL,
     "startTime" TIMESTAMP(3) NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
+    "bookedSeats" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "showtimes_pkey" PRIMARY KEY ("id")
 );
@@ -85,10 +83,9 @@ CREATE TABLE "showtimes" (
 -- CreateTable
 CREATE TABLE "bookings" (
     "id" SERIAL NOT NULL,
-    "userId" TEXT NOT NULL,
     "showtimeId" INTEGER NOT NULL,
-    "seats" INTEGER NOT NULL,
-    "totalPrice" DOUBLE PRECISION NOT NULL,
+    "userId" TEXT NOT NULL,
+    "seatCount" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "bookings_pkey" PRIMARY KEY ("id")
@@ -113,10 +110,10 @@ ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "showtimes" ADD CONSTRAINT "showtimes_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "movies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "showtimes" ADD CONSTRAINT "showtimes_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "movies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "showtimes" ADD CONSTRAINT "showtimes_screeningRoomId_fkey" FOREIGN KEY ("screeningRoomId") REFERENCES "screening_rooms"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "showtimes" ADD CONSTRAINT "showtimes_screeningRoomId_fkey" FOREIGN KEY ("screeningRoomId") REFERENCES "screening_rooms"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "bookings" ADD CONSTRAINT "bookings_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
