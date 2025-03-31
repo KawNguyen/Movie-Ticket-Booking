@@ -29,7 +29,7 @@ interface TopRatedMovie {
 }
 
 interface MovieCardProps {
-  id: string;
+  id: number;
   title: string;
   year: string;
   rating: number;

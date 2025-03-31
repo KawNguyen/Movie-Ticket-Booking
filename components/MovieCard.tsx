@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 export default function MovieCard({
   id,
   title,
-  year,
-  rating,
+  year="",
+  rating=0,
   imageUrl,
 }: MovieCardProps) {
   const router = useRouter();

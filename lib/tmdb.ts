@@ -11,3 +11,8 @@ export async function fetchTmdbDetail(movieid: string) {
   if (!res.ok) throw new Error("Failed to fetch data");
   return res.json();
 }
+export async function searchTmdbData(endpoint: string) {
+  const res = await fetch(`${BASE_URL}/${endpoint}&api_key=${API_KEY}`);
+  if (!res.ok) throw new Error("Failed to fetch data");
+  return res.json();
+}

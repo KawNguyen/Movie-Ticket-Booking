@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { routes } from "@/constants";
+import SearchBar from "./SearchBar";
 
 const Header = () => {
   const pathname = usePathname();
@@ -26,10 +27,11 @@ const Header = () => {
   return (
     <header
       className={cn(
-        "h-16 flex items-center w-full z-50 transition-colors duration-300 px-4 lg:px-0",
+        "h-16 flex items-center w-full z-50 transition-colors duration-300 px-4 lg:px-0 overflow-visible",
         isScrolled ? "bg-black/80 fixed" : ""
       )}
     >
+
       <div className="container flex items-center justify-between">
         <Link href="/" className="text-2xl md:text-4xl">
           LOGO
@@ -48,7 +50,8 @@ const Header = () => {
               {route.name}
             </Link>
           ))}
-          <Search className="text-bunker-600 hover:text-white duration-300 cursor-pointer" />
+          {/* <Search className="text-bunker-600 hover:text-white duration-300 cursor-pointer" /> */}
+          <SearchBar />
           <Button className="bg-brand-800 hover:bg-brand-700 text-white">Sign In</Button>
         </div>
 
