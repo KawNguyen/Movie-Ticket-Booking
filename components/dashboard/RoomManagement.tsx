@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { RoomService } from "@/services/room.service";
 import { useRoomManagement } from '@/hooks/useRoomManagement';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -16,16 +17,54 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 const RoomManagement = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const {
-    rooms,
-    selectedRoom,
-    newRoom,
-    setNewRoom,
-    fetchRooms,
-    handleAddRoom,
-    handleRemoveRoom,
-    handleViewShowtimes,
-  } = useRoomManagement();
+  const [rooms, setRooms] = useState<ScreeningRoom[]>([]);
+  const [selectedRoom, setSelectedRoom] = useState<ScreeningRoom | null>(null);
+  const [newRoom, setNewRoom] = useState({ name: '', capacity: 0 });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchRooms = async () => {
+    setIsLoading(true);
+    try {
+      const data = await RoomService.getAllRooms();
+      setRooms(data);
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddRoom = async () => {
+    try {
+      await RoomService.addRoom(newRoom);
+      setIsDialogOpen(false);
+      setNewRoom({ name: '', capacity: 0 });
+      await fetchRooms();
+    } catch (error) {
+      console.error('Error adding room:', error);
+    }
+  };
+
+  const handleRemoveRoom = async (id: number) => {
+    try {
+      await RoomService.deleteRoom(id);
+      await fetchRooms();
+      if (selectedRoom?.id === id) {
+        setSelectedRoom(null);
+      }
+    } catch (error) {
+      console.error('Error removing room:', error);
+    }
+  };
+
+  const handleViewShowtimes = async (room: ScreeningRoom) => {
+    try {
+      const showtimes = await RoomService.getRoomShowtimes(room.id);
+      setSelectedRoom({ ...room, showtimes });
+    } catch (error) {
+      console.error('Error fetching showtimes:', error);
+    }
+  };
 
   useEffect(() => {
     fetchRooms();

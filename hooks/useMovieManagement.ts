@@ -4,9 +4,11 @@ import { getMovies, addMovie, deleteMovie, updateMovieStatus, getMoviesByStatus 
 
 export const useMovieManagement = () => {
   const [selectedMovies, setSelectedMovies] = useState<Movie[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const fetchMovies = useCallback(async () => {
+    setIsLoading(true);
     try {
       const data = await getMovies();
       setSelectedMovies(Array.isArray(data) ? data : []);
@@ -18,10 +20,13 @@ export const useMovieManagement = () => {
         variant: "destructive",
       });
       setSelectedMovies([]);
+    } finally {
+      setIsLoading(false);
     }
   }, [toast]);
 
   const fetchMoviesByStatus = useCallback(async (status: string) => {
+    setIsLoading(true);
     try {
       const data = await getMoviesByStatus(status);
       setSelectedMovies(Array.isArray(data) ? data : []);
@@ -35,6 +40,8 @@ export const useMovieManagement = () => {
       });
       setSelectedMovies([]);
       return [];
+    } finally {
+      setIsLoading(false);
     }
   }, [toast]);
 
@@ -98,6 +105,7 @@ export const useMovieManagement = () => {
 
   return {
     selectedMovies,
+    isLoading,
     fetchMovies,
     fetchMoviesByStatus,
     handleAddMovie,

@@ -57,10 +57,10 @@ const Header = () => {
               key={route.name}
               href={route.href}
               className={cn(
-                "relative hover:text-white transition-colors duration-300 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:h-[2px] after:bg-white after:transition-all after:duration-300",
+                "relative hover:text-brand-300 transition-colors duration-300 ",
                 route.href === pathname 
-                  ? "text-white after:w-full" 
-                  : "text-bunker-600 after:w-0 hover:after:w-full"
+                  ? "text-brand-500" 
+                  : "text-bunker-600"
               )}
             >
               {route.name}

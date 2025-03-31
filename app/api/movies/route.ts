@@ -1,32 +1,25 @@
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { NextResponse } from 'next/server';
+import {prisma} from '@/lib/prisma';
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
-
-    if (status) {
-      const movies = await prisma.movie.findMany({
-        where: {
-          status: status
-        },
-        orderBy: {
-          id: 'desc'
-        }
-      });
-      return NextResponse.json(movies);
-    }
-
+    
+    console.log('API Route: Fetching movies with status:', status);
+    
     const movies = await prisma.movie.findMany({
-      orderBy: {
-        id: 'desc'
+      where: {
+        status: status || undefined
       }
     });
+    
+    console.log('API Route: Found movies:', movies);
     return NextResponse.json(movies);
+    
   } catch (error) {
-    console.log(error)
-    return NextResponse.json({ error: "Error fetching movies" }, { status: 500 });
+    console.error('API Route Error:', error);
+    return NextResponse.json([], { status: 200 }); // Return empty array instead of error
   }
 }
 

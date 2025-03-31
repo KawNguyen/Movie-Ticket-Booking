@@ -2,11 +2,9 @@
 import React from 'react'
 import { LayoutDashboard } from 'lucide-react'
 
-
-
 const Sidebar = ({navItems, setActiveTab}: SidebarProps) => {
   return (
-    <nav className='h-full w-52 p-4 border-x border-dotted'>
+    <nav className='min-h-screen w-52 p-4 border-x border-dotted'>
       <div className='flex items-center gap-2 p-2'>
         <LayoutDashboard size={20} />
         <span className='text-lg font-semibold'>Dashboard</span>

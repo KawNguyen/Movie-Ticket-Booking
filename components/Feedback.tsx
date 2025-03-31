@@ -6,16 +6,12 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@radix-ui/react-label";
 import { Textarea } from "@/components/ui/textarea";
 
-interface FeedbackProps {
-    data: TopRatedMovie[];
-}
-
-const Feedback = ({ data }: FeedbackProps) => {
+const Feedback = ({ movies }: {movies: any[]}) => {
     const [rating, setRating] = useState<string>("");
     const [feedback, setFeedback] = useState<string>("");
     const [vote, setVote] = useState<string>("");
 
-    const movieTitle = data?.[0]?.title || "this movie";
+    const movieTitle = movies?.[0]?.title || "this movie";
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -58,7 +54,7 @@ const Feedback = ({ data }: FeedbackProps) => {
                 <h2 className="text-white text-lg font-semibold mb-4">Vote For Movie</h2>
 
                 <RadioGroup value={vote} onValueChange={setVote} className="text-white space-y-2">
-                    {data?.slice(0, 5).map((movie) => (
+                    {movies?.slice(0, 5).map((movie) => (
                         <div
                             key={movie.title}
                             className="flex justify-between items-center p-3 rounded-md cursor-pointer hover:bg-gray-600 transition"

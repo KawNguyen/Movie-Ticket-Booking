@@ -1,19 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Star, Trash2 } from "lucide-react";
-import { useMovieManagement } from '@/hooks/useMovieManagement';
 import { useMovieSearch } from '@/hooks/useMovieSearch';
+import { MovieService } from "@/services/movie.service";
+import { Loader2 } from "lucide-react";
 
 const statuses = ["Now Showing", "Coming Soon"];
 
 const MovieManagement = () => {
   const [selectedStatus, setSelectedStatus] = useState(statuses[0]);
+  const [selectedMovies, setSelectedMovies] = useState<MovieCardProps[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   
   const {
     searchTerm,
@@ -25,47 +28,72 @@ const MovieManagement = () => {
     clearSelectedMovie,
   } = useMovieSearch();
 
-  const {
-    selectedMovies,
-    fetchMovies,
-    handleAddMovie,
-    handleRemoveMovie,
-    handleStatusChange,
-  } = useMovieManagement();
+  const fetchMovies = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const movies = await MovieService.getAllMovies();
+      setSelectedMovies(movies as MovieCardProps[]);
+    } catch (error) {
+      console.error('Error fetching movies:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const onAddMovie = async () => {
+    if (!selectedMovie || selectedMovies.some((m) => m.id === selectedMovie.id)) return;
+    
+    try {
+      await MovieService.addMovie({ ...selectedMovie, status: selectedStatus });
+      await fetchMovies();
+      clearSelectedMovie();
+    } catch (error) {
+      console.error('Error adding movie:', error);
+    }
+  };
+
+  const handleRemoveMovie = async (id: number) => {
+    try {
+      await MovieService.deleteMovie(id);
+      await fetchMovies();
+    } catch (error) {
+      console.error('Error removing movie:', error);
+    }
+  };
+
+  const handleStatusChange = async (id: number, status: string) => {
+    try {
+      await MovieService.updateMovieStatus(id, status);
+      await fetchMovies();
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
 
   useEffect(() => {
     fetchMovies();
   }, [fetchMovies]);
 
-  const onAddMovie = async () => {
-    if (!selectedMovie || selectedMovies.some((m) => m.id === selectedMovie.id)) return;
-    const success = await handleAddMovie({ ...selectedMovie, status: selectedStatus });
-    if (success) {
-      clearSelectedMovie();
-    }
-  };
-
   return (
-    <div className="h-[calc(100vh-6rem)] p-8 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
-        <div className="space-y-8">
+    <div className="min-h-screen p-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 h-full">
+        <div className="xl:col-span-1 flex flex-col gap-6">
           <div className="relative w-full">
             <Input
               type="text"
               placeholder="Search for a movie..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="text-white bg-gray-800/30 border-gray-600 backdrop-blur-sm ring-2 ring-gray-700/50 focus:ring-blue-500/50 transition-all"
+              className="text-white bg-gray-800/30 border-gray-600 backdrop-blur-sm ring-2 ring-gray-700/50 focus:ring-blue-500/50 transition-all py-6 text-lg"
             />
             {showResults && results.length > 0 && (
-              <div className="absolute top-12 z-10 w-full bg-gray-800/95 backdrop-blur-md p-4 rounded-xl shadow-2xl border border-gray-700/50">
-                <h3 className="text-white mb-4 font-semibold">Search Results:</h3>
-                <ScrollArea className="max-h-[500px]">
+              <div className="absolute top-14 z-20 w-full bg-gray-800/95 backdrop-blur-md p-4 rounded-xl shadow-2xl border border-gray-700/50">
+                <ScrollArea className="h-[60vh]">
                   <ul className="space-y-3">
                     {results.map((movie) => (
                       <li 
                         key={movie.id} 
-                        className="flex items-center gap-4 p-3 bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-600/50 transition-all duration-300" 
+                        className="flex items-center gap-4 p-4 bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-600/50 transition-all duration-300" 
                         onClick={() => handleSelectMovie(movie)}
                       >
                         <Image 
@@ -92,21 +120,27 @@ const MovieManagement = () => {
           </div>
 
           {selectedMovie && (
-            <div className="bg-gray-800/40 backdrop-blur-md p-8 rounded-xl shadow-2xl border border-gray-700/50 w-full hover:bg-gray-800/50 transition-all duration-300">
-              <div className="flex flex-col lg:flex-row gap-8">
-                <div className="lg:w-1/3 space-y-4">
-                  <div className="relative group">
-                    <Image 
-                      src={`https://image.tmdb.org/t/p/w342${selectedMovie.poster_path}`} 
-                      alt={selectedMovie.title} 
-                      width={342} 
-                      height={513} 
-                      className="rounded-lg shadow-xl transform group-hover:scale-105 transition-all duration-300 w-full" 
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
+            <div className="bg-gray-800/40 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-gray-700/50 flex flex-col gap-6">
+              <div className="flex flex-col gap-6">
+                <div className="relative">
+                  <Image 
+                    src={`https://image.tmdb.org/t/p/w500${selectedMovie.poster_path}`} 
+                    alt={selectedMovie.title} 
+                    width={500} 
+                    height={750} 
+                    className="rounded-lg shadow-xl w-full" 
+                  />
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <div className="space-y-2">
+                    <h3 className="text-white text-2xl font-bold">{selectedMovie.title}</h3>
+                    <p className="text-gray-400">
+                      ({new Date(selectedMovie.release_date).getFullYear()})
+                    </p>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="bg-gray-700/20 p-3 rounded-lg text-center">
                       <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">Runtime</p>
                       <p className="text-white text-[12px] ">{selectedMovie.runtime} mins</p>
@@ -132,112 +166,103 @@ const MovieManagement = () => {
                   </div>
                 </div>
 
-                <div className="lg:w-2/3 space-y-4  ">
-                  <div>
-                    <h3 className="text-white text-3xl font-bold mb-2">{selectedMovie.title}</h3>
-                    <p className="text-gray-400 text-lg">
-                      ({new Date(selectedMovie.release_date).getFullYear()})
-                    </p>
-                  </div>
-
-                  <div className="bg-gray-700/20 p-4 rounded-lg">
-                    <h4 className="text-gray-300 font-semibold mb-2">Overview</h4>
-                    <ScrollArea className="h-[100px]">
-                      <p className="text-gray-300 leading-relaxed pr-4">{selectedMovie.overview}</p>
-                    </ScrollArea>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="text-gray-300 font-semibold">Status</h4>
-                    <select
-                      value={selectedStatus}
-                      onChange={(e) => setSelectedStatus(e.target.value)}
-                      className="bg-gray-700/50 text-white border border-gray-600 p-3 rounded-lg w-full focus:ring-2 focus:ring-blue-500/50 transition-all"
-                    >
-                      {statuses.map((status) => (
-                        <option key={status} value={status}>{status}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <Button 
-                    onClick={onAddMovie} 
-                    className="w-full bg-blue-600 hover:bg-blue-700 transition-colors duration-300 py-6 text-lg font-semibold"
+                <div className="flex flex-col gap-3">
+                  <h4 className="text-gray-300 font-semibold">Status</h4>
+                  <select
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                    className="w-full bg-gray-700/50 text-white border border-gray-600 p-3 rounded-lg"
                   >
-                    Add to Collection
-                  </Button>
+                    {statuses.map((status) => (
+                      <option key={status} value={status}>{status}</option>
+                    ))}
+                  </select>
                 </div>
+
+                <Button 
+                  onClick={onAddMovie} 
+                  className="w-full bg-blue-600 hover:bg-blue-700 py-6 text-lg font-semibold mt-4"
+                >
+                  Add to Collection
+                </Button>
               </div>
             </div>
           )}
         </div>
 
-        <div className="border border-gray-700/50 rounded-xl bg-gray-800/30 backdrop-blur-md shadow-xl">
-          <div className="overflow-hidden">
+        <div className="xl:col-span-2 border border-gray-700/50 rounded-xl bg-gray-800/30 backdrop-blur-md shadow-xl overflow-hidden flex flex-col h-full">
+          <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="sticky top-0 bg-gray-800 z-10">
+              <TableHeader className="sticky top-0 bg-gray-800/90 backdrop-blur-sm z-10">
                 <TableRow className="border-b border-gray-700">
-                  <TableHead className="text-white text-center">Image</TableHead>
-                  <TableHead className="text-white text-center">Title</TableHead>
-                  <TableHead className="text-white text-center">Release Date</TableHead>
-                  <TableHead className="text-white text-center">Duration</TableHead>
-                  <TableHead className="text-white text-center">Status</TableHead>
-                  <TableHead className="text-white text-center">Actions</TableHead>
+                  <TableHead className="text-white font-semibold w-[40%]">Movie</TableHead>
+                  <TableHead className="text-white font-semibold text-center w-[15%]">Release Date</TableHead>
+                  <TableHead className="text-white font-semibold text-center w-[15%]">Duration</TableHead>
+                  <TableHead className="text-white font-semibold text-center w-[20%]">Status</TableHead>
+                  <TableHead className="text-white font-semibold text-center w-[10%]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
             </Table>
           </div>
-          <ScrollArea className="h-[calc(100vh-12rem)]" >
+          <ScrollArea className="h-[1000px]">
             <Table>
-              <TableBody>
-                {selectedMovies.map((movie) => (
-                  <TableRow 
-                    key={movie.id}
-                    className="hover:bg-gray-700/30 transition-colors duration-200"
-                  >
-                    <TableCell className="text-center">
-                      <div className="flex justify-center">
-                        <Image 
-                          src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`} 
-                          alt={movie.title} 
-                          width={92} 
-                          height={138} 
-                          className="rounded shadow-md" 
-                        />
+              {isLoading ? (
+                <TableBody>
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-[400px]">
+                      <div className="flex flex-col items-center justify-center gap-2">
+                        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                        <p className="text-gray-400">Loading movies...</p>
                       </div>
-                    </TableCell>
-                    <TableCell className="text-center">{movie.title}</TableCell>
-                    <TableCell className="text-center">{movie.release_date}</TableCell>
-                    <TableCell className="text-center">{movie.runtime}</TableCell>
-                    {/* <TableCell className="text-center">
-                      <div className="flex justify-center items-center">
-                        {movie.vote_average} 
-                        <Star color="yellow" fill="yellow" size={16} className="ml-1" />
-                      </div>
-                    </TableCell> */}
-                    <TableCell className="text-center">
-                      <select 
-                        value={movie.status} 
-                        onChange={(e) => handleStatusChange(movie.id, e.target.value)} 
-                        className="bg-gray-700/50 text-white border border-gray-600 p-2 rounded-lg transition-all hover:bg-gray-600/50"
-                      >
-                        {statuses.map((status) => (
-                          <option key={status} value={status}>{status}</option>
-                        ))}
-                      </select>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Button 
-                        variant="destructive" 
-                        onClick={() => handleRemoveMovie(movie.id)}
-                        className="hover:bg-red-600/80 transition-colors duration-300"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </Button>
                     </TableCell>
                   </TableRow>
+                </TableBody>
+              ) : (
+                <TableBody>
+                  {selectedMovies.map((movie:any) => (
+                    <TableRow 
+                      key={movie.id}
+                      className="hover:bg-gray-700/30 transition-colors duration-200"
+                    >
+                      <TableCell className="w-[40%]">
+                        <div className="flex items-center gap-4">
+                          <Image 
+                            src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`} 
+                            alt={movie.title} 
+                            width={46} 
+                            height={69} 
+                            className="rounded shadow-md min-w-[46px]" 
+                          />
+                          <span className="font-medium text-white line-clamp-1">{movie.title}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center w-[15%]">{movie.release_date}</TableCell>
+                      <TableCell className="text-center w-[15%]">{movie.runtime} min</TableCell>
+                      <TableCell className="text-center w-[20%]">
+                        <select 
+                          value={movie.status} 
+                          onChange={(e) => handleStatusChange(movie.id, e.target.value)} 
+                          className="w-full bg-gray-700/50 text-white border border-gray-600 p-2 rounded-lg"
+                        >
+                          {statuses.map((status) => (
+                            <option key={status} value={status}>{status}</option>
+                          ))}
+                        </select>
+                      </TableCell>
+                      <TableCell className="text-center w-[10%]">
+                        <Button 
+                          variant="destructive" 
+                          onClick={() => handleRemoveMovie(movie.id)}
+                          size="sm"
+                          className="w-full"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                 ))}
               </TableBody>
+              )}
             </Table>
           </ScrollArea>
         </div>

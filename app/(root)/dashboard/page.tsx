@@ -17,10 +17,10 @@ const Page = () => {
   const [activeTab, setActiveTab] = useState("Movie")
 
   return (
-    <main className="h-screen w-full">
+    <main className="h-full w-full">
       <div className="h-full w-full container flex gap-10">
         <Sidebar navItems={sidebarItems as NavItem[]} setActiveTab={setActiveTab} />
-        <div className="mt-4 w-full">
+        <div className="my-4 w-full h-full">
           {activeTab === "Movie" && <MovieManagement />}
           {activeTab === "Room" && <RoomManagement/>}
           {activeTab === "Showtime" && <ShowTimeManagement/>}

@@ -39,12 +39,13 @@ interface TopRatedMovie {
 }
 
 interface MovieCardProps {
-  id: string;
+  id: number;
   title: string;
   year: string;
   rating: number;
   duration: number;
   imageUrl: string;
+  isLoading?: boolean;
 }
 
 interface Movie  {
@@ -57,8 +58,14 @@ interface Movie  {
   runtime?: number;
   genres?: { id: number; name: string }[];
   vote_average?: number;
-  tagline?: string;
 };
+
+
+interface MovieListProps {
+  data: MovieCardProps[];
+  isLoading?: boolean;
+  limit?: number;
+}
 
 interface ScreeningRoom {
   id: number;

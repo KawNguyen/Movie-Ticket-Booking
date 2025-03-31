@@ -13,24 +13,12 @@ import { useRouter } from "next/navigation";
 import { useMovieManagement } from "@/hooks/useMovieManagement";
 
 
-interface HomeHeroProps {
-  status: string;
-}
-
 const IMG_URL = "https://image.tmdb.org/t/p/w1920";
 
-const HomeHero = ({ status }: HomeHeroProps) => {
+const HomeHero = ({ movies }: {movies : MovieCardProps[]}) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const { fetchMoviesByStatus } = useMovieManagement();
-  const [movies, setMovies] = useState<MovieCardProps[]>([]);
-  useEffect(() => {
-    const data = fetchMoviesByStatus("Now Showing");
-    data.then((result) => setMovies(result));
-    console.log(data)
-  }, [status]);
   const limitedItems = movies.slice(0, 5);
   const router = useRouter();
-
 
   return (  
     <Swiper
@@ -52,7 +40,7 @@ const HomeHero = ({ status }: HomeHeroProps) => {
               src={`${IMG_URL}/${item.backdrop_path}`}
               alt={`${IMG_URL}/${item.backdrop_path}`}
               width={500}
-              height={500}
+              height={100}
               className={`w-full h-full transition duration-1000 relative ${
                 activeIndex === index
                   ? "opacity-100 scale-100"
