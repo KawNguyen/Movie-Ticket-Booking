@@ -1,5 +1,5 @@
+import TemplateHomePage from "@/components/templates/TemplateHomePage";
 import { Metadata } from "next";
-import TemplateHomePage from "@/components/homepage/TemplateHomePage";
 
 export const metadata: Metadata = {
   title: "Movie Ticket Booking - Your Ultimate Cinema Experience",
@@ -7,7 +7,6 @@ export const metadata: Metadata = {
 };
 
 const HomePage = () => {    
-
     return (
       <TemplateHomePage/>
     );
