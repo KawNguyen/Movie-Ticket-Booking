@@ -1,45 +1,39 @@
 import { useState, useEffect } from 'react';
-import { fetchTmdbData, searchTmdbData } from '@/lib/tmdb';
-import useDebounce from '@/hooks/useDebounce';
+import { searchMovies } from '@/lib/api/movies';
+import useDebounce from './useDebounce';
 
-export const useMovieSearch = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+export function useMovieSearch(delay = 500) {
+  const [query, setQuery] = useState('');
   const [results, setResults] = useState<Movie[]>([]);
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [showResults, setShowResults] = useState(false);
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const [isLoading, setIsLoading] = useState(false);
+  const debouncedQuery = useDebounce(query, delay);
 
   useEffect(() => {
-    if (!debouncedSearchTerm.trim()) {
-      setResults([]);
-      setShowResults(false);
-      return;
-    }
+    const search = async () => {
+      if (!debouncedQuery) {
+        setResults([]);
+        return;
+      }
 
-    const fetchData = async () => {
-      const data = await searchTmdbData(`search/movie?query=${debouncedSearchTerm}`);
-      setResults(data.results || []);
-      setShowResults(true);
+      setIsLoading(true);
+      try {
+        const data = await searchMovies(debouncedQuery);
+        setResults(data as Movie[]);
+      } catch (error) {
+        console.error('Search error:', error);
+        setResults([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    fetchData();
-  }, [debouncedSearchTerm]);
-
-  const handleSelectMovie = (movie: Movie) => {
-    setSelectedMovie(movie);
-    setShowResults(false);
-    setSearchTerm(''); // Add this line to clear search term
-  };
-
-  const clearSelectedMovie = () => setSelectedMovie(null);
+    search();
+  }, [debouncedQuery]);
 
   return {
-    searchTerm,
-    setSearchTerm,
+    query,
+    setQuery,
     results,
-    selectedMovie,
-    showResults,
-    handleSelectMovie,
-    clearSelectedMovie,
+    isLoading
   };
-};
+}

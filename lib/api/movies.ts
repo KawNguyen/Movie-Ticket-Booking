@@ -20,6 +20,16 @@ export const getMoviesByStatus = async(status: string) => {
   }
 }
 
+export const searchMovies = async (query: string) => {
+  try {
+    const response = await axios.get(`/api/movies?query=${encodeURIComponent(query)}`);
+    return response.data;
+  } catch (error) {
+    console.log(error)
+    throw new Error('Failed to search movies');
+  }
+}
+
 export const addMovie = async (movie: Movie) => {
   try {
     const response = await axios.post("/api/movies", movie);

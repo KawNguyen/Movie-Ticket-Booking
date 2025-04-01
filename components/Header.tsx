@@ -11,6 +11,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { routes } from "@/constants";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import SearchBar from "./SearchBar";
 
 const Header = () => {
   const pathname = usePathname();
@@ -20,6 +21,7 @@ const Header = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,7 +72,9 @@ const Header = () => {
               {route.name}
             </Link>
           ))}
-          <Search className="text-bunker-600 hover:text-white duration-300 cursor-pointer" />
+          {/* <Search className="text-bunker-600 hover:text-white duration-300 cursor-pointer" /> */}
+
+          <SearchBar/>
 
           {session?.user ? (
             <DropdownMenu>

@@ -5,6 +5,8 @@ const nextConfig = {
           "image.tmdb.org", 
           "placehold.co",
           "lh3.googleusercontent.com",
+          "i.pinimg.com",
+          "www.courier-journal.com",
         ],
       },
 };

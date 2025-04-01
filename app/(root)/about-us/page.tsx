@@ -1,4 +1,5 @@
 "use client"
+
 import { Autoplay, Pagination } from 'swiper/modules';
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -83,6 +84,9 @@ const AboutUsPage = () => {
                 <div className="hidden md:col-span-4 md:flex md:justify-center md:items-center">
                     <Image
                         src="https://i.pinimg.com/736x/33/c1/ef/33c1ef54b6e934505767c7d7d50a5bd3.jpg"
+                        width={500}
+                        height={500}
+                        priority
                         alt="about_us_image"
                         className="w-full h-full  md:h-full max-w-[500px] rounded-md object-cover"
                     />

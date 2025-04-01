@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useMovieSearch } from '@/hooks/useMovieSearch';
+import { useMovieSearch } from '@/hooks/useMovieSearchTMDB';
 import { getMovies, addMovie, deleteMovie, updateMovieStatus } from "@/lib/api/movies";
 import { useToast } from "@/hooks/use-toast";
 import { SearchMovies } from "./movie/SearchMovies";

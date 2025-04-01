@@ -5,8 +5,23 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
+    const query = searchParams.get('query');
     
-    console.log('API Route: Fetching movies with status:', status);
+    if (query) {
+      const movies = await prisma.movie.findMany({
+        where: {
+          title: {
+            contains: query,
+            mode: 'insensitive'
+          }
+        },
+        take: 5,
+        orderBy: {
+          title: 'asc'
+        }
+      });
+      return NextResponse.json(movies);
+    }
     
     const movies = await prisma.movie.findMany({
       where: {
@@ -14,7 +29,6 @@ export async function GET(request: Request) {
       }
     });
     
-    console.log('API Route: Found movies:', movies);
     return NextResponse.json(movies);
     
   } catch (error) {
