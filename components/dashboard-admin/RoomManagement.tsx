@@ -83,10 +83,11 @@ const RoomManagement = () => {
 
   useEffect(() => {
     fetchRooms();
-  }, [fetchRooms]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div className="p-6 flex flex-col h-[calc(100vh-9rem)] gap-6">
+    <div className="p-6 flex flex-col w-full h-[calc(100vh-9rem)] gap-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-white">Screening Room Management</h2>
         <AddRoomDialog onAddRoom={handleAddRoom} />

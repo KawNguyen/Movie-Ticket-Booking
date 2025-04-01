@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 interface Movie {
   id: number;
@@ -53,9 +54,12 @@ export const BookingHistory = () => {
           <Card key={movie.id} className="bg-gray-900 text-white">
             <CardContent className="p-4 flex">
               <div className="w-32 h-48 overflow-hidden rounded-lg">
-                <img
+                <Image
                   src={movie.imageUrl}
                   alt={movie.title}
+                  height={480}
+                  width={360}
+                  priority
                   className="object-cover w-full h-full"
                 />
               </div>

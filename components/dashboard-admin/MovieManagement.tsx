@@ -120,10 +120,11 @@ const MovieManagement = () => {
 
   useEffect(() => {
     fetchMovies();
-  }, [fetchMovies]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div className="min-h-screen p-6 ">
+    <div className="min-h-screen p-6 w-full">
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 h-full">
         <div className="xl:col-span-1 flex flex-col gap-6">
           <SearchMovies
