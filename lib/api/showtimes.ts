@@ -1,20 +1,28 @@
+import axios from 'axios';
+
 export const getShowtimes = async () => {
-  const response = await fetch('/api/showtimes');
-  return response.json();
+  try {
+    const response = await axios.get('/api/showtimes');
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to fetch showtimes');
+  }
 };
 
 export const addShowtime = async (showtime: Partial<Showtime>) => {
-  const response = await fetch('/api/showtimes', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(showtime),
-  });
-  return response.json();
+  try {
+    const response = await axios.post('/api/showtimes', showtime);
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to add showtime');
+  }
 };
 
 export const deleteShowtime = async (id: number) => {
-  const response = await fetch(`/api/showtimes/${id}`, {
-    method: 'DELETE',
-  });
-  return response.json();
+  try {
+    const response = await axios.delete(`/api/showtimes/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to delete showtime');
+  }
 };

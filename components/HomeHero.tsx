@@ -7,11 +7,9 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/effect-fade";
 import { Autoplay, EffectFade } from "swiper/modules";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { useMovieManagement } from "@/hooks/useMovieManagement";
-
 
 const IMG_URL = "https://image.tmdb.org/t/p/w1920";
 

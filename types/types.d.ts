@@ -51,6 +51,7 @@ interface MovieCardProps {
 interface Movie  {
   id: number;
   title: string;
+  backdrop_path: string | null;
   poster_path: string;
   release_date: string;
   overview: string;

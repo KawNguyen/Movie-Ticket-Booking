@@ -1,14 +1,14 @@
 "use client";
 
-import { MovieService } from "@/services/movie.service";
 import { useCallback, useEffect, useState } from "react";
 import MovieList from "../MovieList";
+import { getMoviesByStatus } from "@/lib/api/movies";
 
 const TemplateMoviesByStatus = ({status}: {status:string}) => {
   const [movies, setMovies] = useState<MovieCardProps[]>([]);
   const fetchMovies = useCallback(async () => {
     try {
-      const ns = await MovieService.getAllMoviesByStatus(`${status}`);
+      const ns = await getMoviesByStatus(`${status}`);
       setMovies(ns as MovieCardProps[]);
     } catch (error) {
       console.error("Error fetching movies:", error);

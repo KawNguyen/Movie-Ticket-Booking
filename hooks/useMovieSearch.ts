@@ -25,12 +25,10 @@ export const useMovieSearch = () => {
     fetchData();
   }, [debouncedSearchTerm]);
 
-  const handleSelectMovie = async (movie: Movie) => {
-    if (selectedMovie?.id === movie.id) return;
-
-    const movieDetails = await fetchTmdbData(`movie/${movie.id}`);
-    setSelectedMovie(movieDetails);
+  const handleSelectMovie = (movie: Movie) => {
+    setSelectedMovie(movie);
     setShowResults(false);
+    setSearchTerm(''); // Add this line to clear search term
   };
 
   const clearSelectedMovie = () => setSelectedMovie(null);

@@ -1,8 +1,9 @@
 "use client"
+
 import React, { useState } from "react"
-import { BookingHistory } from "@/components/dashboard-user/BookingHistory";
-import { Sidebar } from "@/components/dashboard-user/Sidebar";
-import { Profile } from "@/components/dashboard-user/Profile";
+import { BookingHistory } from "@/components/profile/BookingHistory";
+import { Sidebar } from "@/components/profile/Sidebar";
+import { Profile } from "@/components/profile/Profile";
 
 export default function DashboardPage() {
   const [currentView, setCurrentView] = useState<'profile' | 'booking-history'>('profile')

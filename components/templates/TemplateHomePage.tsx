@@ -6,7 +6,7 @@ import HomeHero from "../HomeHero";
 import MovieList from "../MovieList";
 import Advertisement from "../Advertisement";
 import Feedback from "../Feedback";
-import { MovieService } from "@/services/movie.service";
+import { getMoviesByStatus } from "@/lib/api/movies";
 
 const TemplateHomePage = () => {
   const [nowShowingMovies, setNowShowingMovies] = useState<MovieCardProps[]>([]);
@@ -14,8 +14,8 @@ const TemplateHomePage = () => {
 
   const fetchMovies = useCallback(async () => {
     try {
-      const ns = await MovieService.getAllMoviesByStatus("Now Showing");
-      const cs = await MovieService.getAllMoviesByStatus("Coming Soon");
+      const ns = await getMoviesByStatus("Now Showing");
+      const cs = await getMoviesByStatus("Coming Soon");
       setNowShowingMovies(ns as MovieCardProps[]);
       setComingSoonMovies(cs as MovieCardProps[]);
     } catch (error) {

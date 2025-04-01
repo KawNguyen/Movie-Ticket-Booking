@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     
   } catch (error) {
     console.error('API Route Error:', error);
-    return NextResponse.json([], { status: 200 }); // Return empty array instead of error
+    return NextResponse.json([], { status: 500 });
   }
 }
 
