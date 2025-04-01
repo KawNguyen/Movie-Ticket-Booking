@@ -1,7 +1,7 @@
 export const getMovies = async () => {
   try {
     const response = await fetch("/api/movies");
-    return response.json();
+    return response?.json();
   } catch (error) {
     throw new Error("Failed to fetch movies");
   }
@@ -10,7 +10,7 @@ export const getMovies = async () => {
 export const getMoviesByStatus = async(status: string) => {
   try {
     const response = await fetch(`/api/movies?status=${status}`);
-    return response.json();
+    return response?.json();
   } catch (error) {
     throw new Error('Failed to fetch movies by status');
   }

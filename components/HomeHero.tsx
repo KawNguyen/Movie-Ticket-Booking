@@ -46,6 +46,7 @@ const HomeHero = ({ movies }: {movies : MovieCardProps[]}) => {
                   ? "opacity-100 scale-100"
                   : "opacity-0 scale-125"
               }`}
+              priority
             />
             <div
               className={`absolute top-0 bg-gradient-to-r from-black w-[44%] h-full`}

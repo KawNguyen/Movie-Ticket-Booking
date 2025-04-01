@@ -30,8 +30,7 @@ export default function MovieCard({
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-opacity duration-300 group-hover:opacity-75"
-          priority={false}
-          loading="lazy"
+          priority={true}
           onError={() => setImageError(true)}
         />
       </AspectRatio>
