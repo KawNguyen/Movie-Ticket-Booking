@@ -7,22 +7,20 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/effect-fade";
 import { Autoplay, EffectFade } from "swiper/modules";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
+import { useMovieManagement } from "@/hooks/useMovieManagement";
 
-interface HomeHeroProps {
-  data: TopRatedMovie[];
-}
 
 const IMG_URL = "https://image.tmdb.org/t/p/w1920";
 
-const HomeHero = ({ data }: HomeHeroProps) => {
+const HomeHero = ({ movies }: {movies : MovieCardProps[]}) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const limitedItems = data.slice(0, 5);
+  const limitedItems = movies.slice(0, 5);
   const router = useRouter();
 
-  return (
+  return (  
     <Swiper
       spaceBetween={30}
       autoplay={{
@@ -42,7 +40,7 @@ const HomeHero = ({ data }: HomeHeroProps) => {
               src={`${IMG_URL}/${item.backdrop_path}`}
               alt={`${IMG_URL}/${item.backdrop_path}`}
               width={500}
-              height={500}
+              height={100}
               className={`w-full h-full transition duration-1000 relative ${
                 activeIndex === index
                   ? "opacity-100 scale-100"
@@ -61,7 +59,7 @@ const HomeHero = ({ data }: HomeHeroProps) => {
               >
                 <div className="flex w-full flex-col space-y-4">
                   <span className="font-bold xl:text-4xl lg:text-3xl md:text-2xl text-lg text-white">
-                    {item.original_title}
+                    {item.title}
                   </span>
                   <span className="xl:text-lg lg:text-base md:text-sm text-xs text-gray-600 hidden lg:block">
                     {item.release_date}
