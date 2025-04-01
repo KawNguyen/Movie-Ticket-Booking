@@ -11,6 +11,16 @@ interface AuthActionResult {
   message?: string;
 }
 
+interface NavItem {
+  name: string;
+  icon: React.ReactNode;
+}
+
+interface SidebarProps {
+  navItems?: NavItem[];
+  setActiveTab?: (tabName: string) => void;
+}
+
 interface TopRatedMovie {
   adult: boolean;
   backdrop_path: string | null;
@@ -33,8 +43,57 @@ interface MovieCardProps {
   title: string;
   year: string;
   rating: number;
+  duration: number;
   imageUrl: string;
+  isLoading?: boolean;
 }
+
+interface Movie  {
+  id: number;
+  title: string;
+  backdrop_path: string | null;
+  poster_path: string;
+  release_date: string;
+  overview: string;
+  status?: string;
+  runtime?: number;
+  genres?: { id: number; name: string }[];
+  vote_average?: number;
+};
+
+
+interface MovieListProps {
+  data: MovieCardProps[];
+  isLoading?: boolean;
+  limit?: number;
+}
+
+interface ScreeningRoom {
+  id: number;
+  name: string;
+  capacity: number;
+  showtimes?: {
+    id: number;
+    startTime: string;
+    movie: {
+      id: number;
+      title: string;
+    };
+    price: number;
+    bookedSeats: number;
+  }[];
+};
+
+interface Showtime  {
+  id: number;
+  movieId: number;
+  movie: Movie;
+  screeningRoomId: number;
+  screeningRoom: ScreeningRoom;
+  startTime: string;
+  price: number;
+};
+
 interface DetailsProps {
   movie: any;
   cast: Array<{ id: number; name: string; profile_path: string | null }>;

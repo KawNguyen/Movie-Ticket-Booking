@@ -135,7 +135,7 @@ const AuthForm = <T extends FieldValues>({
       </div>
 
       <Button variant="secondary" onClick={() => signIn("google")}>
-        Signin with Google
+        Sign in with Google
       </Button>
     </div>
   );

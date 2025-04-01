@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 const Footer = () => {
   const pathname = usePathname();
   return (
-    <footer className="bg-black text-white py-10">
+    <footer className="bg-black text-white py-10 border-t border-dotted">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-5">
         <div>
           <h2 className="text-3xl font-bold">LOGO</h2>
