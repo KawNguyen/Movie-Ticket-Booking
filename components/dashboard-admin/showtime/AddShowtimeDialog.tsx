@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -12,13 +18,13 @@ interface AddShowtimeDialogProps {
   onAddShowtime: (showtimeData: Partial<Showtime>) => Promise<void>;
 }
 
-const AddShowtimeDialog = ({ 
-  movies, 
-  rooms, 
-  isLoadingMovies, 
-  isLoadingRooms, 
-  isAddingShowtime, 
-  onAddShowtime 
+const AddShowtimeDialog = ({
+  movies,
+  rooms,
+  isLoadingMovies,
+  isLoadingRooms,
+  isAddingShowtime,
+  onAddShowtime,
 }: AddShowtimeDialogProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
@@ -26,8 +32,8 @@ const AddShowtimeDialog = ({
   const [newShowtime, setNewShowtime] = useState<Partial<Showtime>>({
     movieId: undefined,
     screeningRoomId: undefined,
-    startTime: '',
-    price: undefined
+    startTime: "",
+    price: undefined,
   });
 
   const handleSubmit = async () => {
@@ -35,8 +41,8 @@ const AddShowtimeDialog = ({
     setNewShowtime({
       movieId: undefined,
       screeningRoomId: undefined,
-      startTime: '',
-      price: undefined
+      startTime: "",
+      price: undefined,
     });
     setSelectedMovie(null);
     setSelectedRoom(null);
@@ -59,9 +65,14 @@ const AddShowtimeDialog = ({
               disabled={isLoadingMovies}
               value={selectedMovie?.id || ""}
               onChange={(e) => {
-                const movie = movies.find(m => m.id === parseInt(e.target.value));
+                const movie = movies.find(
+                  (m) => m.id === parseInt(e.target.value),
+                );
                 setSelectedMovie(movie || null);
-                setNewShowtime({ ...newShowtime, movieId: parseInt(e.target.value) });
+                setNewShowtime({
+                  ...newShowtime,
+                  movieId: parseInt(e.target.value),
+                });
               }}
               className="w-full bg-gray-700/50 text-white border border-gray-600 p-2 rounded-lg mt-1"
             >
@@ -85,9 +96,14 @@ const AddShowtimeDialog = ({
               disabled={isLoadingRooms}
               value={selectedRoom?.id || ""}
               onChange={(e) => {
-                const room = rooms.find(r => r.id === parseInt(e.target.value));
+                const room = rooms.find(
+                  (r) => r.id === parseInt(e.target.value),
+                );
                 setSelectedRoom(room || null);
-                setNewShowtime({ ...newShowtime, screeningRoomId: parseInt(e.target.value) });
+                setNewShowtime({
+                  ...newShowtime,
+                  screeningRoomId: parseInt(e.target.value),
+                });
               }}
               className="w-full bg-gray-700/50 text-white border border-gray-600 p-2 rounded-lg mt-1"
             >
@@ -106,11 +122,15 @@ const AddShowtimeDialog = ({
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-200">Start Time</label>
+            <label className="text-sm font-medium text-gray-200">
+              Start Time
+            </label>
             <Input
               type="datetime-local"
               value={newShowtime.startTime}
-              onChange={(e) => setNewShowtime({ ...newShowtime, startTime: e.target.value })}
+              onChange={(e) =>
+                setNewShowtime({ ...newShowtime, startTime: e.target.value })
+              }
               className="mt-1"
             />
           </div>
@@ -119,13 +139,18 @@ const AddShowtimeDialog = ({
             <Input
               type="number"
               value={newShowtime.price}
-              onChange={(e) => setNewShowtime({ ...newShowtime, price: parseFloat(e.target.value) })}
+              onChange={(e) =>
+                setNewShowtime({
+                  ...newShowtime,
+                  price: parseFloat(e.target.value),
+                })
+              }
               placeholder="Enter price"
               className="mt-1"
             />
           </div>
-          <Button 
-            onClick={handleSubmit} 
+          <Button
+            onClick={handleSubmit}
             className="w-full"
             disabled={isAddingShowtime}
           >

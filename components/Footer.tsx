@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 import { Facebook, Twitter, Youtube, Mail, Phone, MapPin } from "lucide-react";
@@ -28,7 +28,7 @@ const Footer = () => {
                 href={route.href}
                 className={cn(
                   "hover:text-white duration-300",
-                  route.href === pathname ? "text-white" : "text-bunker-600"
+                  route.href === pathname ? "text-white" : "text-bunker-600",
                 )}
               >
                 {route.name}

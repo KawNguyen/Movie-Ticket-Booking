@@ -36,7 +36,9 @@ const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
           {/* Thông tin phim */}
           <CardContent className="w-full px-2 lg:px-6 mt-4 lg:mt-0">
             <h1 className="text-2xl font-bold text-white">{movie.title}</h1>
-            <p className="text-gray-400">{movie.genres.map((g: { name: string }) => g.name).join(", ")}</p>
+            <p className="text-gray-400">
+              {movie.genres.map((g: { name: string }) => g.name).join(", ")}
+            </p>
 
             {/* Các nút hành động */}
             <div className="flex items-center space-x-2 mt-3">
@@ -76,7 +78,9 @@ const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
             {/* Diễn viên */}
             <div className="mt-4">
               <p className="text-gray-400">Cast</p>
-              <p className="text-white">{cast?.map((actor) => actor.name).join(", ")}</p>
+              <p className="text-white">
+                {cast?.map((actor) => actor.name).join(", ")}
+              </p>
             </div>
           </CardContent>
         </Card>

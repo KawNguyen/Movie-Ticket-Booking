@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -10,13 +16,13 @@ interface AddRoomDialogProps {
 const AddRoomDialog = ({ onAddRoom }: AddRoomDialogProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newRoom, setNewRoom] = useState({
-    name: '',
-    capacity: 0
+    name: "",
+    capacity: 0,
   });
 
   const handleSubmit = async () => {
     await onAddRoom(newRoom);
-    setNewRoom({ name: '', capacity: 0 });
+    setNewRoom({ name: "", capacity: 0 });
     setIsDialogOpen(false);
   };
 
@@ -40,16 +46,22 @@ const AddRoomDialog = ({ onAddRoom }: AddRoomDialogProps) => {
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-gray-200">Capacity</label>
+            <label className="text-sm font-medium text-gray-200">
+              Capacity
+            </label>
             <Input
               type="number"
               value={newRoom.capacity}
-              onChange={(e) => setNewRoom({ ...newRoom, capacity: parseInt(e.target.value) })}
+              onChange={(e) =>
+                setNewRoom({ ...newRoom, capacity: parseInt(e.target.value) })
+              }
               placeholder="Enter capacity"
               className="mt-1"
             />
           </div>
-          <Button onClick={handleSubmit} className="w-full">Add Room</Button>
+          <Button onClick={handleSubmit} className="w-full">
+            Add Room
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

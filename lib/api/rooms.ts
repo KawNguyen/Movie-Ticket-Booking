@@ -1,22 +1,22 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const getRooms = async () => {
   try {
-    const response = await axios.get('/api/screening-rooms');
+    const response = await axios.get("/api/screening-rooms");
     return response?.data;
   } catch (error) {
-    console.log(error)
-    throw new Error('Failed to fetch rooms');
+    console.log(error);
+    throw new Error("Failed to fetch rooms");
   }
 };
 
 export const addRoom = async (room: Partial<ScreeningRoom>) => {
   try {
-    const response = await axios.post('/api/screening-rooms', room);
+    const response = await axios.post("/api/screening-rooms", room);
     return response.data;
   } catch (error) {
-    console.log(error)
-    throw new Error('Failed to add room');
+    console.log(error);
+    throw new Error("Failed to add room");
   }
 };
 
@@ -25,17 +25,19 @@ export const deleteRoom = async (id: number) => {
     const response = await axios.delete(`/api/screening-rooms/${id}`);
     return response.data;
   } catch (error) {
-    console.log(error)
-    throw new Error('Failed to delete room');
+    console.log(error);
+    throw new Error("Failed to delete room");
   }
 };
 
 export const getRoomShowtimes = async (roomId: number) => {
   try {
-    const response = await axios.get(`/api/screening-rooms/${roomId}/showtimes`);
+    const response = await axios.get(
+      `/api/screening-rooms/${roomId}/showtimes`,
+    );
     return response.data;
   } catch (error) {
-    console.log(error)
-    throw new Error('Failed to fetch room showtimes');
+    console.log(error);
+    throw new Error("Failed to fetch room showtimes");
   }
 };

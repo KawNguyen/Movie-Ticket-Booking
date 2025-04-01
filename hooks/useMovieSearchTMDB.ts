@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { fetchTmdbData, searchTmdbData } from '@/lib/tmdb';
-import useDebounce from '@/hooks/useDebounce';
+import { useState, useEffect } from "react";
+import { fetchTmdbData, searchTmdbData } from "@/lib/tmdb";
+import useDebounce from "@/hooks/useDebounce";
 
 export const useMovieSearch = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -17,8 +17,12 @@ export const useMovieSearch = () => {
     }
 
     const fetchData = async () => {
-      const data = await searchTmdbData(`search/movie?query=${debouncedSearchTerm}`);
-      setResults(Array.isArray((data as any)?.results) ? (data as any).results : []);
+      const data = await searchTmdbData(
+        `search/movie?query=${debouncedSearchTerm}`,
+      );
+      setResults(
+        Array.isArray((data as any)?.results) ? (data as any).results : [],
+      );
       setShowResults(true);
     };
 
@@ -28,7 +32,7 @@ export const useMovieSearch = () => {
   const handleSelectMovie = (movie: Movie) => {
     setSelectedMovie(movie);
     setShowResults(false);
-    setSearchTerm(''); // Add this line to clear search term
+    setSearchTerm(""); // Add this line to clear search term
   };
 
   const clearSelectedMovie = () => setSelectedMovie(null);

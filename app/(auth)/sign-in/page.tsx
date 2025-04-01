@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { signInWithCredential } from "@/actions/auth";
 import AuthForm from "@/components/auth-form";

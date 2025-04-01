@@ -23,7 +23,8 @@ export const BookingHistory = () => {
       title: "Avengers: Endgame",
       year: 2019,
       rating: 8.4,
-      imageUrl: "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
+      imageUrl:
+        "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
       purchaseDate: "2023-04-25",
       showDate: "2023-04-28",
       showTime: "19:30",
@@ -36,7 +37,8 @@ export const BookingHistory = () => {
       title: "Spider-Man: No Way Home",
       year: 2021,
       rating: 8.2,
-      imageUrl: "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
+      imageUrl:
+        "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
       purchaseDate: "2023-05-15",
       showDate: "2023-05-18",
       showTime: "20:00",

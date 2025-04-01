@@ -18,7 +18,7 @@ const MovieList = ({ movies, limit = 5 }: MovieListProps) => {
 
   useEffect(() => {
     if (movies.length > 0) {
-      const timer = setTimeout(() => setIsLoading(false), 500); 
+      const timer = setTimeout(() => setIsLoading(false), 500);
       return () => clearTimeout(timer);
     }
   }, [movies]);
@@ -26,9 +26,11 @@ const MovieList = ({ movies, limit = 5 }: MovieListProps) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {Array(skeletonCount).fill(0).map((_, index) => (
-          <SkeletonCard key={index} />
-        ))}
+        {Array(skeletonCount)
+          .fill(0)
+          .map((_, index) => (
+            <SkeletonCard key={index} />
+          ))}
       </div>
     );
   }
@@ -43,7 +45,11 @@ const MovieList = ({ movies, limit = 5 }: MovieListProps) => {
           year={movie.release_date}
           rating={movie.vote_average}
           duration={movie.runtime || 0}
-          imageUrl={movie.poster_path ? `${IMG_URL}${movie.poster_path}` : '/fallback-movie-poster.jpg'}
+          imageUrl={
+            movie.poster_path
+              ? `${IMG_URL}${movie.poster_path}`
+              : "/fallback-movie-poster.jpg"
+          }
         />
       ))}
     </div>

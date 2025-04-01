@@ -17,7 +17,7 @@ export default auth((req) => {
 
   const isDashboardRoute = nextUrl.pathname.startsWith("/dashboard");
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.some(route => {
+  const isPublicRoute = publicRoutes.some((route) => {
     if (route === "/movie/[slug]") {
       return nextUrl.pathname.startsWith("/movie/");
     }
@@ -36,7 +36,7 @@ export default auth((req) => {
   if (isAuthRoute) {
     if (isLoggedIn) {
       return NextResponse.redirect(
-        new URL(DEFAULT_LOGIN_REDIRECT, nextUrl.origin)
+        new URL(DEFAULT_LOGIN_REDIRECT, nextUrl.origin),
       );
     }
     return NextResponse.next();

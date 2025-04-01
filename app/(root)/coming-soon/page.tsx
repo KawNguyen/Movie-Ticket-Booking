@@ -7,9 +7,7 @@ export const metadata: Metadata = {
 };
 
 const ComingSoon = async () => {
-  return (
-    <TemplateMoviesByStatus status="Coming Soon" />
-  );
+  return <TemplateMoviesByStatus status="Coming Soon" />;
 };
 
 export default ComingSoon;

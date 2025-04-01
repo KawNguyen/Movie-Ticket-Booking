@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useMovieSearch } from "@/hooks/useMovieSearch";
 import { Input } from "@/components/ui/input";
@@ -31,9 +31,14 @@ const SearchBar = () => {
           <Search className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="top" className="w-full max-h-[80vh] overflow-y-auto bg-black/95 border-gray-800">
+      <SheetContent
+        side="top"
+        className="w-full max-h-[80vh] overflow-y-auto bg-black/95 border-gray-800"
+      >
         <SheetHeader className="mb-6">
-          <SheetTitle className="text-2xl font-bold text-white">Search Movies</SheetTitle>
+          <SheetTitle className="text-2xl font-bold text-white">
+            Search Movies
+          </SheetTitle>
         </SheetHeader>
         <div className="space-y-6">
           <div className="relative">
@@ -46,7 +51,7 @@ const SearchBar = () => {
               className="w-full pl-10 bg-transparent border-gray-700 focus:border-gray-500"
             />
           </div>
-          
+
           {isLoading && (
             <div className="flex items-center justify-center py-10">
               <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
@@ -58,7 +63,7 @@ const SearchBar = () => {
               {results.map((movie) => (
                 <li key={movie.id}>
                   <SheetClose asChild>
-                    <button 
+                    <button
                       onClick={() => handleMovieClick(movie.id)}
                       className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800/50 transition-colors"
                     >
@@ -77,9 +82,11 @@ const SearchBar = () => {
                         )}
                       </div>
                       <div className="text-left">
-                        <h3 className="font-semibold text-white">{movie.title}</h3>
+                        <h3 className="font-semibold text-white">
+                          {movie.title}
+                        </h3>
                         <div className="mt-1 text-sm text-gray-400 flex items-center gap-2">
-                          <span>{movie.release_date?.split('-')[0]}</span>
+                          <span>{movie.release_date?.split("-")[0]}</span>
                           <span>•</span>
                           <span className="text-gray-500">{movie.status}</span>
                         </div>

@@ -13,12 +13,12 @@ import { useRouter } from "next/navigation";
 
 const IMG_URL = "https://image.tmdb.org/t/p/w1920";
 
-const HomeHero = ({ movies }: {movies : MovieCardProps[]}) => {
+const HomeHero = ({ movies }: { movies: MovieCardProps[] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const limitedItems = movies.slice(0, 5);
   const router = useRouter();
 
-  return (  
+  return (
     <Swiper
       spaceBetween={30}
       autoplay={{

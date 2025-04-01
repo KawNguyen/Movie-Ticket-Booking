@@ -5,7 +5,7 @@ export default function SkeletonCard() {
   return (
     <div className="bg-gray-900 text-white rounded-2xl shadow-lg p-4 flex flex-col">
       <AspectRatio
-        ratio={2/3}
+        ratio={2 / 3}
         className="relative w-full overflow-hidden rounded-lg bg-gray-800"
       >
         <Skeleton className="absolute inset-0 bg-gray-800" />

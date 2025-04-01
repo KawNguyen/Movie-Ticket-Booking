@@ -69,7 +69,12 @@ const ShowTimeManagement = () => {
   }, [toast]);
 
   const handleAddShowtime = async (showtimeData: Partial<Showtime>) => {
-    if (!showtimeData.movieId || !showtimeData.screeningRoomId || !showtimeData.startTime || !showtimeData.price) {
+    if (
+      !showtimeData.movieId ||
+      !showtimeData.screeningRoomId ||
+      !showtimeData.startTime ||
+      !showtimeData.price
+    ) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -148,7 +153,9 @@ const ShowTimeManagement = () => {
           isLoadingMovies={isLoadingMovies}
           isLoadingRooms={isLoadingRooms}
           isAddingShowtime={isAddingShowtime}
-          onAddShowtime={async (data) => { await handleAddShowtime(data); }}
+          onAddShowtime={async (data) => {
+            await handleAddShowtime(data);
+          }}
         />
       </div>
 

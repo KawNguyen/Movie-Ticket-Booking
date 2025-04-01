@@ -6,7 +6,12 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { routes } from "@/constants";
 import Image from "next/image";
@@ -21,7 +26,6 @@ const Header = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,15 +43,10 @@ const Header = () => {
     <header
       className={cn(
         "h-16 flex items-center w-full z-50 fixed top-0 transform transition-all duration-300 ease-in-out px-4 lg:px-0 backdrop-blur-lg border-b border-dotted",
-        isScrolled 
-          ? "bg-black/80" 
-          : "",
-        isVisible 
-          ? "translate-y-0" 
-          : "-translate-y-full"
+        isScrolled ? "bg-black/80" : "",
+        isVisible ? "translate-y-0" : "-translate-y-full",
       )}
     >
-
       <div className="container flex items-center justify-between">
         <Link
           href="/"
@@ -56,7 +55,6 @@ const Header = () => {
           LOGO
         </Link>
 
-        {/* Navigation */}
         <div className="hidden md:flex text-md items-center gap-4">
           {routes.map((route) => (
             <Link
@@ -64,22 +62,22 @@ const Header = () => {
               href={route.href}
               className={cn(
                 "relative hover:text-brand-300 transition-colors duration-300 ",
-                route.href === pathname 
-                  ? "text-brand-500" 
-                  : "text-bunker-600"
+                route.href === pathname ? "text-brand-500" : "text-bunker-600",
               )}
             >
               {route.name}
             </Link>
           ))}
-          {/* <Search className="text-bunker-600 hover:text-white duration-300 cursor-pointer" /> */}
 
-          <SearchBar/>
+          <SearchBar />
 
           {session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 rounded-full hover:bg-muted/0">
+                <Button
+                  variant="ghost"
+                  className="p-0 rounded-full hover:bg-muted/0"
+                >
                   {session.user.image ? (
                     <Image
                       src={session.user.image}
@@ -94,17 +92,33 @@ const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => router.push("/profile")}>Profile</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/profile")}>
+                  Profile
+                </DropdownMenuItem>
                 {session.user.role === "ADMIN" ? (
-                  <DropdownMenuItem onClick={() => router.push("/dashboard")}>Dashboard</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                    Dashboard
+                  </DropdownMenuItem>
                 ) : (
-                  <DropdownMenuItem onClick={() => router.push("/orders")}>Order History</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/orders")}>
+                    Order History
+                  </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={() => signOut()} className="text-red-500">Sign Out</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => signOut()}
+                  className="text-red-500"
+                >
+                  Sign Out
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button className="bg-brand-800 hover:bg-brand-700 text-white" onClick={() => signIn()}>Sign In</Button>
+            <Button
+              className="bg-brand-800 hover:bg-brand-700 text-white"
+              onClick={() => signIn()}
+            >
+              Sign In
+            </Button>
           )}
         </div>
 

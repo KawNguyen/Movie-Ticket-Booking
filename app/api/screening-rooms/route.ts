@@ -5,13 +5,16 @@ export async function GET() {
   try {
     const rooms = await prisma.screeningRoom.findMany({
       orderBy: {
-        name: 'asc'
-      }
+        name: "asc",
+      },
     });
     return NextResponse.json(rooms);
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error: "Error fetching screening rooms" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error fetching screening rooms" },
+      { status: 500 },
+    );
   }
 }
 
@@ -27,6 +30,9 @@ export async function POST(request: Request) {
     return NextResponse.json(newRoom);
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error: "Error creating screening room" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error creating screening room" },
+      { status: 500 },
+    );
   }
 }

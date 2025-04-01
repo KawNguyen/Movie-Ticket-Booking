@@ -1,8 +1,13 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useMovieSearch } from '@/hooks/useMovieSearchTMDB';
-import { getMovies, addMovie, deleteMovie, updateMovieStatus } from "@/lib/api/movies";
+import { useMovieSearch } from "@/hooks/useMovieSearchTMDB";
+import {
+  getMovies,
+  addMovie,
+  deleteMovie,
+  updateMovieStatus,
+} from "@/lib/api/movies";
 import { useToast } from "@/hooks/use-toast";
 import { SearchMovies } from "./movie/SearchMovies";
 import { MovieDetails } from "./movie/MovieDetails";
@@ -15,7 +20,7 @@ const MovieManagement = () => {
   const [selectedStatus, setSelectedStatus] = useState(statuses[0]);
   const [selectedMovies, setSelectedMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const {
     searchTerm,
     setSearchTerm,
@@ -43,7 +48,10 @@ const MovieManagement = () => {
   }, [toast]);
 
   const onAddMovie = async () => {
-    if (!selectedMovie || selectedMovies.some((movie: Movie) => movie.id === selectedMovie.id)) {
+    if (
+      !selectedMovie ||
+      selectedMovies.some((movie: Movie) => movie.id === selectedMovie.id)
+    ) {
       toast({
         title: "Warning",
         description: "Movie already exists or no movie selected",
@@ -51,7 +59,7 @@ const MovieManagement = () => {
       });
       return;
     }
-    
+
     try {
       const movieData = {
         tmdb_id: selectedMovie.id,
@@ -62,15 +70,15 @@ const MovieManagement = () => {
         release_date: selectedMovie.release_date || new Date().toISOString(),
         runtime: selectedMovie.runtime || 0,
         vote_average: selectedMovie.vote_average || 0,
-        genres: selectedMovie.genres?.map(genre => genre.name) || [],
-        status: selectedStatus
+        genres: selectedMovie.genres?.map((genre) => genre.name) || [],
+        status: selectedStatus,
       };
 
       await addMovie(movieData as unknown as Movie);
       await fetchMovies();
       clearSelectedMovie();
-      setSearchTerm('');
-      
+      setSearchTerm("");
+
       toast({
         title: "Success",
         description: `${movieData.title} has been added to the collection`,

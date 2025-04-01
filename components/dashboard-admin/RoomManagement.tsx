@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getRooms, addRoom, deleteRoom, getRoomShowtimes } from "@/lib/api/rooms";
+import {
+  getRooms,
+  addRoom,
+  deleteRoom,
+  getRoomShowtimes,
+} from "@/lib/api/rooms";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "../ui/scroll-area";
 import AddRoomDialog from "./room/AddRoomDialog";
@@ -69,7 +74,16 @@ const RoomManagement = () => {
     try {
       setIsLoadingShowtimes(true);
       const showtimes = await getRoomShowtimes(room.id);
-      setSelectedRoom({ ...room, showtimes: showtimes as { id: number; startTime: string; movie: { id: number; title: string; }; price: number; bookedSeats: number; }[] });
+      setSelectedRoom({
+        ...room,
+        showtimes: showtimes as {
+          id: number;
+          startTime: string;
+          movie: { id: number; title: string };
+          price: number;
+          bookedSeats: number;
+        }[],
+      });
     } catch (error: any) {
       toast({
         title: "Error",
@@ -89,7 +103,9 @@ const RoomManagement = () => {
   return (
     <div className="p-6 flex flex-col w-full h-[calc(100vh-9rem)] gap-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">Screening Room Management</h2>
+        <h2 className="text-2xl font-bold text-white">
+          Screening Room Management
+        </h2>
         <AddRoomDialog onAddRoom={handleAddRoom} />
       </div>
 

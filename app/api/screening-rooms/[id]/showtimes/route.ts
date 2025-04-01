@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const showtimes = await prisma.showtime.findMany({
@@ -24,7 +24,7 @@ export async function GET(
         },
       },
       orderBy: {
-        startTime: 'asc',
+        startTime: "asc",
       },
     });
 
@@ -33,7 +33,7 @@ export async function GET(
     console.log(error);
     return NextResponse.json(
       { error: "Error fetching showtimes" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -46,7 +46,9 @@ const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
             ) : (
               <div className="text-center text-gray-400 py-20">
                 <Film className="mx-auto h-16 w-16 mb-4" />
-                <p className="text-lg sm:text-xl">No trailer found for this movie</p>
+                <p className="text-lg sm:text-xl">
+                  No trailer found for this movie
+                </p>
               </div>
             )}
           </div>
@@ -71,7 +73,9 @@ const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
                       className="rounded-md"
                     />
                   </div>
-                  <p className="mt-2 text-center text-sm sm:text-base">{actor.name}</p>
+                  <p className="mt-2 text-center text-sm sm:text-base">
+                    {actor.name}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -81,7 +85,9 @@ const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
         {/* Các tab khác */}
         {["showtimes", "reviews"].map((tab) => (
           <TabsContent key={tab} value={tab}>
-            <div className="p-4 text-gray-300 capitalize text-sm sm:text-base">{tab} coming soon...</div>
+            <div className="p-4 text-gray-300 capitalize text-sm sm:text-base">
+              {tab} coming soon...
+            </div>
           </TabsContent>
         ))}
 

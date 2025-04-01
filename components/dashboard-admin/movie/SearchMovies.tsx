@@ -31,24 +31,27 @@ export function SearchMovies({
           <ScrollArea className="h-[60vh]">
             <ul className="space-y-3">
               {results.map((movie) => (
-                <li 
-                  key={movie.id} 
-                  className="flex items-center gap-4 p-4 bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-600/50 transition-all duration-300" 
+                <li
+                  key={movie.id}
+                  className="flex items-center gap-4 p-4 bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-600/50 transition-all duration-300"
                   onClick={() => onSelectMovie(movie)}
                 >
-                  <Image 
-                    src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`} 
-                    alt={movie.title} 
-                    width={92} 
-                    height={138} 
-                    className="object-cover rounded" 
+                  <Image
+                    src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`}
+                    alt={movie.title}
+                    width={92}
+                    height={138}
+                    className="object-cover rounded"
                   />
                   <div>
                     <p className="text-white font-bold">
-                      {movie.title} ({new Date(movie.release_date).getFullYear()})
+                      {movie.title} (
+                      {new Date(movie.release_date).getFullYear()})
                     </p>
                     <p className="text-gray-400 text-sm">
-                      {movie.overview?.length > 100 ? movie.overview.slice(0, 97) + "..." : movie.overview}
+                      {movie.overview?.length > 100
+                        ? movie.overview.slice(0, 97) + "..."
+                        : movie.overview}
                     </p>
                   </div>
                 </li>

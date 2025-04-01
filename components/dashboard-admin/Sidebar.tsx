@@ -1,16 +1,15 @@
+import React from "react";
+import { LayoutDashboard } from "lucide-react";
 
-import React from 'react'
-import { LayoutDashboard } from 'lucide-react'
-
-const Sidebar = ({navItems, setActiveTab}: SidebarProps) => {
+const Sidebar = ({ navItems, setActiveTab }: SidebarProps) => {
   return (
-    <nav className='min-h-screen w-52 p-4 border-x border-dotted'>
-      <div className='flex items-center gap-2 p-2'>
+    <nav className="min-h-screen w-52 p-4 border-x border-dotted">
+      <div className="flex items-center gap-2 p-2">
         <LayoutDashboard size={20} />
-        <span className='text-lg font-semibold'>Dashboard</span>
+        <span className="text-lg font-semibold">Dashboard</span>
       </div>
-      <div className='mt-4 flex flex-col gap-2'>
-        {navItems?.map((item,index)=>(
+      <div className="mt-4 flex flex-col gap-2">
+        {navItems?.map((item, index) => (
           <div
             key={item.name + index}
             className="w-full p-2 hover:bg-gray-800 rounded-md cursor-pointer flex items-center gap-2"
@@ -22,7 +21,7 @@ const Sidebar = ({navItems, setActiveTab}: SidebarProps) => {
         ))}
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

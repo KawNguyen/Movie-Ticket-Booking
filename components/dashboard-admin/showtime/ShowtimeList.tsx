@@ -1,4 +1,11 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
 interface ShowtimeListProps {
@@ -7,7 +14,11 @@ interface ShowtimeListProps {
   onDeleteShowtime: (id: number) => Promise<void>;
 }
 
-const ShowtimeList = ({ showtimes, isDeletingId, onDeleteShowtime }: ShowtimeListProps) => {
+const ShowtimeList = ({
+  showtimes,
+  isDeletingId,
+  onDeleteShowtime,
+}: ShowtimeListProps) => {
   return (
     <Table>
       <TableHeader>
@@ -24,7 +35,9 @@ const ShowtimeList = ({ showtimes, isDeletingId, onDeleteShowtime }: ShowtimeLis
           <TableRow key={showtime.id}>
             <TableCell>{showtime.movie?.title}</TableCell>
             <TableCell>{showtime.screeningRoom?.name}</TableCell>
-            <TableCell>{new Date(showtime.startTime).toLocaleString()}</TableCell>
+            <TableCell>
+              {new Date(showtime.startTime).toLocaleString()}
+            </TableCell>
             <TableCell>${showtime.price}</TableCell>
             <TableCell>
               <Button

@@ -21,12 +21,12 @@ export function MovieDetails({
     <div className="bg-gray-800/40 backdrop-blur-md p-6 rounded-xl shadow-2xl border border-gray-700/50 flex flex-col gap-6">
       <div className="flex flex-col gap-6">
         <div className="relative">
-          <Image 
-            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} 
-            alt={movie.title} 
-            width={500} 
-            height={750} 
-            className="rounded-lg shadow-xl w-full" 
+          <Image
+            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            alt={movie.title}
+            width={500}
+            height={750}
+            className="rounded-lg shadow-xl w-full"
           />
         </div>
 
@@ -37,14 +37,18 @@ export function MovieDetails({
               ({new Date(movie.release_date).getFullYear()})
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-gray-700/20 p-3 rounded-lg text-center">
-              <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">Runtime</p>
+              <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
+                Runtime
+              </p>
               <p className="text-white text-[12px] ">{movie.runtime} mins</p>
             </div>
             <div className="bg-gray-700/20 p-3 rounded-lg text-center">
-              <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">Rating</p>
+              <p className="text-gray-400 text-xs uppercase tracking-wider mb-1">
+                Rating
+              </p>
               <p className="text-white text-[12px] flex items-center justify-center">
                 {movie.vote_average}
                 <Star color="yellow" fill="yellow" size={12} className="ml-2" />
@@ -53,10 +57,15 @@ export function MovieDetails({
           </div>
 
           <div className="bg-gray-700/20 p-4 rounded-lg">
-            <h4 className="text-gray-400 text-xs uppercase tracking-wider mb-3">Genres</h4>
+            <h4 className="text-gray-400 text-xs uppercase tracking-wider mb-3">
+              Genres
+            </h4>
             <div className="flex flex-wrap gap-2">
               {movie.genres?.map((genre: any) => (
-                <span key={genre.name} className="bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full text-[12px]">
+                <span
+                  key={genre.name}
+                  className="bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full text-[12px]"
+                >
                   {genre.name}
                 </span>
               ))}
@@ -72,13 +81,15 @@ export function MovieDetails({
             className="w-full bg-gray-700/50 text-white border border-gray-600 p-3 rounded-lg"
           >
             {statuses.map((status) => (
-              <option key={status} value={status}>{status}</option>
+              <option key={status} value={status}>
+                {status}
+              </option>
             ))}
           </select>
         </div>
 
-        <Button 
-          onClick={onAddMovie} 
+        <Button
+          onClick={onAddMovie}
           className="w-full bg-blue-600 hover:bg-blue-700 py-6 text-lg font-semibold mt-4"
         >
           Add to Collection

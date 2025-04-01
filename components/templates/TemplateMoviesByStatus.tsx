@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import MovieList from "../MovieList";
 import { getMoviesByStatus } from "@/lib/api/movies";
 
-const TemplateMoviesByStatus = ({status}: {status:string}) => {
+const TemplateMoviesByStatus = ({ status }: { status: string }) => {
   const [movies, setMovies] = useState<MovieCardProps[]>([]);
   const fetchMovies = useCallback(async () => {
     try {
@@ -16,8 +16,8 @@ const TemplateMoviesByStatus = ({status}: {status:string}) => {
   }, [status]);
 
   useEffect(() => {
-    fetchMovies();  
-  },[fetchMovies])
+    fetchMovies();
+  }, [fetchMovies]);
 
   return (
     <main className="container py-10 space-y-8">
@@ -30,10 +30,7 @@ const TemplateMoviesByStatus = ({status}: {status:string}) => {
         </div>
       </div>
 
-      <MovieList
-        movies={movies as MovieCardProps[]}
-        limit={0}
-      />
+      <MovieList movies={movies as MovieCardProps[]} limit={0} />
     </main>
   );
 };

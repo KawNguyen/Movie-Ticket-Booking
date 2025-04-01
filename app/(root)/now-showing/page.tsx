@@ -7,9 +7,7 @@ export const metadata: Metadata = {
 };
 
 const NowShowing = async () => {
-  return (
-    <TemplateMoviesByStatus status="Now Showing"/>
-  );
+  return <TemplateMoviesByStatus status="Now Showing" />;
 };
 
 export default NowShowing;

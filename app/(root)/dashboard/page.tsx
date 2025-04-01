@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import MovieManagement from "@/components/dashboard-admin/MovieManagement";
 import RoomManagement from "@/components/dashboard-admin/RoomManagement";
@@ -18,9 +18,9 @@ const Dashboard = () => {
   return (
     <main className="container flex w-full">
       <Sidebar navItems={sidebarItems} setActiveTab={setCurrentTab} />
-      {currentTab === "Movie" && <MovieManagement/>}
-      {currentTab === "Room" && <RoomManagement/>}
-      {currentTab === "Showtime" && <ShowTimeManagement/>}
+      {currentTab === "Movie" && <MovieManagement />}
+      {currentTab === "Room" && <RoomManagement />}
+      {currentTab === "Showtime" && <ShowTimeManagement />}
     </main>
   );
 };

@@ -1,38 +1,37 @@
-import { NextResponse } from 'next/server';
-import {prisma} from '@/lib/prisma';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status');
-    const query = searchParams.get('query');
-    
+    const status = searchParams.get("status");
+    const query = searchParams.get("query");
+
     if (query) {
       const movies = await prisma.movie.findMany({
         where: {
           title: {
             contains: query,
-            mode: 'insensitive'
-          }
+            mode: "insensitive",
+          },
         },
         take: 5,
         orderBy: {
-          title: 'asc'
-        }
+          title: "asc",
+        },
       });
       return NextResponse.json(movies);
     }
-    
+
     const movies = await prisma.movie.findMany({
       where: {
-        status: status || undefined
-      }
+        status: status || undefined,
+      },
     });
-    
+
     return NextResponse.json(movies);
-    
   } catch (error) {
-    console.error('API Route Error:', error);
+    console.error("API Route Error:", error);
     return NextResponse.json([], { status: 500 });
   }
 }
@@ -56,6 +55,9 @@ export async function POST(request: Request) {
     return NextResponse.json(newMovie);
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error: "Error creating movie" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error creating movie" },
+      { status: 500 },
+    );
   }
 }

@@ -20,13 +20,16 @@ export async function GET() {
         },
       },
       orderBy: {
-        startTime: 'asc',
+        startTime: "asc",
       },
     });
     return NextResponse.json(showtimes);
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error: "Error fetching showtimes" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error fetching showtimes" },
+      { status: 500 },
+    );
   }
 }
 
@@ -48,6 +51,9 @@ export async function POST(request: Request) {
     return NextResponse.json(showtime);
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error: "Error creating showtime" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error creating showtime" },
+      { status: 500 },
+    );
   }
 }

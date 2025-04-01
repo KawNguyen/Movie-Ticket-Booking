@@ -48,7 +48,7 @@ interface MovieCardProps {
   isLoading?: boolean;
 }
 
-interface Movie  {
+interface Movie {
   id: number;
   title: string;
   backdrop_path: string | null;
@@ -59,8 +59,7 @@ interface Movie  {
   runtime?: number;
   genres?: { id: number; name: string }[];
   vote_average?: number;
-};
-
+}
 
 interface MovieListProps {
   data: MovieCardProps[];
@@ -82,9 +81,9 @@ interface ScreeningRoom {
     price: number;
     bookedSeats: number;
   }[];
-};
+}
 
-interface Showtime  {
+interface Showtime {
   id: number;
   movieId: number;
   movie: Movie;
@@ -92,7 +91,7 @@ interface Showtime  {
   screeningRoom: ScreeningRoom;
   startTime: string;
   price: number;
-};
+}
 
 interface DetailsProps {
   movie: any;

@@ -8,7 +8,7 @@ function useDebounce<T>(value: T, delay: number): T {
       console.warn("Delay must be a positive number.");
       return;
     }
-    
+
     const handler = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
