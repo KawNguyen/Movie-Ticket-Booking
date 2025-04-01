@@ -5,14 +5,18 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import Image from 'next/image';
 
 const AboutUsPage = () => {
     return (
         <div className="space-y-20 mb-20">
             <div className="relative">
-                <img
+                <Image
                     src="https://i.pinimg.com/736x/cf/c5/82/cfc58298514581ecbb82dce74f1bfa58.jpg"
                     alt="about_us"
+                    height={500}
+                    width={500}
+                    priority
                     className="w-full h-[300px] md:h-[500px] lg:h-[800px] object-cover"
                 />
                 <div className="absolute top-0 w-full h-32 md:h-60 flex flex-col items-center justify-center text-white">
@@ -77,7 +81,7 @@ const AboutUsPage = () => {
                     </div>
                 </div>
                 <div className="hidden md:col-span-4 md:flex md:justify-center md:items-center">
-                    <img
+                    <Image
                         src="https://i.pinimg.com/736x/33/c1/ef/33c1ef54b6e934505767c7d7d50a5bd3.jpg"
                         alt="about_us_image"
                         className="w-full h-full  md:h-full max-w-[500px] rounded-md object-cover"

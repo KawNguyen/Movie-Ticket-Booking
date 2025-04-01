@@ -1,5 +1,4 @@
 import TemplateDashboard from "@/components/templates/TemplateDashboard"
-
 const Page = () => {
 
   return (

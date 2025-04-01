@@ -3,8 +3,9 @@ import axios from 'axios';
 export const getMovies = async () => {
   try {
     const response = await axios.get("/api/movies");
-    return response.data;
+    return response?.data;
   } catch (error) {
+    console.log(error)
     throw new Error("Failed to fetch movies");
   }
 };
@@ -12,8 +13,9 @@ export const getMovies = async () => {
 export const getMoviesByStatus = async(status: string) => {
   try {
     const response = await axios.get(`/api/movies?status=${status}`);
-    return response.data;
+    return response?.data;
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to fetch movies by status');
   }
 }
@@ -23,6 +25,7 @@ export const addMovie = async (movie: Movie) => {
     const response = await axios.post("/api/movies", movie);
     return response.data;
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to add movie');
   }
 }
@@ -32,6 +35,7 @@ export const deleteMovie = async (id: number) => {
     const response = await axios.delete(`/api/movies/${id}`);
     return response.data;
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to delete movie');
   }
 }
@@ -41,6 +45,7 @@ export const updateMovieStatus = async (id: number, status: string) => {
     const response = await axios.patch(`/api/movies/${id}`, { status });
     return response.data;
   } catch (error) {
+    console.log(error)
     throw new Error('Failed to update status');
   }
 }

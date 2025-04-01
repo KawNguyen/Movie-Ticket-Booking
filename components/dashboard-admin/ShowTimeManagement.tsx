@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getShowtimes, addShowtime, deleteShowtime } from "@/lib/api/showtimes";
 import { getMoviesByStatus } from "@/lib/api/movies";
 import { getRooms } from "@/lib/api/rooms";
@@ -20,12 +20,12 @@ const ShowTimeManagement = () => {
   const [isAddingShowtime, setIsAddingShowtime] = useState(false);
   const [isDeletingId, setIsDeletingId] = useState<number | null>(null);
 
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
     try {
       setIsLoadingMovies(true);
       const nowShowingMovies = await getMoviesByStatus("Now Showing");
       setMovies(nowShowingMovies as Movie[]);
-    } catch (error: any) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch movies",
@@ -34,14 +34,14 @@ const ShowTimeManagement = () => {
     } finally {
       setIsLoadingMovies(false);
     }
-  };
+  }, [toast]);
 
-  const fetchRooms = async () => {
+  const fetchRooms = useCallback(async () => {
     try {
       setIsLoadingRooms(true);
       const roomsData = await getRooms();
       setRooms(roomsData as ScreeningRoom[]);
-    } catch (error: any) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to fetch rooms",
@@ -50,9 +50,9 @@ const ShowTimeManagement = () => {
     } finally {
       setIsLoadingRooms(false);
     }
-  };
+  }, [toast]);
 
-  const fetchShowtimes = async () => {
+  const fetchShowtimes = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await getShowtimes();
@@ -66,7 +66,7 @@ const ShowTimeManagement = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
 
   const handleAddShowtime = async (showtimeData: Partial<Showtime>) => {
     if (!showtimeData.movieId || !showtimeData.screeningRoomId || !showtimeData.startTime || !showtimeData.price) {
@@ -135,7 +135,7 @@ const ShowTimeManagement = () => {
     fetchMovies();
     fetchRooms();
     fetchShowtimes();
-  }, []);
+  }, [fetchMovies, fetchRooms, fetchShowtimes]);
 
   return (
     <div className="p-6 flex flex-col h-[calc(100vh-9rem)] gap-6">

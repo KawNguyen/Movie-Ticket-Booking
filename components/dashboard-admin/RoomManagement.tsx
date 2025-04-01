@@ -83,7 +83,7 @@ const RoomManagement = () => {
 
   useEffect(() => {
     fetchRooms();
-  }, []);
+  }, [fetchRooms]);
 
   return (
     <div className="p-6 flex flex-col h-[calc(100vh-9rem)] gap-6">

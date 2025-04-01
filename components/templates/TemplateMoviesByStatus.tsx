@@ -13,7 +13,7 @@ const TemplateMoviesByStatus = ({status}: {status:string}) => {
     } catch (error) {
       console.error("Error fetching movies:", error);
     }
-  }, []);
+  }, [status]);
 
   useEffect(() => {
     fetchMovies();  

@@ -1,13 +1,17 @@
 import React from 'react'
+import Image from 'next/image';
 
 const page = () => {
     return (
         <div className="container my-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                 <div>
-                    <img
+                    <Image
                         src="https://www.courier-journal.com/gcdn/presto/2019/04/02/PLOU/febba588-ff5b-4277-b600-c4c76252c317-MotleyFool-TMOT-1c387926-06ba00e6.jpg?crop=1445,1429,x313,y0"
                         alt="about_us"
+                        width={100}
+                        height={100}
+                        priority
                         className="w-full h-[300px] md:h-full object-cover rounded-xl"
                     />
                 </div>

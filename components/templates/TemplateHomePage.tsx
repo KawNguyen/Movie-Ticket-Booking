@@ -24,7 +24,6 @@ const TemplateHomePage = () => {
   }, []);
 
   useEffect(() => {
-    console.log("a")
     fetchMovies();
   }, [fetchMovies]);
 
