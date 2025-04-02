@@ -13,9 +13,11 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
+  const user = req.auth?.user;
 
+  const isDashboardRoute = nextUrl.pathname.startsWith("/dashboard");
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.some(route => {
+  const isPublicRoute = publicRoutes.some((route) => {
     if (route === "/movie/[slug]") {
       return nextUrl.pathname.startsWith("/movie/");
     }
@@ -23,28 +25,27 @@ export default auth((req) => {
   });
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
+  if (isDashboardRoute && user?.role !== "ADMIN") {
+    return NextResponse.redirect(new URL("/", nextUrl.origin));
+  }
+
   if (isApiAuthRoute) {
     return NextResponse.next();
   }
 
-  // Check if user is on an auth route (login/signup)
   if (isAuthRoute) {
-    // If logged in and trying to access auth routes, redirect to settings
     if (isLoggedIn) {
       return NextResponse.redirect(
-        new URL(DEFAULT_LOGIN_REDIRECT, nextUrl.origin)
+        new URL(DEFAULT_LOGIN_REDIRECT, nextUrl.origin),
       );
     }
-    // If not logged in, allow access to auth routes
     return NextResponse.next();
   }
 
   if (!isLoggedIn && !isPublicRoute) {
-    // Redirect to login
     return NextResponse.redirect(new URL("/sign-in", nextUrl.origin));
   }
 
-  // Allow all other routes
   return NextResponse.next();
 });
 

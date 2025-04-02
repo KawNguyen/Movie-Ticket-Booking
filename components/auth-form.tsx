@@ -126,7 +126,7 @@ const AuthForm = <T extends FieldValues>({
           <Link
             href={isSignIn ? "/auth/sign-up" : "/auth/sign-in"}
             className={cn(
-              "font-semibold hover:underline hover:underline-offset-4"
+              "font-semibold hover:underline hover:underline-offset-4",
             )}
           >
             {isSignIn ? "Sign up" : "Sign in"}
@@ -135,7 +135,7 @@ const AuthForm = <T extends FieldValues>({
       </div>
 
       <Button variant="secondary" onClick={() => signIn("google")}>
-        Signin with Google
+        Sign in with Google
       </Button>
     </div>
   );

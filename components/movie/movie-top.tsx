@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
   return (
     <div className="relative">
-      {/* Background Image */}
       <div className="absolute inset-0 w-full h-full">
         <Image
           alt={movie?.title || "Movie poster"}
@@ -22,22 +21,24 @@ const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
 
       {/* Nội dung chính */}
       <div className="relative container mx-auto p-4">
-        <Card className="bg-gray-900/80 shadow-lg p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center">
+        <Card className="bg-gray-900/80 shadow-lg p-4 md:p-6 flex flex-col md:flex-row items-center">
           {/* Poster phim */}
-          <div className="relative w-48 h-72 md:w-64 md:h-96 mb-4 md:mb-0 md:mr-6">
+          <div className="relative md:h-[400px] md:w-[300px] w-60 h-[80]">
             <Image
               alt={movie.title}
               src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-lg"
+              height={400}
+              width={300}
+              className="object-fit rounded-lg"
             />
           </div>
 
           {/* Thông tin phim */}
-          <CardContent className="w-full">
+          <CardContent className="w-full px-2 lg:px-6 mt-4 lg:mt-0">
             <h1 className="text-2xl font-bold text-white">{movie.title}</h1>
-            <p className="text-gray-400">{movie.genres.map((g: { name: string }) => g.name).join(", ")}</p>
+            <p className="text-gray-400">
+              {movie.genres.map((g: { name: string }) => g.name).join(", ")}
+            </p>
 
             {/* Các nút hành động */}
             <div className="flex items-center space-x-2 mt-3">
@@ -77,7 +78,9 @@ const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
             {/* Diễn viên */}
             <div className="mt-4">
               <p className="text-gray-400">Cast</p>
-              <p className="text-white">{cast?.map((actor) => actor.name).join(", ")}</p>
+              <p className="text-white">
+                {cast?.map((actor) => actor.name).join(", ")}
+              </p>
             </div>
           </CardContent>
         </Card>

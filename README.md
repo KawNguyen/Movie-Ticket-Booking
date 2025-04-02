@@ -5,6 +5,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Prerequisites
 
 Before you begin, ensure you have:
+
 - Node.js installed (v18 or higher)
 - PostgreSQL database server running
 - npm, yarn, pnpm, or bun package manager
@@ -14,6 +15,7 @@ Before you begin, ensure you have:
 1. **Environment Setup**
 
 Create a `.env` file in the root directory with the following variables:
+
 ```env
 # Database
 DATABASE_URL=
@@ -25,6 +27,7 @@ AUTH_URL="http://localhost:3000"
 2. **Database Setup**
 
 Initialize and generate the Prisma client:
+
 ```bash
 # Generate Prisma client
 npx prisma generate
@@ -36,12 +39,14 @@ npx prisma db push
 3. **Generate Auth Secret**
 
 Generate a secure authentication secret:
+
 ```bash
 # Generate a random secret for NextAuth
 npx auth secret
 ```
 
 4. **Install Dependencies**
+
 ```bash
 npm install
 # or
@@ -55,6 +60,7 @@ bun install
 ## Development Server
 
 Run the development server:
+
 ```bash
 npm run dev
 # or
@@ -79,6 +85,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Features
 
 This project uses:
+
 - [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font)
 - NextAuth.js for authentication
 - Prisma as the ORM

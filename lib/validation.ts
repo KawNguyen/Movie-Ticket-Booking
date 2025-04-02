@@ -15,7 +15,7 @@ export const signUpSchema = z
         {
           message:
             "Password must include uppercase, lowercase, number, and special character",
-        }
+        },
       ),
     confirmPassword: z.string(),
   })

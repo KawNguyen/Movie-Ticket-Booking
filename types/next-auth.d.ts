@@ -9,6 +9,9 @@ declare module "next-auth" {
   }
 
   interface User {
+    image?: string;
+    name?: string;
+    email?: string;
     role?: string;
   }
 }

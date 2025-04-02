@@ -23,7 +23,7 @@ export const signOutCredentials = async () => {
 };
 
 export const signUp = async (
-  values: AuthCredentials
+  values: AuthCredentials,
 ): Promise<AuthActionResult> => {
   const validatedFields = signUpSchema.safeParse(values);
 
@@ -76,7 +76,7 @@ export const signUp = async (
 };
 
 export const signInWithCredential = async (
-  values: Pick<AuthCredentials, "email" | "password">
+  values: Pick<AuthCredentials, "email" | "password">,
 ) => {
   const { email, password } = values;
 

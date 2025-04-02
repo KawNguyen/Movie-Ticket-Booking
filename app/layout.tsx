@@ -5,6 +5,7 @@ import Providers from "./components/providers/providers";
 import { heebo } from "@/lib/font";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${heebo.className} antialiased bg-black text-white`}>
+        <Toaster />
         <Providers>
           <Header />
           <main className="pt-16">{children}</main>
