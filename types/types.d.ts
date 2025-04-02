@@ -107,3 +107,6 @@ interface DetailsProps {
   //   profile_path: string | null;
   // }[];
 }
+interface booking {
+  seat: any;
+}

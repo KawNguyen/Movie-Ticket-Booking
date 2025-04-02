@@ -1,24 +1,21 @@
 "use client";
 import React from "react";
-import Image from "next/image"; // Import next/image
+import Image from "next/image";
 import { Film } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 const tabs = [
   { value: "trailer", label: "Trailer" },
   { value: "dienvien", label: "Cast" },
   { value: "showtimes", label: "Showtimes" },
   { value: "reviews", label: "Reviews" },
-  { value: "book", label: "Book Tickets" },
 ];
 
 const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
   return (
     <div className="container mx-auto p-4">
       <Tabs defaultValue="trailer" className="w-full">
-        {/* Tab List */}
         <TabsList className="flex flex-wrap justify-center bg-black border-gray-700 space-x-2 sm:space-x-4">
           {tabs.map((tab) => (
             <TabsTrigger
@@ -91,14 +88,6 @@ const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
           </TabsContent>
         ))}
 
-        {/* Book Tickets */}
-        <TabsContent value="book">
-          <div className="p-4 flex justify-center">
-            <Button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 text-sm sm:text-base">
-              Book Now
-            </Button>
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
   );

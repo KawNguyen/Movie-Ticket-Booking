@@ -5,8 +5,10 @@ import { ThumbsUp, Star, Ticket, Heart, Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
 
 const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
+  const router = useRouter();
   return (
     <div className="relative">
       <div className="absolute inset-0 w-full h-full">
@@ -50,7 +52,10 @@ const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
                 <Star className="mr-2 h-4 w-4" />
                 Rate
               </Button>
-              <Button className="bg-red-500 hover:bg-red-600">
+              <Button 
+                className="bg-red-500 hover:bg-red-600"
+                onClick={()=>router.push(`/booking/${movie.id}`)}
+              >
                 <Ticket className="mr-2 h-4 w-4" />
                 Book Tickets
               </Button>

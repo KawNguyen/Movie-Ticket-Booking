@@ -14,6 +14,7 @@ export const publicRoutes = [
   "/now-showing",
   "/coming-soon",
   "/profile",
+  "/bookng/[slug]"
 ];
 
 /**
