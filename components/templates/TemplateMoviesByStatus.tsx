@@ -23,7 +23,7 @@ const TemplateMoviesByStatus = ({ status }: { status: string }) => {
     <main className="container py-10 space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Now Showing</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">${status}</h1>
           <p className="text-gray-400">
             Browse all movies currently in theaters
           </p>
