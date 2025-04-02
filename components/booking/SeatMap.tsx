@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import Seat_Unselect from "../../public/Images/seat-unselect.png";
 import Seat_Select from "../../public/Images/seat-select.png";
 import Seat_Process from "../../public/Images/seat-process.png";
@@ -21,6 +20,7 @@ const seats = [
 
 const SeatMap = () => {
   const getSeatImage = (seat: any) => {
+    console.log(seat)
     return Seat_Unselect;
   };
 
@@ -39,6 +39,7 @@ const SeatMap = () => {
               alt={item.label} 
               width={40} 
               height={40}
+              priority
               className="w-[24px] h-[24px] sm:w-[32px] sm:h-[32px] md:w-[40px] md:h-[40px]" 
             />
             <span className="text-[10px] sm:text-xs font-medium text-center">{item.label}</span>
@@ -49,6 +50,9 @@ const SeatMap = () => {
       <div className="flex justify-center">
         <Image 
           alt="Screen" 
+          width={400}
+          height={100}
+          priority
           className="w-3/4 sm:w-2/3 md:w-1/2" 
           src={Screen} 
         />
