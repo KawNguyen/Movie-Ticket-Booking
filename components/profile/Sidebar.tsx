@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
 
 interface SidebarProps {
   currentView: "profile" | "booking-history";
@@ -27,9 +28,7 @@ export const Sidebar = ({ currentView, setCurrentView }: SidebarProps) => {
 
         <Button
           className="w-full justify-start bg-transparent hover:bg-white hover:text-black border-none"
-          onClick={() => {
-            // Add logout logic here
-          }}
+          onClick={() => signOut({ callbackUrl: "/" })}
         >
           Logout
         </Button>

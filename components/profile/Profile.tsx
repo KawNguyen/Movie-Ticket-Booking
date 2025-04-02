@@ -14,13 +14,23 @@ interface User {
   role: string;
 }
 
-export const Profile = () => {
+// Update the ProfileProps interface
+interface ProfileProps {
+  user: {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role: string;
+  };
+}
+
+export const Profile = ({ user }: ProfileProps) => {
   const [profileData, setProfileData] = useState<User>({
-    name: "Lộc Đẹp Trai",
-    email: "LocDepTrai@gmail.com",
-    avatar:
-      "https://scontent.fsgn2-5.fna.fbcdn.net/v/t39.30808-6/469546562_2132883503773563_8519242795531396346_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeELDyFd_0sKF_gGEooHnXS-aYT4IpimlbVphPgimKaVtdUWSL7pp6FYryndOdXUrizS9y3f0suzVVaUECqIMmaf&_nc_ohc=UV9ZfexVBV0Q7kNvgHB4v1V&_nc_oc=AdnAnXozxilp2UnPsxdYZvaA_Xcg0LzU2JleFCLuz5ZfP6TT_13F7m77yc8jvBjwYfNTMgSw0UHgIBri-qevPQP3&_nc_zt=23&_nc_ht=scontent.fsgn2-5.fna&_nc_gid=Eb9DZ_9CpCsninW6U3be_g&oh=00_AYFOYj-cpZydAtqzPwP9T14eaoTBx3rVfr52LScKB-Nwzw&oe=67EF62CD",
-    role: "CUSTOMER",
+    name: user.name || "Anonymous",
+    email: user.email || "",
+    avatar: user.image || "",
+    role: user.role,
   });
 
   const [isEditing, setIsEditing] = useState({
@@ -67,13 +77,13 @@ export const Profile = () => {
                 {!isEditing.name ? (
                   <div className="flex justify-between items-center">
                     <p className="text-gray-400">{profileData.name}</p>
-                    <Button
+                    {/* <Button
                       variant="link"
                       className="text-white"
                       onClick={() => onEdit("name")}
                     >
                       Edit
-                    </Button>
+                    </Button> */}
                   </div>
                 ) : (
                   <div className="space-y-2">
