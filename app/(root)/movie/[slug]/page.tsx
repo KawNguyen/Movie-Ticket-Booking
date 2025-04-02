@@ -1,19 +1,51 @@
-import Top from "@/components/movie/movie-top";
-import Bottom from "@/components/movie/movie-bottom";
-import { fetchTmdbDetail } from "@/lib/tmdb";
+"use client";
 
-const Page = async ({ params }: { params: { slug: string } }) => {
-  const movieId = params.slug;
-  const data = await fetchTmdbDetail(movieId);
+import MovieBottom from "@/components/movie/movie-bottom";
+import MovieTop from "@/components/movie/movie-top";
+import { fetchTmdbDetail } from "@/lib/tmdb";
+import { Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+const MovieDetail = () => {
+  const params = useParams();
+  const movieId = params.slug as string;
+  const [movie, setMovie] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchMovie = async () => {
+    try {
+      const data = await fetchTmdbDetail(movieId);
+      setMovie(data);
+    } catch (error) {
+      console.error("Error fetching movie:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMovie();
+  }, [movieId]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!movie) {
+    return <div>Movie not found</div>;
+  }
+
   return (
-    <div className="bg-black text-white min-h-screen">
-      <Top
-        movie={data as any}
-        cast={(data as any).credits?.cast?.slice() || []}
-      />
-      <Bottom movie={data} cast={(data as any).credits?.cast.slice() || []} />
-    </div>
+    <main className="bg-black text-white min-h-screen">
+      <MovieTop movie={movie} cast={movie.credits?.cast?.slice() || []} />
+      <MovieBottom movie={movie} cast={movie.credits?.cast?.slice() || []} />
+    </main>
   );
 };
 
-export default Page;
+export default MovieDetail;
