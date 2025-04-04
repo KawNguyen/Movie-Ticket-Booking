@@ -13,6 +13,7 @@ export default function MovieCard({
   rating = 0,
   imageUrl,
   duration,
+  status
 }: MovieCardProps) {
   const router = useRouter();
   const [imageError, setImageError] = useState(false);
@@ -49,7 +50,7 @@ export default function MovieCard({
         <Button
           variant="default"
           className="bg-purple-600 hover:bg-purple-700 text-white transition-colors"
-          onClick={() => router.push(`/movie/${id}`)}
+          onClick={() => router.push(`/movie/${id}?status=${status}`)}
         >
           More Info
         </Button>

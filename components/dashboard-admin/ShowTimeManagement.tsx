@@ -72,7 +72,8 @@ const ShowTimeManagement = () => {
     if (
       !showtimeData.movieId ||
       !showtimeData.screeningRoomId ||
-      !showtimeData.startTime ||
+      !showtimeData.date ||
+      !showtimeData.time ||
       !showtimeData.price
     ) {
       toast({
@@ -94,10 +95,9 @@ const ShowTimeManagement = () => {
 
     try {
       setIsAddingShowtime(true);
-      await addShowtime({
-        ...showtimeData,
-        startTime: new Date(showtimeData.startTime).toISOString(),
-      });
+      // Add this line to actually create the showtime
+      await addShowtime(showtimeData);
+      // Then fetch updated list
       await fetchShowtimes();
       toast({
         title: "Success",

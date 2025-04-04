@@ -46,6 +46,7 @@ interface MovieCardProps {
   duration: number;
   imageUrl: string;
   isLoading?: boolean;
+  status?: string;
 }
 
 interface Movie {
@@ -89,8 +90,27 @@ interface Showtime {
   movie: Movie;
   screeningRoomId: number;
   screeningRoom: ScreeningRoom;
-  startTime: string;
+  date: string;
+  time: string;
   price: number;
+}
+
+interface Seat {
+  id: number;
+  row: string;
+  number: number;
+  bookingSeats: Array<{
+    id: number;
+    status: string;
+  }>;
+}
+
+interface BookingSeat {
+  id: number;
+  seatId: number;
+  status: 'AVAILABLE' | 'PENDING' | 'BOOKED';
+  bookingId: number;
+  showtimeId: number;
 }
 
 interface DetailsProps {

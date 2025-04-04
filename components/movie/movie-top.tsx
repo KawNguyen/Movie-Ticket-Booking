@@ -1,23 +1,23 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
 import { ThumbsUp, Star, Ticket, Heart, Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useRouter } from "next/navigation";
 
 const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
-  const router = useRouter();
   return (
     <div className="relative">
       <div className="absolute inset-0 w-full h-full">
         <Image
           alt={movie?.title || "Movie poster"}
           src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-          layout="fill"
-          objectFit="cover"
-          className="opacity-20"
+          height={400}
+          width={300}
+          priority
+          className="opacity-20 h-full w-full"
         />
       </div>
 
@@ -31,6 +31,7 @@ const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
               src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
               height={400}
               width={300}
+              priority
               className="object-fit rounded-lg"
             />
           </div>
@@ -51,13 +52,6 @@ const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
               <Button variant="secondary">
                 <Star className="mr-2 h-4 w-4" />
                 Rate
-              </Button>
-              <Button 
-                className="bg-red-500 hover:bg-red-600"
-                onClick={()=>router.push(`/booking/${movie.id}`)}
-              >
-                <Ticket className="mr-2 h-4 w-4" />
-                Book Tickets
               </Button>
             </div>
 

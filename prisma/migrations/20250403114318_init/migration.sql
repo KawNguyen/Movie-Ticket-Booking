@@ -84,11 +84,23 @@ CREATE TABLE "seats" (
 );
 
 -- CreateTable
+CREATE TABLE "booking_seats" (
+    "id" SERIAL NOT NULL,
+    "bookingId" INTEGER NOT NULL,
+    "seatId" INTEGER NOT NULL,
+    "showtimeId" INTEGER NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'PROCESSING',
+
+    CONSTRAINT "booking_seats_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "showtimes" (
     "id" SERIAL NOT NULL,
     "movieId" INTEGER NOT NULL,
     "screeningRoomId" INTEGER NOT NULL,
-    "startTime" TIMESTAMP(3) NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "time" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
 
     CONSTRAINT "showtimes_pkey" PRIMARY KEY ("id")
@@ -104,16 +116,6 @@ CREATE TABLE "bookings" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "bookings_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "booking_seats" (
-    "id" SERIAL NOT NULL,
-    "bookingId" INTEGER NOT NULL,
-    "seatId" INTEGER NOT NULL,
-    "showtimeId" INTEGER NOT NULL,
-
-    CONSTRAINT "booking_seats_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -144,6 +146,15 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user
 ALTER TABLE "seats" ADD CONSTRAINT "seats_screeningRoomId_fkey" FOREIGN KEY ("screeningRoomId") REFERENCES "screening_rooms"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "booking_seats" ADD CONSTRAINT "booking_seats_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "bookings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "booking_seats" ADD CONSTRAINT "booking_seats_seatId_fkey" FOREIGN KEY ("seatId") REFERENCES "seats"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "booking_seats" ADD CONSTRAINT "booking_seats_showtimeId_fkey" FOREIGN KEY ("showtimeId") REFERENCES "showtimes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "showtimes" ADD CONSTRAINT "showtimes_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "movies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -154,12 +165,3 @@ ALTER TABLE "bookings" ADD CONSTRAINT "bookings_userId_fkey" FOREIGN KEY ("userI
 
 -- AddForeignKey
 ALTER TABLE "bookings" ADD CONSTRAINT "bookings_showtimeId_fkey" FOREIGN KEY ("showtimeId") REFERENCES "showtimes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "booking_seats" ADD CONSTRAINT "booking_seats_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "bookings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "booking_seats" ADD CONSTRAINT "booking_seats_seatId_fkey" FOREIGN KEY ("seatId") REFERENCES "seats"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "booking_seats" ADD CONSTRAINT "booking_seats_showtimeId_fkey" FOREIGN KEY ("showtimeId") REFERENCES "showtimes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

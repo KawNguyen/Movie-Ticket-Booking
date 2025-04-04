@@ -1,18 +1,25 @@
 "use client";
+
 import React from "react";
 import Image from "next/image";
 import { Film } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const tabs = [
   { value: "trailer", label: "Trailer" },
   { value: "dienvien", label: "Cast" },
-  { value: "showtimes", label: "Showtimes" },
-  { value: "reviews", label: "Reviews" },
+  { value: "booking", label: "Booking" },
 ];
 
 const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
+
   return (
     <div className="container mx-auto p-4">
       <Tabs defaultValue="trailer" className="w-full">
@@ -21,7 +28,7 @@ const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="px-3 sm:px-4 py-2 text-gray-400 hover:text-blue-400 data-[state=active]:text-white text-sm sm:text-base"
+              className="px-3 sm:px-4 py-2 text-white hover:text-brand-500 data-[state=active]:text-white data-[state=active]:bg-brand-800 text-sm sm:text-base"
             >
               {tab.label}
             </TabsTrigger>
@@ -36,7 +43,6 @@ const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 className="w-full h-52 sm:h-72 md:h-96 lg:h-[600px] rounded-lg shadow-md"
-                frameBorder="0"
                 src={`https://www.youtube.com/embed/${movie.videos.results[0].key}`}
                 title="YouTube video player"
               ></iframe>
@@ -65,9 +71,10 @@ const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
                           : "https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-4-user-grey-d8fe957375e70239d6abdd549fd7568c89281b2179b5f4470e2e12895792dfa5.svg"
                       }
                       alt={actor.name}
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded-md"
+                      width={185}
+                      height={278}
+                      priority
+                      className="h-full w-full rounded-md"
                     />
                   </div>
                   <p className="mt-2 text-center text-sm sm:text-base">
@@ -79,15 +86,24 @@ const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
           </div>
         </TabsContent>
 
-        {/* Các tab khác */}
-        {["showtimes", "reviews"].map((tab) => (
-          <TabsContent key={tab} value={tab}>
-            <div className="p-4 text-gray-300 capitalize text-sm sm:text-base">
-              {tab} coming soon...
-            </div>
-          </TabsContent>
-        ))}
-
+        <TabsContent value={"booking"} className="h-96">
+          <div className="p-4 text-gray-300 capitalize text-sm sm:text-base h-full flex items-center justify-center">
+            {status === "Now Showing" ? (
+              <Button onClick={() => router.push(`/booking/${movie.id}`)}
+                className="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-md"
+              >
+                Book Now
+              </Button>
+            ) : (
+              <div className="text-center">
+                <p className="text-lg mb-2">Coming Soon</p>
+                <p className="text-sm text-gray-400">
+                  This movie is not yet available for booking
+                </p>
+              </div>
+            )}
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   );

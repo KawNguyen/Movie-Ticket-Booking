@@ -61,3 +61,13 @@ export const updateMovieStatus = async (id: number, status: string) => {
     throw new Error("Failed to update status");
   }
 };
+
+export const getMovieById = async (id: string) => {
+  try {
+    const response = await axios.get(`/api/movies/${id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to fetch movie");
+  }
+};

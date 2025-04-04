@@ -50,7 +50,7 @@ const Header = () => {
       <div className="container flex items-center justify-between">
         <Link
           href="/"
-          className="text-2xl md:text-4xl transition-transform hover:scale-105 duration-300"
+          className="text-2xl md:text-4xl"
         >
           LOGO
         </Link>

@@ -50,6 +50,7 @@ const MovieList = ({ movies, limit = 5 }: MovieListProps) => {
               ? `${IMG_URL}${movie.poster_path}`
               : "/fallback-movie-poster.jpg"
           }
+          status={movie.status}
         />
       ))}
     </div>

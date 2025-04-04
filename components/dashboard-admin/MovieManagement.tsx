@@ -62,7 +62,7 @@ const MovieManagement = () => {
 
     try {
       const movieData = {
-        tmdb_id: selectedMovie.id,
+        id: selectedMovie.id,
         title: selectedMovie.title,
         overview: selectedMovie.overview || "",
         poster_path: selectedMovie.poster_path || "",

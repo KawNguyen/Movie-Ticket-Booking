@@ -80,7 +80,7 @@ const HomeHero = ({ movies }: { movies: MovieCardProps[] }) => {
                   <Button
                     variant="default"
                     className="bg-purple-600 hover:bg-purple-700 text-white"
-                    onClick={() => router.push(`/movie/${item.id}`)}
+                    onClick={() => router.push(`/movie/${item.id}?status=${item.status}`)}
                   >
                     More Info
                   </Button>

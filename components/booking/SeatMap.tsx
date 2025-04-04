@@ -25,7 +25,7 @@ const SeatMap = () => {
   };
 
   return (
-    <div className="w-full lg:w-3/4 mx-auto space-y-6">
+    <div className="w-full lg:w-3/4 mx-auto space-y-10">
       <div className="flex justify-between">
         {[
           { img: Seat_Unselect, label: "Empty Seat" },

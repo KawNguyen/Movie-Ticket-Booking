@@ -10,6 +10,16 @@ export const getShowtimes = async () => {
   }
 };
 
+export const getShowtimesByMovieId = async (movieId: string) => {
+  try {
+    const response = await axios.get(`/api/showtimes/${movieId}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to fetch showtimes for this movie");
+  }
+};
+
 export const addShowtime = async (showtime: Partial<Showtime>) => {
   try {
     const response = await axios.post("/api/showtimes", showtime);

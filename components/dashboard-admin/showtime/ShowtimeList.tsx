@@ -25,7 +25,8 @@ const ShowtimeList = ({
         <TableRow>
           <TableHead className="text-white w-[25%]">Movie</TableHead>
           <TableHead className="text-white w-[20%]">Room</TableHead>
-          <TableHead className="text-white w-[25%]">Start Time</TableHead>
+          <TableHead className="text-white w-[25%]">Date</TableHead>
+          <TableHead className="text-white w-[25%]">Time</TableHead>
           <TableHead className="text-white w-[15%]">Price</TableHead>
           <TableHead className="text-white w-[15%]">Actions</TableHead>
         </TableRow>
@@ -36,7 +37,10 @@ const ShowtimeList = ({
             <TableCell>{showtime.movie?.title}</TableCell>
             <TableCell>{showtime.screeningRoom?.name}</TableCell>
             <TableCell>
-              {new Date(showtime.startTime).toLocaleString()}
+              {new Date(showtime.date).toLocaleDateString('en-GB')}
+            </TableCell>
+            <TableCell>
+              {showtime.time}
             </TableCell>
             <TableCell>${showtime.price}</TableCell>
             <TableCell>
