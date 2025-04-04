@@ -7,7 +7,11 @@ interface ShowtimeCardProps {
   onSelect: (time: Showtime) => void;
 }
 
-export function ShowtimeCard({ time, isSelected, onSelect }: ShowtimeCardProps) {
+export function ShowtimeCard({
+  time,
+  isSelected,
+  onSelect,
+}: ShowtimeCardProps) {
   return (
     <Card
       key={time.id}
@@ -21,9 +25,7 @@ export function ShowtimeCard({ time, isSelected, onSelect }: ShowtimeCardProps) 
       <div className="flex flex-col space-y-4 text-white">
         <div className="flex items-center gap-2">
           <Calendar
-            className={`h-5 w-5 ${
-              isSelected ? "text-brand" : "text-white/70"
-            }`}
+            className={`h-5 w-5 ${isSelected ? "text-brand" : "text-white/70"}`}
           />
           <span className="text-sm">
             {new Date(time.date).toLocaleDateString("en-GB")}
@@ -31,15 +33,11 @@ export function ShowtimeCard({ time, isSelected, onSelect }: ShowtimeCardProps) 
         </div>
         <div className="flex items-center gap-2">
           <Clock
-            className={`h-5 w-5 ${
-              isSelected ? "text-brand" : "text-white/70"
-            }`}
+            className={`h-5 w-5 ${isSelected ? "text-brand" : "text-white/70"}`}
           />
           <span className="text-sm">{time.time}</span>
         </div>
-        <div className="text-sm text-white/70">
-          Price: ${time.price}
-        </div>
+        <div className="text-sm text-white/70">Price: ${time.price}</div>
       </div>
     </Card>
   );

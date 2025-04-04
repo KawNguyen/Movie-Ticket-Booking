@@ -28,7 +28,7 @@ export function SeatsGrid({
       {ROWS.map((row) =>
         COLUMNS.map((seatNumber) => {
           const seat = seats.find(
-            (s) => s.row === row && s.number === seatNumber
+            (s) => s.row === row && s.number === seatNumber,
           );
           const seatId = seat ? `${row}${seatNumber}` : "";
 
@@ -75,7 +75,7 @@ export function SeatsGrid({
               <span className="text-xs text-gray-400">{seatId}</span>
             </div>
           );
-        })
+        }),
       )}
     </div>
   );

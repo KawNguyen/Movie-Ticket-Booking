@@ -5,9 +5,6 @@ import Image from "next/image";
 import { Film } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
 
 const tabs = [
   { value: "trailer", label: "Trailer" },
@@ -15,10 +12,6 @@ const tabs = [
 ];
 
 const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const status = searchParams?.get("status");
-
   return (
     <div className="container mx-auto p-4">
       <Tabs defaultValue="trailer" className="w-full">

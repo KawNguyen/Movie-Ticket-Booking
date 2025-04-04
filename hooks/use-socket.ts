@@ -1,12 +1,15 @@
-import { useEffect, useRef } from 'react';
-import { io } from 'socket.io-client';
+import { useEffect, useRef } from "react";
+import { io } from "socket.io-client";
 
 interface UseSocketProps {
   selectedShowTime: Showtime | null;
   setPendingSeats: (callback: (prev: string[]) => string[]) => void;
 }
 
-export const useSocket = ({ selectedShowTime, setPendingSeats }: UseSocketProps) => {
+export const useSocket = ({
+  selectedShowTime,
+  setPendingSeats,
+}: UseSocketProps) => {
   const socketRef = useRef<any>(null);
 
   useEffect(() => {
@@ -22,10 +25,12 @@ export const useSocket = ({ selectedShowTime, setPendingSeats }: UseSocketProps)
       "seat-selected",
       ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
         if (selectedShowTime?.id === showtimeId) {
-          console.log(`Seat ${seatId} has been selected (showtime: ${showtimeId})`);
+          console.log(
+            `Seat ${seatId} has been selected (showtime: ${showtimeId})`,
+          );
           setPendingSeats((prev) => [...new Set([...prev, seatId])]);
         }
-      }
+      },
     );
 
     socketRef.current.on(
@@ -35,7 +40,7 @@ export const useSocket = ({ selectedShowTime, setPendingSeats }: UseSocketProps)
           console.log(`Seat ${seatId} has been unselected`);
           setPendingSeats((prev) => prev.filter((id) => id !== seatId));
         }
-      }
+      },
     );
 
     return () => {

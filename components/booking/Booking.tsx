@@ -63,7 +63,9 @@ const Booking = ({ slug }: { slug: string }) => {
       "seat-selected",
       ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
         if (selectedShowTime?.id === showtimeId) {
-          console.log(`Seat ${seatId} has been selected (showtime: ${showtimeId})`);
+          console.log(
+            `Seat ${seatId} has been selected (showtime: ${showtimeId})`,
+          );
           setPendingSeats((prev) => [...new Set([...prev, seatId])]);
         }
       },
@@ -163,7 +165,7 @@ const Booking = ({ slug }: { slug: string }) => {
       router.push("/sign-in");
       return;
     }
-  
+
     try {
       const response = await fetch("/api/bookings", {
         method: "POST",
@@ -185,16 +187,16 @@ const Booking = ({ slug }: { slug: string }) => {
             })),
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to create booking");
       }
-  
+
       toast({
         title: "Success",
         description: "Booking created successfully",
       });
-  
+
       // Reset selection
       setSelectedSeats([]);
       handleShowtimeSelect(selectedShowTime!);

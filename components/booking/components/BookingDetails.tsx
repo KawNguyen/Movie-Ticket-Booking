@@ -39,12 +39,15 @@ export function BookingDetails({
             <p className="text-gray-300 text-sm">Total Price</p>
             <Separator className="my-2" />
             <p className="text-2xl font-bold text-white">
-              ${(selectedSeats.length * (selectedShowTime?.price || 0)).toFixed(2)}
+              $
+              {(selectedSeats.length * (selectedShowTime?.price || 0)).toFixed(
+                2,
+              )}
             </p>
           </div>
         </div>
-        <Button 
-          className="w-full bg-brand-500 hover:bg-brand-700 mt-4" 
+        <Button
+          className="w-full bg-brand-500 hover:bg-brand-700 mt-4"
           size="lg"
           onClick={onBookTickets}
         >
