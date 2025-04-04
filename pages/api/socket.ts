@@ -33,6 +33,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponseWithSoc
   res.socket.server.io = io;
 
   io.on("connection", (socket) => {
+    console.log("🟢 Client connected:", socket.id);
 
     socket.on("select_seat", ({ seatId, showtimeId }) => {
       socket.broadcast.emit("seat_selected", { seatId, showtimeId });
