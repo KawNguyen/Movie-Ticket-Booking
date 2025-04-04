@@ -8,17 +8,14 @@ export async function GET() {
         movie: true,
         screeningRoom: true,
       },
-      orderBy: [
-        { date: 'asc' },
-        { time: 'asc' },
-      ],
+      orderBy: [{ date: "asc" }, { time: "asc" }],
     });
     return NextResponse.json(showtimes, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json(
       { error: "Error fetching showtimes" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -31,17 +28,14 @@ export async function POST(request: Request) {
     // Get movie details to check duration
     const movie = await prisma.movie.findUnique({
       where: { id: parseInt(movieId) },
-      select: { runtime: true }
+      select: { runtime: true },
     });
 
     if (!movie) {
-      return NextResponse.json(
-        { error: "Movie not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Movie not found" }, { status: 404 });
     }
 
-    const BUFFER_TIME = 15; 
+    const BUFFER_TIME = 15;
     const totalDuration = movie.runtime + BUFFER_TIME;
 
     const existingShowtimes = await prisma.showtime.findMany({
@@ -55,22 +49,31 @@ export async function POST(request: Request) {
     });
 
     // Convert time to minutes for comparison
-    const newShowTimeInMinutes = parseInt(time.split(':')[0]) * 60 + parseInt(time.split(':')[1]);
+    const newShowTimeInMinutes =
+      parseInt(time.split(":")[0]) * 60 + parseInt(time.split(":")[1]);
     const newShowEndTime = newShowTimeInMinutes + totalDuration;
 
     for (const existing of existingShowtimes) {
-      const existingTimeInMinutes = parseInt(existing.time.split(':')[0]) * 60 + parseInt(existing.time.split(':')[1]);
-      const existingEndTime = existingTimeInMinutes + existing.movie.runtime + BUFFER_TIME;
+      const existingTimeInMinutes =
+        parseInt(existing.time.split(":")[0]) * 60 +
+        parseInt(existing.time.split(":")[1]);
+      const existingEndTime =
+        existingTimeInMinutes + existing.movie.runtime + BUFFER_TIME;
 
       // Check if times overlap
       if (
-        (newShowTimeInMinutes >= existingTimeInMinutes && newShowTimeInMinutes < existingEndTime) ||
-        (newShowEndTime > existingTimeInMinutes && newShowEndTime <= existingEndTime) ||
-        (newShowTimeInMinutes <= existingTimeInMinutes && newShowEndTime >= existingEndTime)
+        (newShowTimeInMinutes >= existingTimeInMinutes &&
+          newShowTimeInMinutes < existingEndTime) ||
+        (newShowEndTime > existingTimeInMinutes &&
+          newShowEndTime <= existingEndTime) ||
+        (newShowTimeInMinutes <= existingTimeInMinutes &&
+          newShowEndTime >= existingEndTime)
       ) {
         return NextResponse.json(
-          { error: "Time slot conflicts with an existing showtime in this room" },
-          { status: 409 }
+          {
+            error: "Time slot conflicts with an existing showtime in this room",
+          },
+          { status: 409 },
         );
       }
     }
@@ -94,7 +97,7 @@ export async function POST(request: Request) {
     console.log(error);
     return NextResponse.json(
       { error: "Error creating showtime" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

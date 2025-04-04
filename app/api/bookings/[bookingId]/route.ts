@@ -3,27 +3,27 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { bookingId: string } }
+  { params }: { params: { bookingId: string } },
 ) {
   try {
     const booking = await prisma.booking.findUnique({
       where: {
-        id: parseInt(params.bookingId)
+        id: parseInt(params.bookingId),
       },
       include: {
         bookingSeats: {
           include: {
-            seat: true
-          }
+            seat: true,
+          },
         },
         showtime: {
           include: {
             movie: true,
-            screeningRoom: true
-          }
+            screeningRoom: true,
+          },
         },
-        user: true
-      }
+        user: true,
+      },
     });
 
     if (!booking) {
@@ -32,7 +32,10 @@ export async function GET(
 
     return NextResponse.json(booking);
   } catch (error) {
-    console.error(error)
-    return NextResponse.json({ error: "Error fetching booking" }, { status: 500 });
+    console.error(error);
+    return NextResponse.json(
+      { error: "Error fetching booking" },
+      { status: 500 },
+    );
   }
 }

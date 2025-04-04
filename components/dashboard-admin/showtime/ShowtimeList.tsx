@@ -37,11 +37,9 @@ const ShowtimeList = ({
             <TableCell>{showtime.movie?.title}</TableCell>
             <TableCell>{showtime.screeningRoom?.name}</TableCell>
             <TableCell>
-              {new Date(showtime.date).toLocaleDateString('en-GB')}
+              {new Date(showtime.date).toLocaleDateString("en-GB")}
             </TableCell>
-            <TableCell>
-              {showtime.time}
-            </TableCell>
+            <TableCell>{showtime.time}</TableCell>
             <TableCell>${showtime.price}</TableCell>
             <TableCell>
               <Button

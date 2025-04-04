@@ -23,10 +23,7 @@ export async function GET(
           },
         },
       },
-      orderBy: [
-        { date: "asc" },
-        { time: "asc" }
-      ],
+      orderBy: [{ date: "asc" }, { time: "asc" }],
     });
 
     return NextResponse.json(showtimes);

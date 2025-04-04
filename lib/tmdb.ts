@@ -2,14 +2,14 @@ import axios from "axios";
 
 export async function fetchTmdbData(endpoint: string) {
   const { data } = await axios.get("/api/tmdb", {
-    params: { endpoint }
+    params: { endpoint },
   });
   return data;
 }
 
 export async function searchTmdbData(endpoint: string) {
   const { data } = await axios.get("/api/tmdb", {
-    params: { endpoint }
+    params: { endpoint },
   });
   return data;
 }

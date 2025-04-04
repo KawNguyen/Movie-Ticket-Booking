@@ -10,22 +10,22 @@ export async function PUT(request: Request) {
       where: {
         seatId_showtimeId: {
           seatId,
-          showtimeId
-        }
+          showtimeId,
+        },
       },
       update: { status },
       create: {
         status,
         seat: {
-          connect: { id: seatId }
+          connect: { id: seatId },
         },
         showtime: {
-          connect: { id: showtimeId }
+          connect: { id: showtimeId },
         },
         booking: {
-          connect: { id: body.bookingId }
-        }
-      }
+          connect: { id: body.bookingId },
+        },
+      },
     });
 
     return NextResponse.json(updatedBookingSeat, { status: 200 });

@@ -7,7 +7,9 @@ import { Profile } from "@/components/profile/Profile";
 import { useSession } from "next-auth/react";
 
 export default function DashboardPage() {
-  const [currentView, setCurrentView] = useState<"profile" | "booking-history">("profile");
+  const [currentView, setCurrentView] = useState<"profile" | "booking-history">(
+    "profile",
+  );
   const { data: session } = useSession();
 
   return (

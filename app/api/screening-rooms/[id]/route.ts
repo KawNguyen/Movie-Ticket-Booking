@@ -11,9 +11,12 @@ export async function DELETE(
         id: parseInt(params.id),
       },
     });
-    return NextResponse.json({
-      message: "Screening room deleted successfully",
-    },{status:200});
+    return NextResponse.json(
+      {
+        message: "Screening room deleted successfully",
+      },
+      { status: 200 },
+    );
   } catch (error) {
     console.log(error);
     return NextResponse.json(

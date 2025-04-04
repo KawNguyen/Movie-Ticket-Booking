@@ -89,7 +89,8 @@ const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
         <TabsContent value={"booking"} className="h-96">
           <div className="p-4 text-gray-300 capitalize text-sm sm:text-base h-full flex items-center justify-center">
             {status === "Now Showing" ? (
-              <Button onClick={() => router.push(`/booking/${movie.id}`)}
+              <Button
+                onClick={() => router.push(`/booking/${movie.id}`)}
                 className="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-md"
               >
                 Book Now

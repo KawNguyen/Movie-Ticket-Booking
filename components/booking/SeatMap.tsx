@@ -20,7 +20,7 @@ const seats = [
 
 const SeatMap = () => {
   const getSeatImage = (seat: any) => {
-    console.log(seat)
+    console.log(seat);
     return Seat_Unselect;
   };
 
@@ -34,27 +34,29 @@ const SeatMap = () => {
           { img: Seat_Buy, label: "Sold Seat" },
         ].map((item, index) => (
           <div key={index} className="flex flex-col items-center gap-1">
-            <Image 
-              src={item.img} 
-              alt={item.label} 
-              width={40} 
+            <Image
+              src={item.img}
+              alt={item.label}
+              width={40}
               height={40}
               priority
-              className="w-[24px] h-[24px] sm:w-[32px] sm:h-[32px] md:w-[40px] md:h-[40px]" 
+              className="w-[24px] h-[24px] sm:w-[32px] sm:h-[32px] md:w-[40px] md:h-[40px]"
             />
-            <span className="text-[10px] sm:text-xs font-medium text-center">{item.label}</span>
+            <span className="text-[10px] sm:text-xs font-medium text-center">
+              {item.label}
+            </span>
           </div>
         ))}
       </div>
 
       <div className="flex justify-center">
-        <Image 
-          alt="Screen" 
+        <Image
+          alt="Screen"
           width={400}
           height={100}
           priority
-          className="w-3/4 sm:w-2/3 md:w-1/2" 
-          src={Screen} 
+          className="w-3/4 sm:w-2/3 md:w-1/2"
+          src={Screen}
         />
       </div>
 
@@ -65,7 +67,12 @@ const SeatMap = () => {
               key={seat}
               className="bg-muted/0 relative w-12 h-12 flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity p-1"
             >
-              <Image src={getSeatImage(seat)} alt={`Seat ${seat}`} width={40} height={40} />
+              <Image
+                src={getSeatImage(seat)}
+                alt={`Seat ${seat}`}
+                width={40}
+                height={40}
+              />
               <span className="absolute inset-0 flex items-center justify-center text-[10px] font-semibold text-white">
                 {seat}
               </span>

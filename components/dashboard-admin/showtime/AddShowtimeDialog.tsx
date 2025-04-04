@@ -80,7 +80,7 @@ const AddShowtimeDialog = ({
               value={selectedMovie?.id || ""}
               onChange={(e) => {
                 const movie = movies.find(
-                  (m) => m.id === parseInt(e.target.value)
+                  (m) => m.id === parseInt(e.target.value),
                 );
                 setSelectedMovie(movie || null);
                 setNewShowtime({
@@ -112,7 +112,7 @@ const AddShowtimeDialog = ({
               value={selectedRoom?.id || ""}
               onChange={(e) => {
                 const room = rooms.find(
-                  (r) => r.id === parseInt(e.target.value)
+                  (r) => r.id === parseInt(e.target.value),
                 );
                 setSelectedRoom(room || null);
                 setNewShowtime({
@@ -182,7 +182,9 @@ const AddShowtimeDialog = ({
               onChange={(e) =>
                 setNewShowtime({
                   ...newShowtime,
-                  price: e.target.value ? parseFloat(e.target.value) : undefined,
+                  price: e.target.value
+                    ? parseFloat(e.target.value)
+                    : undefined,
                 })
               }
               placeholder="Enter price"

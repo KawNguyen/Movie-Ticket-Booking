@@ -27,7 +27,7 @@ import { NextResponse } from "next/server";
 //       meta: error.meta,
 //       data: { seatId, showtimeId, status }  // Log the input data
 //     });
-    
+
 //     return new NextResponse(error.message || "Internal Error", { status: 500 });
 //   }
 // }
@@ -35,8 +35,8 @@ import { NextResponse } from "next/server";
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const seatId = searchParams.get('seatId');
-    const showtimeId = searchParams.get('showtimeId');
+    const seatId = searchParams.get("seatId");
+    const showtimeId = searchParams.get("showtimeId");
 
     if (!seatId || !showtimeId) {
       return new NextResponse("Missing required parameters", { status: 400 });
@@ -46,9 +46,9 @@ export async function DELETE(request: Request) {
       where: {
         seatId_showtimeId: {
           seatId: Number(seatId),
-          showtimeId: Number(showtimeId)
-        }
-      }
+          showtimeId: Number(showtimeId),
+        },
+      },
     });
 
     return new NextResponse(null, { status: 204 });
@@ -61,7 +61,7 @@ export async function DELETE(request: Request) {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const showtimeId = searchParams.get('showtimeId');
+    const showtimeId = searchParams.get("showtimeId");
     if (!showtimeId) {
       return new NextResponse("Missing showtime ID", { status: 400 });
     }
@@ -71,8 +71,8 @@ export async function GET(request: Request) {
         showtimeId: Number(showtimeId),
       },
       select: {
-        seatId: true
-      }
+        seatId: true,
+      },
     });
 
     const seatIds = bookingSeats.map((seat: { seatId: number }) => seat.seatId);

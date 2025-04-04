@@ -6,10 +6,13 @@ const API_KEY = process.env.TMDB_API_KEY;
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   if (!params.id) {
-    return NextResponse.json({ error: "Movie ID is required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Movie ID is required" },
+      { status: 400 },
+    );
   }
 
   try {
@@ -27,7 +30,7 @@ export async function GET(
     console.error("TMDB API Error:", error);
     return NextResponse.json(
       { error: "Failed to fetch movie details" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

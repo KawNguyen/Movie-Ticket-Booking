@@ -6,9 +6,8 @@ import { Separator } from "@/components/ui/separator";
 
 const IMG_URL = "https://image.tmdb.org/t/p/w500";
 
-
-const MovieInfo = ({data}: {data: Movie}) => {
-  console.log(data)
+const MovieInfo = ({ data }: { data: Movie }) => {
+  console.log(data);
   return (
     <div className="w-full lg:w-1/4">
       <Card className="max-w-xs mx-auto p-4 bg-gray-800 rounded-lg shadow-lg">
@@ -29,7 +28,9 @@ const MovieInfo = ({data}: {data: Movie}) => {
           </div>
           <div className="ml-4">
             <h1 className="text-lg font-bold text-blue-400">{data.title}</h1>
-            <p className="text-gray-400">{data.genres?.map(genre => genre.name).join(', ')}</p>
+            <p className="text-gray-400">
+              {data.genres?.map((genre) => genre.name).join(", ")}
+            </p>
           </div>
         </div>
         <div className="mt-4 space-y-2">

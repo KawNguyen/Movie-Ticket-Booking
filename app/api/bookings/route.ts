@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     if (!showtimeId || !userId || !totalPrice || !Array.isArray(bookingSeats)) {
       return NextResponse.json(
         { error: "Missing required fields or invalid bookingSeats format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -18,21 +18,23 @@ export async function POST(request: Request) {
     for (const seat of bookingSeats) {
       if (!seat.seatId || !seat.showtimeId) {
         return NextResponse.json(
-          { error: "Invalid booking seat data. Required: seatId and showtimeId" },
-          { status: 400 }
+          {
+            error: "Invalid booking seat data. Required: seatId and showtimeId",
+          },
+          { status: 400 },
         );
       }
     }
 
     // Check if showtime exists
     const showtime = await prisma.showtime.findUnique({
-      where: { id: showtimeId }
+      where: { id: showtimeId },
     });
 
     if (!showtime) {
       return NextResponse.json(
         { error: "Showtime not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -43,26 +45,29 @@ export async function POST(request: Request) {
         totalPrice,
         status: status || "PENDING",
         bookingSeats: {
-          create: bookingSeats.map(seat => ({
+          create: bookingSeats.map((seat) => ({
             seatId: seat.seatId,
             showtimeId: seat.showtimeId,
-            status: "PROCESSING"
-          }))
-        }
+            status: "PROCESSING",
+          })),
+        },
       },
       include: {
         bookingSeats: true,
         showtime: true,
-        user: true
-      }
+        user: true,
+      },
     });
 
     return NextResponse.json(booking);
   } catch (error) {
     console.error("[BOOKING_CREATE_ERROR]", error);
     return NextResponse.json(
-      { error: "Error creating booking", details: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
+      {
+        error: "Error creating booking",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
     );
   }
 }
@@ -73,23 +78,26 @@ export async function GET() {
       include: {
         bookingSeats: {
           include: {
-            seat: true
-          }
+            seat: true,
+          },
         },
         showtime: {
           include: {
             movie: true,
-            screeningRoom: true
-          }
+            screeningRoom: true,
+          },
         },
-        user: true
-      }
+        user: true,
+      },
     });
 
     return NextResponse.json(bookings);
   } catch (error) {
-    console.error(error)
-    return NextResponse.json({ error: "Error fetching bookings" }, { status: 500 });
+    console.error(error);
+    return NextResponse.json(
+      { error: "Error fetching bookings" },
+      { status: 500 },
+    );
   }
 }
 
@@ -100,16 +108,19 @@ export async function PUT(request: Request) {
 
     const booking = await prisma.booking.update({
       where: {
-        id: id
+        id: id,
       },
       data: {
-        status
-      }
+        status,
+      },
     });
 
-    return NextResponse.json(booking, {status:200});
+    return NextResponse.json(booking, { status: 200 });
   } catch (error) {
-    console.error(error)
-    return NextResponse.json({ error: "Error updating booking" }, { status: 500 });
+    console.error(error);
+    return NextResponse.json(
+      { error: "Error updating booking" },
+      { status: 500 },
+    );
   }
 }

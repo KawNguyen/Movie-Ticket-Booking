@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import Booking from "@/components/booking/Booking";
@@ -29,15 +29,19 @@ function BookingPage() {
   }, [slug]);
 
   if (isLoading) {
-    return <div className="min-h-screen bg-black/95 flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-    </div>;
+    return (
+      <div className="min-h-screen bg-black/95 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      </div>
+    );
   }
 
   if (!movie) {
-    return <div className="min-h-screen bg-black/95 flex items-center justify-center">
-      <p className="text-white">Movie not found</p>
-    </div>;
+    return (
+      <div className="min-h-screen bg-black/95 flex items-center justify-center">
+        <p className="text-white">Movie not found</p>
+      </div>
+    );
   }
 
   return (
@@ -59,8 +63,10 @@ function BookingPage() {
 
             {/* Movie Info */}
             <div className="flex-1 space-y-4">
-              <h1 className="text-4xl font-bold text-white">{(movie as any).title}</h1>
-              
+              <h1 className="text-4xl font-bold text-white">
+                {(movie as any).title}
+              </h1>
+
               <div className="flex items-center gap-4 text-gray-300">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
@@ -72,10 +78,14 @@ function BookingPage() {
                 </div>
               </div>
 
-              <p className="text-gray-400 line-clamp-3">{(movie as any).overview}</p>
+              <p className="text-gray-400 line-clamp-3">
+                {(movie as any).overview}
+              </p>
 
               <div className="mt-4 p-4 bg-white/5 rounded-lg">
-                <h3 className="text-lg font-semibold text-white mb-2">Booking Information</h3>
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  Booking Information
+                </h3>
                 <div className="grid grid-cols-2 gap-4 text-sm text-gray-300">
                   <div>
                     <span className="block text-gray-500">Movie Rating</span>
@@ -93,7 +103,6 @@ function BookingPage() {
 
         {/* Add Booking Component */}
         <Booking slug={slug} />
-
       </div>
     </main>
   );

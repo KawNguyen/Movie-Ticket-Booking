@@ -13,7 +13,7 @@ export default function MovieCard({
   rating = 0,
   imageUrl,
   duration,
-  status
+  status,
 }: MovieCardProps) {
   const router = useRouter();
   const [imageError, setImageError] = useState(false);

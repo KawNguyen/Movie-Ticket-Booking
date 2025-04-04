@@ -48,10 +48,7 @@ const Header = () => {
       )}
     >
       <div className="container flex items-center justify-between">
-        <Link
-          href="/"
-          className="text-2xl md:text-4xl"
-        >
+        <Link href="/" className="text-2xl md:text-4xl">
           LOGO
         </Link>
 

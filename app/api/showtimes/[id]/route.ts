@@ -3,21 +3,17 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const showtimes = await prisma.showtime.findMany({
       where: {
-        movieId: parseInt(params.id)
+        movieId: parseInt(params.id),
       },
       include: {
         screeningRoom: true,
       },
-      orderBy: [
-        { date: 'asc' },
-        { time: 'asc' },
-
-      ],
+      orderBy: [{ date: "asc" }, { time: "asc" }],
     });
 
     return NextResponse.json(showtimes);
@@ -25,7 +21,7 @@ export async function GET(
     console.log(error);
     return NextResponse.json(
       { error: "Error fetching showtimes" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

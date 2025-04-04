@@ -8,9 +8,7 @@ export const metadata: Metadata = {
 };
 
 const HomePage = () => {
-  return (
-      <TemplateHomePage />
-  );
+  return <TemplateHomePage />;
 };
 
 export default HomePage;

@@ -11,7 +11,10 @@ type NextApiResponseWithSocket = NextApiResponse & {
   };
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponseWithSocket) {
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponseWithSocket,
+) {
   if (!res.socket || !res.socket.server) {
     res.status(500).end("Socket not available");
     return;

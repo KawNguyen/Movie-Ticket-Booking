@@ -110,7 +110,7 @@ interface Seat {
 interface BookingSeat {
   id: number;
   seatId: number;
-  status: 'AVAILABLE' | 'PENDING' | 'BOOKED';
+  status: "AVAILABLE" | "PENDING" | "BOOKED";
   bookingId: number;
   showtimeId: number;
 }
