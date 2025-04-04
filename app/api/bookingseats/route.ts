@@ -62,18 +62,21 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const showtimeId = searchParams.get('showtimeId');
-
     if (!showtimeId) {
       return new NextResponse("Missing showtime ID", { status: 400 });
     }
 
     const bookingSeats = await prisma.bookingSeat.findMany({
       where: {
-        showtimeId: Number(showtimeId)
+        showtimeId: Number(showtimeId),
+      },
+      select: {
+        seatId: true
       }
     });
 
-    return NextResponse.json(bookingSeats);
+    const seatIds = bookingSeats.map((seat: { seatId: number }) => seat.seatId);
+    return NextResponse.json(seatIds);
   } catch (error) {
     console.error("[BOOKING_SEATS_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });

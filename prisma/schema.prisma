@@ -7,26 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  CUSTOMER
-  ADMIN
-}
-
 model Account {
   id                String  @id @default(cuid())
   userId            String  @map("user_id")
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -51,8 +45,8 @@ model User {
   role          UserRole  @default(CUSTOMER)
   image         String?
   accounts      Account[]
-  sessions      Session[]
   bookings      Booking[]
+  sessions      Session[]
 
   @@map("users")
 }
@@ -75,7 +69,7 @@ model Movie {
   overview      String?
   runtime       Int
   vote_average  Float?
-  status        String     
+  status        String
   showtimes     Showtime[]
 
   @@map("movies")
@@ -85,19 +79,19 @@ model ScreeningRoom {
   id        Int        @id @default(autoincrement())
   name      String
   capacity  Int        @default(50)
-  showtimes Showtime[]
   seats     Seat[]
+  showtimes Showtime[]
 
   @@map("screening_rooms")
 }
 
 model Seat {
   id              Int           @id @default(autoincrement())
-  row             String        // A -> E
-  number          Int           // 1 -> 10 (10 ghế mỗi hàng)
+  row             String
+  number          Int
   screeningRoomId Int
-  screeningRoom   ScreeningRoom @relation(fields: [screeningRoomId], references: [id])
   bookingSeats    BookingSeat[]
+  screeningRoom   ScreeningRoom @relation(fields: [screeningRoomId], references: [id])
 
   @@unique([row, number, screeningRoomId])
   @@map("seats")
@@ -108,8 +102,7 @@ model BookingSeat {
   bookingId  Int
   seatId     Int
   showtimeId Int
-  status     String   @default("PROCESSING") // PROCESSING, BOOKED
-  
+  status     String   @default("PROCESSING")
   booking    Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   seat       Seat     @relation(fields: [seatId], references: [id])
   showtime   Showtime @relation(fields: [showtimeId], references: [id])
@@ -121,29 +114,33 @@ model BookingSeat {
 model Showtime {
   id              Int           @id @default(autoincrement())
   movieId         Int
-  movie           Movie         @relation(fields: [movieId], references: [id])
   screeningRoomId Int
-  screeningRoom   ScreeningRoom @relation(fields: [screeningRoomId], references: [id])
-  date            DateTime      
-  time            String        
+  date            DateTime
+  time            String
   price           Float
-  bookings        Booking[]
   bookingSeats    BookingSeat[]
+  bookings        Booking[]
+  movie           Movie         @relation(fields: [movieId], references: [id])
+  screeningRoom   ScreeningRoom @relation(fields: [screeningRoomId], references: [id])
 
   @@map("showtimes")
 }
 
 model Booking {
-  id          Int           @id @default(autoincrement())
-  showtimeId  Int
-  userId      String
-  totalPrice  Float
-  status      String       @default("PENDING") // PENDING, CONFIRMED, CANCELLED
-  createdAt   DateTime     @default(now())
+  id           Int           @id @default(autoincrement())
+  showtimeId   Int
+  userId       String
+  totalPrice   Float
+  status       String        @default("PENDING")
+  createdAt    DateTime      @default(now())
   bookingSeats BookingSeat[]
-  
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  showtime    Showtime     @relation(fields: [showtimeId], references: [id], onDelete: Cascade)
+  showtime     Showtime      @relation(fields: [showtimeId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("bookings")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
 }

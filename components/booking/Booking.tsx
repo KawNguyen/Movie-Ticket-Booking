@@ -6,20 +6,34 @@ import { Calendar, Clock, Armchair } from "lucide-react";
 import { getShowtimesByMovieId } from "@/lib/api/showtimes";
 import { getSeatsByRoom } from "@/lib/api/seats";
 import { useToast } from "@/hooks/use-toast";
-import { getBookingSeatsByShowtime} from "@/lib/api/booking-seat";
+import { getBookingSeatsByShowtime } from "@/lib/api/booking-seat";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
+import { io } from "socket.io-client";
+
+
 
 const ROWS = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
 const COLUMNS = Array.from({ length: 8 }, (_, i) => i + 1);
 
 const Booking = ({ slug }: { slug: string }) => {
   const { toast } = useToast();
+  const { data: session } = useSession();
+  const router = useRouter();
   const [showTimes, setShowTimes] = useState<Showtime[]>([]);
   const [selectedShowTime, setSelectedShowTime] = useState<Showtime | null>(null);
   const [seats, setSeats] = useState<Seat[]>([]);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [isLoadingSeats, setIsLoadingSeats] = useState(false);
+  const [pendingSeats, setPendingSeats] = useState<string[]>([]);
+
+
+const socketRef = useRef<any>(null);
+
 
   useEffect(() => {
     const fetchShowTimes = async () => {
@@ -39,6 +53,9 @@ const Booking = ({ slug }: { slug: string }) => {
     fetchShowTimes();
   }, [slug]);
 
+
+
+  
   const handleShowtimeSelect = async (time: Showtime) => {
     setSelectedShowTime(time);
     setIsLoadingSeats(true);
@@ -50,10 +67,11 @@ const Booking = ({ slug }: { slug: string }) => {
   
       const updatedSeats = seatsData.map(seat => ({
         ...seat,
-        bookingSeats: (bookingSeats as BookingSeat[]).filter(bs => bs.seatId === seat.id)
+        isBooked: (bookingSeats as number[]).includes(seat.id)
       }));
   
       setSeats(updatedSeats);
+      
     } catch (error) {
       toast({
         title: "Error",
@@ -67,36 +85,70 @@ const Booking = ({ slug }: { slug: string }) => {
 
 
   const handleSeatSelect = async (seat: Seat) => {
-    const seatId = `${seat.row}${seat.number}`;
-    
-    try {
-      if (selectedSeats.includes(seatId)) {
-        // Delete the booking seat when unselecting
-        setSelectedSeats(prev => prev.filter(id => id !== seatId));
-      } else {
-        setSelectedSeats(prev => [...prev, seatId]);
-      }
-  
-      const [_, bookingSeats] = await Promise.all([
-        getSeatsByRoom(selectedShowTime!.screeningRoomId, selectedShowTime!.id),
-        getBookingSeatsByShowtime(selectedShowTime!.id)
-      ]);
-  
-      setSeats(prev => prev.map(s => ({
-        ...s,
-        bookingSeats: (bookingSeats as BookingSeat[]).filter(bs => bs.seatId === s.id)
-      })));
-    } catch (error: any) {
-      console.error("[SEAT_SELECTION_ERROR]", error?.message || error);
-      toast({
-        title: "Error",
-        description: "Failed to update seat selection",
-        variant: "destructive",
+    if (!selectedShowTime) return;
+    const seatId: string = `${seat.row}${seat.number}`;
+    const showtimeId: number = selectedShowTime.id;
+
+    if (!showtimeId || seat.bookingSeats?.some((bs) => bs.status === "BOOKED")) return;
+
+    const isSelected = selectedSeats.includes(seatId);
+    const newSelectedSeats = isSelected
+      ? selectedSeats.filter((id) => id !== seatId)
+      : [...selectedSeats, seatId];
+
+    setSelectedSeats(newSelectedSeats);
+
+    if (socketRef.current) {
+      socketRef.current.emit(isSelected ? "unselect_seat" : "select_seat", {
+        seatId,
+        showtimeId,
       });
     }
+
+    // Update ghế ngay (realtime feedback UI)
+    const [_, bookingSeats] = await Promise.all([
+      getSeatsByRoom(selectedShowTime.screeningRoomId, showtimeId),
+      getBookingSeatsByShowtime(showtimeId),
+    ]);
+
+    setSeats((prev) =>
+      prev.map((s) => ({
+        ...s,
+        bookingSeats: (bookingSeats as BookingSeat[]).filter(
+          (bs) => bs.seatId === s.id && (bs.status === "BOOKED" || bs.status === "PENDING")
+        ),
+      }))
+    );
   };
+  
 
+  useEffect(() => {
+    socketRef.current = io({
+      path: "/api/socket",
+    });
 
+    socketRef.current.on("connect", () => {
+      console.log("Socket connected:", socketRef.current?.id);
+    });
+
+    socketRef.current.on("seat_selected", (data: { seatId: string; showtimeId: string }) => {
+      const { seatId, showtimeId } = data;
+      if (selectedShowTime?.id === Number(showtimeId)) {
+        setPendingSeats((prev) => [...new Set([...prev, seatId])]);
+      }
+    });
+
+    socketRef.current.on("seat-unselected", (data: { seatId: string; showtimeId: string }) => {
+      const { seatId, showtimeId } = data;
+      if (selectedShowTime?.id === Number(showtimeId)) {
+        setPendingSeats((prev) => prev.filter((id) => id !== seatId));
+      }
+    });
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, [selectedShowTime]);
   // Update the return statement to show both sections
   return (
     <div className="space-y-8">
@@ -164,27 +216,30 @@ const Booking = ({ slug }: { slug: string }) => {
                         return (
                           <div
                             key={seatId}
-                            onClick={() => seat && !seat.bookingSeats?.some(bs => bs.status === 'BOOKED' || bs.status === 'PENDING') && handleSeatSelect(seat)}
+                            onClick={() => seat && !seat.isBooked && handleSeatSelect(seat)}
                             className={`
-                              cursor-pointer flex flex-col items-center gap-1 transition-all duration-200
+                              flex flex-col items-center gap-1 transition-all duration-200
                               ${!seat ? 'invisible' : ''}
-                              ${seat && !seat.bookingSeats?.some(bs => bs.status === 'BOOKED' || bs.status === 'PENDING') ? 'hover:text-green-500' : ''}
+                              ${seat && !seat.isBooked ? 'cursor-pointer hover:text-green-500' : 'cursor-not-allowed'}
                             `}
                           >
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <div>
-                                    <Armchair size={36} className={` transition-colors duration-200 hover:text-green-500 ${
-                                      !seat ? 'invisible' :
-                                      seat.bookingSeats?.some(bs => bs.status === 'BOOKED')
-                                        ? 'text-red-500' 
-                                        : seat.bookingSeats?.some(bs => bs.status === 'PENDING')
-                                          ? 'text-yellow-500'
-                                          : selectedSeats.includes(seatId)
-                                            ? 'text-green-500'
-                                            : 'text-gray-400'
-                                    }`} />
+<Armchair
+  size={36}
+  className={`
+    ${seat?.isBooked ? 'text-red-500' : 
+      selectedSeats.includes(seatId) ? 'text-green-500' : 
+      pendingSeats.includes(seatId) ? 'text-yellow-500' : 
+      'text-gray-400'}
+    transition-colors duration-200
+  `}
+/>
+
+
+                                    {/* <Armchair size={36} className={`transition-colors duration-200 ${seat?.isBooked ? '' : 'hover:text-green-500'} ${!seat ? 'invisible' : seat.isBooked ? 'text-red-500' : selectedSeats.includes(seatId) ? 'text-green-500' : 'text-gray-400'}`} /> */}
                                   </div>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -218,23 +273,85 @@ const Booking = ({ slug }: { slug: string }) => {
   
               {selectedSeats.length > 0 && (
                 <div className="bg-gray-700 p-4 rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="text-white font-semibold mb-2">Selected Seats:</h3>
-                      <div className="flex gap-2">
-                        {selectedSeats.map((seatId) => (
-                          <span key={seatId} className="bg-brand/20 text-brand px-2 py-1 rounded">
-                            {seatId}
-                          </span>
-                        ))}
+                  <div className="flex flex-col gap-4">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h3 className="text-white font-semibold mb-2">Selected Seats:</h3>
+                        <div className="flex gap-2">
+                          {selectedSeats.map((seatId) => (
+                            <span key={seatId} className="bg-brand/20 text-brand px-2 py-1 rounded">
+                              {seatId}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-gray-300 mb-2">Total Price</p>
+                        <p className="text-2xl font-bold text-white">
+                          ${(selectedSeats.length * (selectedShowTime?.price || 0)).toFixed(2)}
+                        </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-gray-300 mb-2">Total Price</p>
-                      <p className="text-2xl font-bold text-white">
-                        ${(selectedSeats.length * (selectedShowTime?.price || 0)).toFixed(2)}
-                      </p>
-                    </div>
+                    <Button
+                      className="w-full bg-brand hover:bg-brand/90"
+                      onClick={async () => {
+                        if (!session?.user) {
+                          toast({
+                            title: "Error",
+                            description: "Please login to book tickets",
+                            variant: "destructive",
+                          });
+                          router.push("/sign-in");
+                          return;
+                        }
+
+                        try {
+                          // Create booking
+                          const response = await fetch("/api/bookings", {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                              showtimeId: selectedShowTime?.id,
+                              userId: session?.user?.id,
+                              totalPrice: selectedSeats.length * (selectedShowTime?.price || 0),
+                              status: "PENDING",
+                              bookingSeats: seats
+                                .filter((seat) =>
+                                  selectedSeats.includes(`${seat.row}${seat.number}`)
+                                )
+                                .map((seat) => ({
+                                  seatId: seat.id,
+                                  showtimeId: selectedShowTime?.id,
+                                })),
+                            }),
+                          });
+
+                          if (!response.ok) {
+                            throw new Error("Failed to create booking");
+                          }
+
+                          toast({
+                            title: "Success",
+                            description: "Booking created successfully",
+                          });
+
+                          // Reset selection
+                          setSelectedSeats([]);
+                          handleShowtimeSelect(selectedShowTime!);
+                        } catch (error) {
+                          console.error("[BOOKING_ERROR]", error);
+                          toast({
+                            title: "Error",
+                            description: "Failed to create booking",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                    >
+                      Book Tickets
+                    </Button>
                   </div>
                 </div>
               )}
