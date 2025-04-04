@@ -99,6 +99,8 @@ interface Seat {
   id: number;
   row: string;
   number: number;
+  isBooked?: boolean;
+  isPending?: boolean;
   bookingSeats: Array<{
     id: number;
     status: string;
