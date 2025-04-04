@@ -1,13 +1,14 @@
-"use client";
 
 import React from "react";
 import Image from "next/image";
-import { ThumbsUp, Star, Heart, Calendar, Clock } from "lucide-react";
+import { ThumbsUp, Star, Heart, Calendar, Clock, Ticket } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
 
 const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
+  const router = useRouter();
   return (
     <div className="relative">
       <div className="absolute inset-0 w-full h-full">
@@ -52,6 +53,13 @@ const MovieTop: React.FC<DetailsProps> = ({ movie, cast }) => {
               <Button variant="secondary">
                 <Star className="mr-2 h-4 w-4" />
                 Rate
+              </Button>
+              <Button 
+                className="flex items-center space-x-2 bg-red-500 duration-300 hover:bg-red-600"
+                onClick={() => router.push(`/booking/${movie.id}`)}
+              >
+                <Ticket className="mr-2 h-4 w-4" />
+                Booking
               </Button>
             </div>
 

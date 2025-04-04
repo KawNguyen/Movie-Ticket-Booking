@@ -12,7 +12,6 @@ import { useSearchParams } from "next/navigation";
 const tabs = [
   { value: "trailer", label: "Trailer" },
   { value: "dienvien", label: "Cast" },
-  { value: "booking", label: "Booking" },
 ];
 
 const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
@@ -83,26 +82,6 @@ const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
                 </CardContent>
               </Card>
             ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value={"booking"} className="h-96">
-          <div className="p-4 text-gray-300 capitalize text-sm sm:text-base h-full flex items-center justify-center">
-            {status === "Now Showing" ? (
-              <Button
-                onClick={() => router.push(`/booking/${movie.id}`)}
-                className="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-md"
-              >
-                Book Now
-              </Button>
-            ) : (
-              <div className="text-center">
-                <p className="text-lg mb-2">Coming Soon</p>
-                <p className="text-sm text-gray-400">
-                  This movie is not yet available for booking
-                </p>
-              </div>
-            )}
           </div>
         </TabsContent>
       </Tabs>

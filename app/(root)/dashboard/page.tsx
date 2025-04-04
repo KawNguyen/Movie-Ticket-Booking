@@ -17,7 +17,7 @@ const Dashboard = () => {
   const [currentTab, setCurrentTab] = useState("Movie");
   return (
     <main className="container flex w-full">
-      <Sidebar navItems={sidebarItems} setActiveTab={setCurrentTab} />
+      <Sidebar navItems={sidebarItems} setActiveTab={setCurrentTab} activeTab={currentTab} />
       {currentTab === "Movie" && <MovieManagement />}
       {currentTab === "Room" && <RoomManagement />}
       {currentTab === "Showtime" && <ShowTimeManagement />}
