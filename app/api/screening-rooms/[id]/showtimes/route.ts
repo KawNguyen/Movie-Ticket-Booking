@@ -23,14 +23,15 @@ export async function GET(
           },
         },
       },
-      orderBy: {
-        startTime: "asc",
-      },
+      orderBy: [
+        { date: "asc" },
+        { time: "asc" }
+      ],
     });
 
     return NextResponse.json(showtimes);
   } catch (error) {
-    console.log(error);
+    console.error("[SHOWTIMES_ERROR]", error);
     return NextResponse.json(
       { error: "Error fetching showtimes" },
       { status: 500 },

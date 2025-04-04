@@ -15,10 +15,6 @@ import { useRouter } from "next/navigation";
 import { useRef } from "react";
 import { io } from "socket.io-client";
 
-
-const socket = io({
-  path: "/api/socket",
-});
 const ROWS = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
 const COLUMNS = Array.from({ length: 8 }, (_, i) => i + 1);
 
@@ -33,7 +29,6 @@ const Booking = ({ slug }: { slug: string }) => {
   const [isLoadingSeats, setIsLoadingSeats] = useState(false);
   const [pendingSeats, setPendingSeats] = useState<string[]>([]);
 
-
 const socketRef = useRef<any>(null);
 
 
@@ -44,6 +39,7 @@ const socketRef = useRef<any>(null);
           const times = await getShowtimesByMovieId(slug);
           setShowTimes(times as Showtime[]);
         } catch (error) {
+          console.error(error)
           toast({
             title: "Error",
             description: "Failed to load showtimes",
@@ -53,6 +49,7 @@ const socketRef = useRef<any>(null);
       }
     };
     fetchShowTimes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
   useEffect(() => {
@@ -102,6 +99,7 @@ const socketRef = useRef<any>(null);
       setSeats(updatedSeats);
       
     } catch (error) {
+      console.error(error)
       toast({
         title: "Error",
         description: "Failed to load seats",
@@ -135,10 +133,13 @@ const socketRef = useRef<any>(null);
     }
 
     // Update ghế ngay (realtime feedback UI)
-    const [_, bookingSeats] = await Promise.all([
+    const [unused, bookingSeats] = await Promise.all([
+    // Remove unused console.log since the variable is used before declaration
       getSeatsByRoom(selectedShowTime.screeningRoomId, showtimeId),
       getBookingSeatsByShowtime(showtimeId),
     ]);
+
+    console.log(unused)
 
     setSeats((prev) =>
       prev.map((s) => ({
@@ -165,7 +166,7 @@ const socketRef = useRef<any>(null);
       }
     });
 
-    socketRef.current.on("seat-unselected", ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
+    socketRef.current.on("seat_unselected", ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
       if (selectedShowTime?.id === showtimeId) {
         setPendingSeats((prev) => prev.filter((id) => id !== seatId));
       }

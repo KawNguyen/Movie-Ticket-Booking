@@ -18,7 +18,7 @@ const tabs = [
 const MovieBottom: React.FC<DetailsProps> = ({ movie, cast }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const status = searchParams.get("status");
+  const status = searchParams?.get("status");
 
   return (
     <div className="container mx-auto p-4">

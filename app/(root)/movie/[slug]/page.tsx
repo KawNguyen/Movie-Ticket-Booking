@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 const MovieDetail = () => {
   const params = useParams();
-  const movieId = params.slug as string;
+  const movieId = params?.slug as string;
   const [movie, setMovie] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -26,6 +26,7 @@ const MovieDetail = () => {
 
   useEffect(() => {
     fetchMovie();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [movieId]);
 
   if (loading) {

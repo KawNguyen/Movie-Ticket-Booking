@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { ThumbsUp, Star, Ticket, Heart, Calendar, Clock } from "lucide-react";
+import { ThumbsUp, Star, Heart, Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

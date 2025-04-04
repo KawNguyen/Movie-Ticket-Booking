@@ -88,6 +88,7 @@ export async function GET() {
 
     return NextResponse.json(bookings);
   } catch (error) {
+    console.error(error)
     return NextResponse.json({ error: "Error fetching bookings" }, { status: 500 });
   }
 }
@@ -106,8 +107,9 @@ export async function PUT(request: Request) {
       }
     });
 
-    return NextResponse.json(booking);
+    return NextResponse.json(booking, {status:200});
   } catch (error) {
+    console.error(error)
     return NextResponse.json({ error: "Error updating booking" }, { status: 500 });
   }
 }
