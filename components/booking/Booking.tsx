@@ -62,7 +62,7 @@ const socketRef = useRef<any>(null);
     socketRef.current.on("connect", () => {
       console.log("Socket connected:", socketRef.current?.id);
     });
-    
+
     socketRef.current.on("seat-selected", ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
       if (selectedShowTime?.id === showtimeId) {
         console.log(`Ghế ${seatId} đã được chọn (showtime: ${showtimeId})`);
@@ -113,43 +113,68 @@ const socketRef = useRef<any>(null);
   };
 
 
+
   const handleSeatSelect = async (seat: Seat) => {
     const seatId = `${seat.row}${seat.number}`;
-    
-    // Check if seat is already booked
-    if (seat.bookingSeats?.some(bs => bs.status === 'BOOKED' as const)) {
-      return;
-    }
-    
-    try {
-      if (selectedSeats.includes(seatId)) {
-        setSelectedSeats(prev => prev.filter(id => id !== seatId));
-        socket.emit("unselect-seat", { seatId, showtimeId: selectedShowTime?.id });
-      } else {
-        setSelectedSeats(prev => [...prev, seatId]);
-        socket.emit("select-seat", { seatId, showtimeId: selectedShowTime?.id });
-      }
-      
-  
-      const [_, bookingSeats] = await Promise.all([
-        getSeatsByRoom(selectedShowTime!.screeningRoomId, selectedShowTime!.id),
-        getBookingSeatsByShowtime(selectedShowTime!.id)
-      ]);
-  
-      setSeats(prev => prev.map(s => ({
-        ...s,
-        bookingSeats: (bookingSeats as BookingSeat[]).filter(bs => bs.seatId === s.id && (bs.status === 'BOOKED' || bs.status === 'PENDING'))
-      })));
-    } catch (error: any) {
-      console.error("[SEAT_SELECTION_ERROR]", error?.message || error);
-      toast({
-        title: "Error",
-        description: "Failed to update seat selection",
-        variant: "destructive",
+    const showtimeId = selectedShowTime?.id;
+
+    if (!showtimeId || seat.bookingSeats?.some((bs) => bs.status === "BOOKED")) return;
+
+    const isSelected = selectedSeats.includes(seatId);
+    const newSelectedSeats = isSelected
+      ? selectedSeats.filter((id) => id !== seatId)
+      : [...selectedSeats, seatId];
+
+    setSelectedSeats(newSelectedSeats);
+
+    if (socketRef.current) {
+      socketRef.current.emit(isSelected ? "unselect_seat" : "select_seat", {
+        seatId,
+        showtimeId,
       });
     }
+
+    // Update ghế ngay (realtime feedback UI)
+    const [_, bookingSeats] = await Promise.all([
+      getSeatsByRoom(selectedShowTime.screeningRoomId, showtimeId),
+      getBookingSeatsByShowtime(showtimeId),
+    ]);
+
+    setSeats((prev) =>
+      prev.map((s) => ({
+        ...s,
+        bookingSeats: (bookingSeats as BookingSeat[]).filter(
+          (bs) => bs.seatId === s.id && (bs.status === "BOOKED" || bs.status === "PENDING")
+        ),
+      }))
+    );
   };
 
+  useEffect(() => {
+    socketRef.current = io({
+      path: "/api/socket",
+    });
+
+    socketRef.current.on("connect", () => {
+      console.log("Socket connected:", socketRef.current?.id);
+    });
+
+    socketRef.current.on("seat_selected", ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
+      if (selectedShowTime?.id === showtimeId) {
+        setPendingSeats((prev) => [...new Set([...prev, seatId])]);
+      }
+    });
+
+    socketRef.current.on("seat-unselected", ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
+      if (selectedShowTime?.id === showtimeId) {
+        setPendingSeats((prev) => prev.filter((id) => id !== seatId));
+      }
+    });
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, [selectedShowTime]);
 
   // Update the return statement to show both sections
   return (
