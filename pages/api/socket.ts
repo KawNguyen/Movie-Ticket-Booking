@@ -3,7 +3,6 @@ import { Server as IOServer } from "socket.io";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Server as HTTPServer } from "http";
 
-// Khai báo lại kiểu để thêm `.io` vào server
 type NextApiResponseWithSocket = NextApiResponse & {
   socket: {
     server: HTTPServer & {
@@ -44,7 +43,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponseWithSoc
     });
 
     socket.on("disconnect", () => {
-      console.log("🔴 Client disconnected:", socket.id);
+      console.log("Client disconnected:", socket.id);
     });
   });
 

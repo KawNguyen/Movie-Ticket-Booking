@@ -52,9 +52,6 @@ const socketRef = useRef<any>(null);
     };
     fetchShowTimes();
   }, [slug]);
-
-
-
   
   const handleShowtimeSelect = async (time: Showtime) => {
     setSelectedShowTime(time);
@@ -149,7 +146,6 @@ const socketRef = useRef<any>(null);
       socketRef.current?.disconnect();
     };
   }, [selectedShowTime]);
-  // Update the return statement to show both sections
   return (
     <div className="space-y-8">
       <section className="bg-gray-800 rounded-lg p-6">
