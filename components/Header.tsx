@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
@@ -17,7 +17,6 @@ import { routes } from "@/constants";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import SearchBar from "./SearchBar";
-import { Logo } from "./Logo";
 
 const Header = () => {
   const pathname = usePathname();
@@ -49,7 +48,18 @@ const Header = () => {
       )}
     >
       <div className="container flex items-center justify-between">
-        <Logo/>
+        {/* <Logo/> */}
+        <Link
+          href="/"
+        >
+          <Image
+            src="/Images/logo.png"
+            alt="logo"
+            width={100}
+            height={100}
+            priority
+          />
+        </Link>
         <div className="hidden md:flex text-md items-center gap-4">
           {routes.map((route) => (
             <Link

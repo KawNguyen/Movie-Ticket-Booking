@@ -22,7 +22,6 @@ const Footer = () => {
               sizes="100%"
             />
           </div>
-          <div></div>
         </div>
         <div>
           <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
