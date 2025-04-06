@@ -44,7 +44,7 @@ const Header = () => {
       className={cn(
         "h-16 flex items-center w-full z-50 fixed top-0 transform transition-all duration-300 ease-in-out px-4 lg:px-0 backdrop-blur-lg border-b border-dotted",
         isScrolled ? "bg-black/80" : "",
-        isVisible ? "translate-y-0" : "-translate-y-full",
+        isVisible ? "translate-y-0" : "-translate-y-full"
       )}
     >
       <div className="container flex items-center justify-between">
@@ -59,7 +59,7 @@ const Header = () => {
               href={route.href}
               className={cn(
                 "relative hover:text-brand-300 transition-colors duration-300 ",
-                route.href === pathname ? "text-brand-500" : "text-bunker-600",
+                route.href === pathname ? "text-brand-500" : "text-bunker-600"
               )}
             >
               {route.name}
@@ -114,7 +114,7 @@ const Header = () => {
               className="bg-brand-800 hover:bg-brand-700 text-white"
               onClick={() => signIn()}
             >
-              Sign In
+              Login In
             </Button>
           )}
         </div>
@@ -144,8 +144,11 @@ const Header = () => {
                   </Link>
                 ))}
               </div>
-              <Button className="mt-4 bg-brand-800 hover:bg-brand-700">
-                Join
+              <Button
+                className="bg-brand-800 hover:bg-brand-700 text-white"
+                onClick={() => signIn()}
+              >
+                Login In
               </Button>
             </SheetContent>
           </Sheet>
