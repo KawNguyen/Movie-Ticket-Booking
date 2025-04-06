@@ -61,6 +61,7 @@ export async function GET(request: Request, { params }: { params: { seatId: stri
   
       return NextResponse.json({ exists: !!bookingSeat });
     } catch (error) {
+      console.error(error)
       return NextResponse.json(
         { error: 'Failed to check seat status' },
         { status: 500 }
