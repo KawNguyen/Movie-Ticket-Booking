@@ -18,7 +18,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
 }) => {
   return (
-    <nav className="min-h-screen w-52 p-4 border-x border-dotted">
+    <nav className="min-h-screen w-52 p-4 lg:border-x border-dotted">
       <div className="flex items-center gap-2 p-2">
         <LayoutDashboard size={20} />
         <span className="text-lg font-semibold">Dashboard</span>
