@@ -15,7 +15,7 @@ export const BookingHistory = ({session}: {session: any}) => {
     const fetchBookings = async () => {
       if (session?.user?.id) {
         try {
-          const data = await getBookingsByUserId(session.user.id);
+          const data = await getBookingsByUserId(session?.user?.id);
           setBookings(data as any);
           console.log(data)
         } catch (error) {
