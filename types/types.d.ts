@@ -103,7 +103,11 @@ interface Seat {
   isPending?: boolean;
   bookingSeats: Array<{
     id: number;
-    status: string;
+    seatId?: number;
+    status: "AVAILABLE" | "PENDING" | "BOOKED";
+    bookingId?: number;
+    showtimeId?: number;
+    userId: string;
   }>;
 }
 
@@ -113,6 +117,7 @@ interface BookingSeat {
   status: "AVAILABLE" | "PENDING" | "BOOKED";
   bookingId: number;
   showtimeId: number;
+  userId: string;
 }
 
 interface DetailsProps {

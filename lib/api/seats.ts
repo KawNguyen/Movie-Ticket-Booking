@@ -7,7 +7,11 @@ export interface Seat {
   screeningRoomId: number;
   bookingSeats: Array<{
     id: number;
-    status: string;
+    seatId?: number;
+    status: "AVAILABLE" | "PENDING" | "BOOKED";
+    bookingId?: number;
+    showtimeId?: number;
+    userId: string;
   }>;
 }
 
