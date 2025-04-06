@@ -134,7 +134,8 @@ interface Booking {
     startTime: string;
     movie: {
       title: string;
-      backdrop_path: string;
+      backdrop_path?: string;
+      poster_path?: string;
     };
     screeningRoom: {
       name: string;
