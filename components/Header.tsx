@@ -57,7 +57,7 @@ const Header = () => {
               href={route.href}
               className={cn(
                 "relative hover:text-brand-300 transition-colors duration-300 ",
-                route.href === pathname ? "text-brand-500 underline decoration-wavy underline-offset-4" : "text-bunker-600",
+                route.href === pathname ? "text-brand-500" : "text-bunker-600",
               )}
             >
               {route.name}
@@ -116,7 +116,6 @@ const Header = () => {
             </Button>
           )}
         </div>
-
         <div className="block lg:hidden">
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
@@ -127,10 +126,10 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="bg-black/95 text-white flex flex-col"
+              className="bg-black/95 text-white flex flex-col h-full"
             >
               <SearchBar />
-              <div className="flex flex-col space-y-4 mt-8">
+              <div className="flex flex-col space-y-4 mt-8 flex-1">
                 {routes.map((route) => (
                   <Link
                     key={route.name}
