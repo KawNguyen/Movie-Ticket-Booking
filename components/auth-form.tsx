@@ -88,7 +88,7 @@ const AuthForm = <T extends FieldValues>({
               key={field}
               control={form.control}
               name={field as Path<T>}
-              render={({ field }) => (
+              render={({ field }: { field: { name: string; value: string; onChange: (value: any) => void } }) => (
                 <FormItem>
                   <FormLabel>
                     {FIELD_NAMES[field.name as keyof typeof FIELD_NAMES]}
@@ -124,7 +124,7 @@ const AuthForm = <T extends FieldValues>({
         <span className="text-sm">
           {isSignIn ? "Don't have an account? " : "Have an account? "}
           <Link
-            href={isSignIn ? "/auth/sign-up" : "/auth/sign-in"}
+            href={isSignIn ? "/sign-up" : "/sign-in"}
             className={cn(
               "font-semibold hover:underline hover:underline-offset-4",
             )}
