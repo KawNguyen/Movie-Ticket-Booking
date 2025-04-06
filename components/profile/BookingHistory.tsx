@@ -1,64 +1,48 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-
-interface Movie {
-  id: number;
-  title: string;
-  year: number;
-  rating: number;
-  imageUrl: string;
-  purchaseDate: string;
-  showDate: string;
-  showTime: string;
-  seatNumber: string;
-  price: number;
-  theater: string;
-}
+import { useSession } from "next-auth/react";
+import { getBookingsByUserId } from "@/lib/api/bookings";
+import { useEffect, useState } from "react";
 
 export const BookingHistory = () => {
-  const watchedMovies: Movie[] = [
-    {
-      id: 1,
-      title: "Avengers: Endgame",
-      year: 2019,
-      rating: 8.4,
-      imageUrl:
-        "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
-      purchaseDate: "2023-04-25",
-      showDate: "2023-04-28",
-      showTime: "19:30",
-      seatNumber: "A12",
-      price: 120000,
-      theater: "CGV Vincom Center",
-    },
-    {
-      id: 2,
-      title: "Spider-Man: No Way Home",
-      year: 2021,
-      rating: 8.2,
-      imageUrl:
-        "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
-      purchaseDate: "2023-05-15",
-      showDate: "2023-05-18",
-      showTime: "20:00",
-      seatNumber: "B7",
-      price: 150000,
-      theater: "CGV Crescent Mall",
-    },
-  ];
+  const { data: session } = useSession();
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (session?.user?.id) {
+        try {
+          const data = await getBookingsByUserId(session.user.id);
+          setBookings(data as any);
+          console.log(data)
+        } catch (error) {
+          console.error("Failed to fetch bookings:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchBookings();
+  }, [session?.user?.id]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Booking History</h2>
       <div className="space-y-4">
-        {watchedMovies.map((movie) => (
-          <Card key={movie.id} className="bg-gray-900 text-white">
+        {bookings.map((booking) => (
+          <Card key={booking.id} className="bg-gray-900 text-white">
             <CardContent className="p-4 flex">
               <div className="w-32 h-48 overflow-hidden rounded-lg">
                 <Image
-                  src={movie.imageUrl}
-                  alt={movie.title}
+                  src={`https://image.tmdb.org/t/p/w500/${booking.showtime?.movie?.backdrop_path}`}
+                  alt={booking.showtime.movie.title}
                   height={480}
                   width={360}
                   priority
@@ -67,32 +51,46 @@ export const BookingHistory = () => {
               </div>
               <div className="ml-6 flex-1">
                 <CardHeader className="p-0">
-                  <CardTitle className="text-lg">{movie.title}</CardTitle>
+                  <CardTitle className="text-lg">
+                    {booking.showtime.movie.title}
+                  </CardTitle>
                 </CardHeader>
                 <div className="text-gray-400 text-sm space-y-2">
                   <div className="flex justify-between">
                     <span>Purchase Date:</span>
-                    <span>{movie.purchaseDate}</span>
+                    <span>{new Date(booking.createdAt).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Price:</span>
-                    <span>{movie.price.toLocaleString()} VND</span>
+                    <span>${booking.totalPrice.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Show Date:</span>
-                    <span>{movie.showDate}</span>
+                    <span>Show Date & Time:</span>
+                    <span>
+                      {new Date(booking.showtime.startTime).toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Show Time:</span>
-                    <span>{movie.showTime}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Seat Number:</span>
-                    <Badge variant="secondary">{movie.seatNumber}</Badge>
+                    <span>Seats:</span>
+                    <div className="flex gap-1">
+                      {booking.bookingSeats.map((seat) => (
+                        <Badge key={seat.id} variant="secondary">
+                          {(seat as any)?.seat.row}{(seat as any)?.seat.number}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                   <div className="flex justify-between">
                     <span>Theater:</span>
-                    <span>{movie.theater}</span>
+                    <span>{booking.showtime.screeningRoom.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Status:</span>
+                    <Badge 
+                      variant={booking.status === "COMPLETED" ? "default" : "destructive"}
+                    >
+                      {booking.status}
+                    </Badge>
                   </div>
                 </div>
               </div>
