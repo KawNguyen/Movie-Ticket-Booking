@@ -7,6 +7,7 @@ const nextConfig = {
       "lh3.googleusercontent.com",
       "i.pinimg.com",
       "www.courier-journal.com",
+      "localhost",
     ],
   },
 };

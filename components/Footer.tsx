@@ -6,6 +6,7 @@ import { routes } from "@/constants";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import logoImage from '@/public/Images/logo.webp'
 
 const Footer = () => {
   const pathname = usePathname();
@@ -15,7 +16,7 @@ const Footer = () => {
         <div>
           <div className="relative w-[400px] h-[200px] md:w-[200px] md:h-[200px] xl:w-[400px] ">
             <Image
-              src="/Images/logo.png"
+              src={logoImage}
               alt="logo"
               fill
               className="object-contain"

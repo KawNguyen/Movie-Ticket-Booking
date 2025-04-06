@@ -17,6 +17,7 @@ import { routes } from "@/constants";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import SearchBar from "./SearchBar";
+import logoImage from '@/public/Images/logo.webp'
 
 const Header = () => {
   const pathname = usePathname();
@@ -48,16 +49,16 @@ const Header = () => {
       )}
     >
       <div className="container flex items-center justify-between">
-        {/* <Logo/> */}
         <Link
           href="/"
         >
           <Image
-            src="/Images/logo.png"
+            src={logoImage}
             alt="logo"
-            width={100}
-            height={100}
+            width={80}
+            height={80}
             priority
+            className="object-contain"
           />
         </Link>
         <div className="hidden md:flex text-md items-center gap-4">
