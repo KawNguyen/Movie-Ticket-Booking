@@ -118,17 +118,22 @@ interface BookingSeat {
 interface DetailsProps {
   movie: any;
   cast: Array<{ id: number; name: string; profile_path: string | null }>;
-  // movie: {
-  //   videos?: {
-  //     results: { key: string }[];
-  //   };
-  // };
-  // cast: {
-  //   id: number;
-  //   name: string;
-  //   profile_path: string | null;
-  // }[];
 }
-interface booking {
-  seat: any;
+
+interface Booking {
+  id: string;
+  totalPrice: number;
+  createdAt: string;
+  status: string;
+  showtime: {
+    startTime: string;
+    movie: {
+      title: string;
+      backdrop_path: string;
+    };
+    screeningRoom: {
+      name: string;
+    };
+  };
+  bookingSeats: BookingSeat[];
 }
