@@ -22,9 +22,23 @@ const Booking = ({ slug }: { slug: string }) => {
   const router = useRouter();
   const [showTimes, setShowTimes] = useState<Showtime[]>([]);
   const [selectedShowTime, setSelectedShowTime] = useState<Showtime | null>(
-    null,
+    null
   );
   const [seats, setSeats] = useState<Seat[]>([]);
+  interface Seat {
+    id: number;
+    row: string;
+    number: number;
+    isBooked?: boolean;
+    bookingSeats: {
+      id: number;
+      seatId?: number;
+      showtimeId?: number;
+      status: "AVAILABLE" | "PENDING" | "BOOKED";
+      userId: string;
+      bookingId?: number;
+    }[];
+  }
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [isLoadingSeats, setIsLoadingSeats] = useState(false);
   const [pendingSeats, setPendingSeats] = useState<string[]>([]);
@@ -52,33 +66,37 @@ const Booking = ({ slug }: { slug: string }) => {
   }, [slug]);
 
   useEffect(() => {
-    socketRef.current = io({
-      path: "/api/socket",
-    });
-    socketRef.current.on("connect", () => {
-      console.log("Socket connected:", socketRef.current?.id);
-    });
+    // Reset states when showtime changes
+    setSelectedSeats([]);
+    setPendingSeats([]);
 
+    const socket = io("https://server-socket-production-8dee.up.railway.app", {
+      transports: ["websocket"],
+    });
+    // socketRef.current.on("connect", () => {
+    //   console.log("Socket connected:", socketRef.current?.id);
+    // });
+    socketRef.current = socket;
     socketRef.current.on(
-      "seat-selected",
+      "seat_selected",
       ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
         if (selectedShowTime?.id === showtimeId) {
           console.log(
-            `Seat ${seatId} has been selected (showtime: ${showtimeId})`,
+            `Seat ${seatId} has been selected (showtime: ${showtimeId})`
           );
           setPendingSeats((prev) => [...new Set([...prev, seatId])]);
         }
-      },
+      }
     );
 
     socketRef.current.on(
-      "seat-unselected",
+      "seat_unselected",
       ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
         if (selectedShowTime?.id === showtimeId) {
           console.log(`Seat ${seatId} has been unselected`);
           setPendingSeats((prev) => prev.filter((id) => id !== seatId));
         }
-      },
+      }
     );
 
     return () => {
@@ -88,18 +106,50 @@ const Booking = ({ slug }: { slug: string }) => {
 
   const handleShowtimeSelect = async (time: Showtime) => {
     setSelectedShowTime(time);
+    setPendingSeats([]);
     setIsLoadingSeats(true);
     try {
-      const [seatsData, bookingSeats] = await Promise.all([
+      const [seatsData, bookingSeats] = (await Promise.all([
         getSeatsByRoom(time.screeningRoomId, time.id),
         getBookingSeatsByShowtime(time.id),
-      ]);
+      ])) as [Seat[], Array<BookingSeat>];
+      // Thêm sau khi setPendingSeats
+      const selectedSeatIds = bookingSeats
+        .filter(
+          (bs) => bs.status === "PENDING" && bs.userId === session?.user?.id
+        )
+        .map((bs) => {
+          const seat = seatsData.find((s) => s.id === bs.seatId);
+          return seat ? `${seat.row}${seat.number}` : null;
+        })
+        .filter(Boolean) as string[];
 
-      const updatedSeats = seatsData.map((seat) => ({
-        ...seat,
-        isBooked: (bookingSeats as number[]).includes(seat.id),
-      }));
+      setSelectedSeats(selectedSeatIds);
 
+      const updatedSeats = seatsData.map((seat) => {
+        const seatBookingSeats = bookingSeats.filter(
+          (bs) => bs.seatId === seat.id
+        );
+        return {
+          ...seat,
+          isBooked: seatBookingSeats.some((bs) => bs.status === "BOOKED"),
+          bookingSeats: seatBookingSeats, // giữ nguyên tất cả bookingSeats, kể cả PENDING của user khác
+        };
+      });
+
+      // Thêm ghế có trạng thái PENDING vào pendingSeats
+      const pendingBookingSeats = bookingSeats.filter(
+        (bs) => bs.status === "PENDING"
+      );
+      const pendingSeatIds = pendingBookingSeats
+        .map((bs) => {
+          const seat = seatsData.find((s) => s.id === bs.seatId);
+          return seat ? `${seat.row}${seat.number}` : null;
+        })
+        .filter(Boolean) as string[];
+
+      setPendingSeats(pendingSeatIds);
+      setSelectedSeats(selectedSeatIds);
       setSeats(updatedSeats);
     } catch (error) {
       console.error(error);
@@ -112,48 +162,148 @@ const Booking = ({ slug }: { slug: string }) => {
       setIsLoadingSeats(false);
     }
   };
-
   const handleSeatSelect = async (seat: Seat) => {
     const seatId = `${seat.row}${seat.number}`;
     const showtimeId = selectedShowTime?.id;
-
+  
+    // Kiểm tra nếu ghế đã được đặt
     if (!showtimeId || seat.bookingSeats?.some((bs) => bs.status === "BOOKED"))
       return;
 
+  
+    // Kiểm tra ghế PENDING từ cả database và socket
+    const pendingBookingSeat = seat.bookingSeats?.find(
+      (bs) => bs.status === "PENDING"
+    );
+    if (pendingBookingSeat || pendingSeats.includes(seatId)) {
+      if (pendingBookingSeat?.userId !== session?.user?.id) {
+        toast({
+          title: "Error",
+          description: "Ghế này đang được người khác chọn",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+  
+    // Kiểm tra nếu ghế đã được chọn hay chưa
     const isSelected = selectedSeats.includes(seatId);
-    const newSelectedSeats = isSelected
-      ? selectedSeats.filter((id) => id !== seatId)
-      : [...selectedSeats, seatId];
-
+    const isPending = seat.bookingSeats?.some(
+      (bs) => bs.status === "PENDING" && bs.userId === session?.user?.id
+    );
+    
+    // Nếu ghế PENDING của người hiện tại thì bỏ chọn
+    const newSelectedSeats =
+      isPending || isSelected
+        ? selectedSeats.filter((id) => id !== seatId)
+        : [...selectedSeats, seatId];
+  
     setSelectedSeats(newSelectedSeats);
-
+  
+    // Emit socket event
     if (socketRef.current) {
       socketRef.current.emit(isSelected ? "unselect_seat" : "select_seat", {
         seatId,
         showtimeId,
+        userId: session?.user?.id,
       });
     }
-
-    // Update ghế ngay (realtime feedback UI)
-    const [unused, bookingSeats] = await Promise.all([
-      // Remove unused console.log since the variable is used before declaration
-      getSeatsByRoom(selectedShowTime.screeningRoomId, showtimeId),
-      getBookingSeatsByShowtime(showtimeId),
-    ]);
-
-    console.log(unused);
-
-    setSeats((prev) =>
-      prev.map((s) => ({
-        ...s,
-        bookingSeats: (bookingSeats as BookingSeat[]).filter(
-          (bs) =>
-            bs.seatId === s.id &&
-            (bs.status === "BOOKED" || bs.status === "PENDING"),
-        ),
-      })),
-    );
+  
+    try {
+      if (isSelected) {
+        // Xoá ghế khi bỏ chọn
+        const response = await fetch(`/api/bookingseats/${seat.id}`, {
+          method: "DELETE",
+        });
+  
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+  
+        // Cập nhật UI khi bỏ chọn ghế
+        setSeats((prev) =>
+          prev.map((s) =>
+            s.id === seat.id
+              ? {
+                  ...s,
+                  bookingSeats: [], // Xoá tất cả bookingSeats
+                  isBooked: false,   // Đánh dấu ghế là AVAILABLE
+                }
+              : s
+          )
+        );
+        setPendingSeats((prev) => prev.filter((id) => id !== seatId));
+      } else {
+        // Thêm ghế vào booking khi chọn
+        const booking = await fetch("/api/bookings/upsert", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: session?.user?.id,
+            showtimeId,
+            totalPrice: (selectedSeats.length+1) * (selectedShowTime.price),
+          
+          }),
+        }).then((res) => res.json());
+  
+        // Tạo booking seat
+        const response = await fetch("/api/bookingseats/status", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            seatId: seat.id,
+            showtimeId,
+            status: "PENDING",
+            userId: session?.user?.id,
+            bookingId: booking.id,
+            totalPrice: (selectedSeats.length+1) * (selectedShowTime.price),
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+  
+        // Cập nhật UI khi chọn ghế
+        setSeats((prev) =>
+          prev.map((s) =>
+            s.id === seat.id
+              ? {
+                  ...s,
+                  bookingSeats: [
+                    {
+                      id: 0,
+                      seatId: s.id,
+                      showtimeId: showtimeId!,
+                      status: "PENDING" as const,
+                      userId: session?.user?.id || "",
+                      bookingId: undefined,
+                    },
+                  ],
+                }
+              : s
+          )
+        );
+      }
+    } catch (error) {
+      console.error("[SEAT_SELECT_ERROR]", error);
+      setSelectedSeats(
+        isSelected
+          ? [...newSelectedSeats, seatId]
+          : newSelectedSeats.filter((id) => id !== seatId)
+      );
+      toast({
+        title: "Error",
+        description: "Ghế này đang được người khác chọn",
+        variant: "destructive",
+      });
+    }
   };
+  
 
   const handleBookTickets = async () => {
     if (!session?.user) {
@@ -168,18 +318,17 @@ const Booking = ({ slug }: { slug: string }) => {
 
     try {
       const response = await fetch("/api/bookings", {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           showtimeId: selectedShowTime?.id,
           userId: session?.user?.id,
-          totalPrice: selectedSeats.length * (selectedShowTime?.price || 0),
-          status: "PENDING",
+          status: "BOOKED",
           bookingSeats: seats
             .filter((seat) =>
-              selectedSeats.includes(`${seat.row}${seat.number}`),
+              selectedSeats.includes(`${seat.row}${seat.number}`)
             )
             .map((seat) => ({
               seatId: seat.id,
@@ -211,9 +360,12 @@ const Booking = ({ slug }: { slug: string }) => {
   };
 
   useEffect(() => {
-    socketRef.current = io({
-      path: "/api/socket",
-    });
+    if (!socketRef.current) {
+      const socket = io("https://server-socket-production-8dee.up.railway.app", {
+        transports: ["websocket"],
+      });
+      socketRef.current = socket;
+    }
 
     socketRef.current.on("connect", () => {
       console.log("Socket connected:", socketRef.current?.id);
@@ -225,7 +377,7 @@ const Booking = ({ slug }: { slug: string }) => {
         if (selectedShowTime?.id === showtimeId) {
           setPendingSeats((prev) => [...new Set([...prev, seatId])]);
         }
-      },
+      }
     );
 
     socketRef.current.on(
@@ -234,7 +386,7 @@ const Booking = ({ slug }: { slug: string }) => {
         if (selectedShowTime?.id === showtimeId) {
           setPendingSeats((prev) => prev.filter((id) => id !== seatId));
         }
-      },
+      }
     );
 
     return () => {
@@ -285,6 +437,7 @@ const Booking = ({ slug }: { slug: string }) => {
                     onSeatSelect={handleSeatSelect}
                     ROWS={ROWS}
                     COLUMNS={COLUMNS}
+                    currentUserId={session?.user?.id}
                   />
                   <SeatsLegend />
                 </div>

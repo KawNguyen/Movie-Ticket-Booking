@@ -13,6 +13,7 @@ interface SeatsGridProps {
   onSeatSelect: (seat: Seat) => void;
   ROWS: readonly string[];
   COLUMNS: number[];
+  currentUserId?: string;
 }
 
 export function SeatsGrid({
@@ -22,6 +23,7 @@ export function SeatsGrid({
   onSeatSelect,
   ROWS,
   COLUMNS,
+  currentUserId,
 }: SeatsGridProps) {
   return (
     <div className="grid grid-cols-8 gap-2 max-w-2xl w-full">
@@ -50,21 +52,24 @@ export function SeatsGrid({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>
-                      <Armchair
-                        size={36}
-                        className={`
-                          ${
-                            seat?.isBooked
-                              ? "text-red-500"
-                              : selectedSeats.includes(seatId)
-                                ? "text-green-500"
-                                : pendingSeats.includes(seatId)
-                                  ? "text-yellow-500"
-                                  : "text-gray-400"
-                          }
-                          transition-colors duration-200
-                        `}
-                      />
+                    <Armchair
+  size={36}
+  className={`
+    ${
+      seat?.isBooked
+        ? "text-red-500"
+        : selectedSeats.includes(seatId)
+          ? "text-green-500"
+          : pendingSeats.includes(seatId) && seat?.bookingSeats?.some(bs => bs.status === "PENDING" && bs.userId === currentUserId)
+            ? "text-green-500"
+            : pendingSeats.includes(seatId)
+              ? "text-yellow-500"
+              : "text-gray-400"
+    }
+    transition-colors duration-200
+  `}
+/>
+
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>

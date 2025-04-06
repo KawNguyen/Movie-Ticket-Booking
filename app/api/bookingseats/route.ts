@@ -62,6 +62,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const showtimeId = searchParams.get("showtimeId");
+    console.log(showtimeId);
     if (!showtimeId) {
       return new NextResponse("Missing showtime ID", { status: 400 });
     }
@@ -72,11 +73,23 @@ export async function GET(request: Request) {
       },
       select: {
         seatId: true,
+        status: true,
+          booking: {
+            select: {
+              userId: true
+            }
+          }
       },
     });
 
-    const seatIds = bookingSeats.map((seat: { seatId: number }) => seat.seatId);
-    return NextResponse.json(seatIds);
+    const seatData = bookingSeats.map((seat) => ({
+      seatId: seat.seatId,
+      status: seat.status,
+      userId: seat.booking?.userId,
+
+    }));
+    console.log(seatData);
+    return NextResponse.json(seatData);
   } catch (error) {
     console.error("[BOOKING_SEATS_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });
