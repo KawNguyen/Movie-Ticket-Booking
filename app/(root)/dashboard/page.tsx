@@ -3,7 +3,7 @@
 import MovieManagement from "@/components/dashboard-admin/MovieManagement";
 import RoomManagement from "@/components/dashboard-admin/RoomManagement";
 import ShowTimeManagement from "@/components/dashboard-admin/ShowTimeManagement";
-import Sidebar from "@/components/dashboard-admin/Sidebar";
+import Sidebar from "@/components/Sidebar";
 import { CalendarCheck, Film, Home } from "lucide-react";
 import { useState } from "react";
 

@@ -1,14 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
 import { getBookingsByUserId } from "@/lib/api/bookings";
 import { useEffect, useState } from "react";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
-export const BookingHistory = () => {
-  const { data: session } = useSession();
+export const BookingHistory = ({session}: {session: any}) => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const isDesktop = useMediaQuery(640); // Using 640px as breakpoint for sm
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -37,42 +38,44 @@ export const BookingHistory = () => {
       <h2 className="text-2xl font-bold mb-6">Booking History</h2>
       <div className="space-y-4">
         {bookings.map((booking) => (
-          <Card key={booking.id} className="bg-gray-900 text-white">
-            <CardContent className="p-4 flex">
-              <div className="w-32 h-48 overflow-hidden rounded-lg">
-                <Image
-                  src={`https://image.tmdb.org/t/p/w500/${booking.showtime?.movie?.backdrop_path}`}
-                  alt={booking.showtime.movie.title}
-                  height={480}
-                  width={360}
-                  priority
-                  className="object-cover w-full h-full"
-                />
+          <Card key={booking.id} className="bg-gray-900 text-white border">
+            <CardContent className="p-4 flex flex-col sm:flex-row gap-4 sm:gap-6 h-full">
+              <div className="w-full sm:w-32 overflow-hidden rounded-lg h-full">
+                <AspectRatio ratio={isDesktop ? 2/3 : 16/9}>
+                  <Image
+                    src={`https://image.tmdb.org/t/p/w500/${isDesktop ? 
+                      booking.showtime?.movie?.poster_path : 
+                      booking.showtime?.movie?.backdrop_path}`}
+                    alt={booking.showtime.movie.title}
+                    fill
+                    className="object-cover rounded-md"
+                    priority
+                  />
+                </AspectRatio>
               </div>
-              <div className="ml-6 flex-1">
+
+              <div className="flex-1">
                 <CardHeader className="p-0">
-                  <CardTitle className="text-lg">
+                  <CardTitle className="text-lg sm:text-xl mb-2">
                     {booking.showtime.movie.title}
                   </CardTitle>
                 </CardHeader>
                 <div className="text-gray-400 text-sm space-y-2">
-                  <div className="flex justify-between">
-                    <span>Purchase Date:</span>
+                  <div className="flex flex-row justify-between sm:items-center gap-1">
+                    <span className="font-medium">Purchase Date:</span>
                     <span>{new Date(booking.createdAt).toLocaleDateString()}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Price:</span>
+                  <div className="flex flex-row justify-between sm:items-center gap-1">
+                    <span className="font-medium">Price:</span>
                     <span>${booking.totalPrice.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Show Date & Time:</span>
-                    <span>
-                      {new Date(booking.showtime.startTime).toLocaleString()}
-                    </span>
+                  <div className="flex flex-row justify-between sm:items-center gap-1">
+                    <span className="font-medium">Show Date & Time:</span>
+                    <span>{new Date(booking.showtime.startTime).toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Seats:</span>
-                    <div className="flex gap-1">
+                  <div className="flex flex-row justify-between sm:items-center gap-1">
+                    <span className="font-medium">Seats:</span>
+                    <div className="flex flex-wrap gap-1">
                       {booking.bookingSeats.map((seat) => (
                         <Badge key={seat.id} variant="secondary">
                           {(seat as any)?.seat.row}{(seat as any)?.seat.number}
@@ -80,12 +83,12 @@ export const BookingHistory = () => {
                       ))}
                     </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Theater:</span>
+                  <div className="flex flex-row justify-between sm:items-center gap-1">
+                    <span className="font-medium">Theater:</span>
                     <span>{booking.showtime.screeningRoom.name}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Status:</span>
+                  <div className="flex flex-row justify-between sm:items-center gap-1">
+                    <span className="font-medium">Status:</span>
                     <Badge 
                       variant={booking.status === "COMPLETED" ? "default" : "destructive"}
                     >
