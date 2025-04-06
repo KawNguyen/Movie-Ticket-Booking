@@ -42,16 +42,23 @@ const Header = () => {
   return (
     <header
       className={cn(
-        "h-16 flex items-center w-full z-50 fixed top-0 transform transition-all duration-300 ease-in-out px-4 lg:px-0 backdrop-blur-lg border-b border-dotted",
+        "h-16 flex items-center w-full z-50 fixed top-0 transform transition-all duration-300 ease-in-out px-4 lg:px-0 backdrop-blur-lg ",
         isScrolled ? "bg-black/80" : "",
         isVisible ? "translate-y-0" : "-translate-y-full",
       )}
     >
       <div className="container flex items-center justify-between">
-        <Link href="/" className="text-2xl md:text-4xl">
-          LOGO
+        <Link href="/">
+          <div className="relative w-[200px] h-[100px] md:w-[240px] lg:h-[120px]">
+            <Image
+              src="/Images/logo.png"
+              alt="logo"
+              fill
+              className="object-contain"
+              sizes="100%"
+            />
+          </div>
         </Link>
-
         <div className="hidden md:flex text-md items-center gap-4">
           {routes.map((route) => (
             <Link
@@ -59,7 +66,7 @@ const Header = () => {
               href={route.href}
               className={cn(
                 "relative hover:text-brand-300 transition-colors duration-300 ",
-                route.href === pathname ? "text-brand-500" : "text-bunker-600",
+                route.href === pathname ? "text-brand-500 underline decoration-wavy underline-offset-4" : "text-bunker-600",
               )}
             >
               {route.name}
@@ -131,7 +138,7 @@ const Header = () => {
               side="right"
               className="bg-black/95 text-white flex flex-col"
             >
-              <Search className="mt-4 cursor-pointer transition-transform hover:scale-110 duration-300" />
+              <SearchBar />
               <div className="flex flex-col space-y-4 mt-8">
                 {routes.map((route) => (
                   <Link
