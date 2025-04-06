@@ -17,6 +17,7 @@ import { routes } from "@/constants";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import SearchBar from "./SearchBar";
+import { Logo } from "./Logo";
 
 const Header = () => {
   const pathname = usePathname();
@@ -48,17 +49,7 @@ const Header = () => {
       )}
     >
       <div className="container flex items-center justify-between">
-        <Link href="/">
-          <div className="relative w-[200px] h-[100px] md:w-[240px] lg:h-[120px]">
-            <Image
-              src="/Images/logo.png"
-              alt="logo"
-              fill
-              className="object-contain"
-              sizes="100%"
-            />
-          </div>
-        </Link>
+        <Logo/>
         <div className="hidden md:flex text-md items-center gap-4">
           {routes.map((route) => (
             <Link
