@@ -17,7 +17,7 @@ import { routes } from "@/constants";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import SearchBar from "./SearchBar";
-import logoImage from '@/public/Images/logo.webp'
+import logoImage from "@/public/Images/logo.webp";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 
@@ -51,9 +51,7 @@ const Header = () => {
       )}
     >
       <div className="container flex items-center justify-between">
-        <Link
-          href="/"
-        >
+        <Link href="/">
           <Image
             src={logoImage}
             alt="logo"
@@ -83,8 +81,8 @@ const Header = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="h-8 w-8 cursor-pointer flex items-center justify-center hover:border">
-                  <AvatarImage 
-                    src={session?.user?.image || undefined} 
+                  <AvatarImage
+                    src={session?.user?.image || undefined}
                     alt="Avatar"
                     className="object-cover"
                   />
@@ -94,11 +92,17 @@ const Header = () => {
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-black border-none">
-                <DropdownMenuItem className="text-white" onClick={() => router.push("/profile")}>
+                <DropdownMenuItem
+                  className="text-white"
+                  onClick={() => router.push("/profile")}
+                >
                   Profile
                 </DropdownMenuItem>
                 {session.user.role === "ADMIN" && (
-                  <DropdownMenuItem className="text-white" onClick={() => router.push("/dashboard")}>
+                  <DropdownMenuItem
+                    className="text-white"
+                    onClick={() => router.push("/dashboard")}
+                  >
                     Dashboard
                   </DropdownMenuItem>
                 )}
@@ -153,52 +157,52 @@ const Header = () => {
                         variant="ghost"
                         className="flex items-center gap-3 w-full justify-start text-white px-2 py-1"
                       >
-                        {session.user.image ? (
-                          <Image
-                            src={session.user.image}
-                            alt="User Avatar"
-                            width={32}
-                            height={32}
-                            className="rounded-full border border-gray-500"
+                        <Avatar className="h-8 w-8 cursor-pointer flex items-center justify-center hover:border">
+                          <AvatarImage
+                            src={session?.user?.image || undefined}
+                            alt="Avatar"
+                            className="object-cover"
                           />
-                        ) : (
-                          <div className="w-8 h-8 bg-gray-500 rounded-full"></div>
-                        )}
+                          <AvatarFallback className="text-white">
+                            {session?.user?.name?.charAt(0)?.toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
                         <div className="flex flex-col text-left">
-                          <span className="text-sm font-medium">{session.user.name}</span>
+                          <span className="text-sm font-medium">
+                            {session.user.name}
+                          </span>
                           <span className="text-xs text-gray-400 truncate max-w-[150px]">
                             {session.user.email}
                           </span>
                         </div>
-                        <ChevronDown size={18} className="ml-auto text-gray-300" />
+                        <ChevronDown
+                          size={18}
+                          className="ml-auto text-gray-300"
+                        />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[260px] bg-white text-black">
+                    <DropdownMenuContent
+                      align="end"
+                      className="w-[260px] bg-black"
+                    >
                       <DropdownMenuItem
                         onClick={() => {
                           router.push("/profile");
                           setIsSheetOpen(false);
                         }}
+                        className="text-white"
                       >
                         Profile
                       </DropdownMenuItem>
-                      {session.user.role === "ADMIN" ? (
+                      {session.user.role === "ADMIN" && (
                         <DropdownMenuItem
                           onClick={() => {
                             router.push("/dashboard");
                             setIsSheetOpen(false);
                           }}
+                          className="text-white"
                         >
                           Dashboard
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem
-                          onClick={() => {
-                            router.push("/orders");
-                            setIsSheetOpen(false);
-                          }}
-                        >
-                          Order History
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem
@@ -224,9 +228,7 @@ const Header = () => {
                   Login In
                 </Button>
               )}
-
             </SheetContent>
-
           </Sheet>
         </div>
       </div>
