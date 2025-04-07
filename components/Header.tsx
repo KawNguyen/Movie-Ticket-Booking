@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
@@ -152,13 +152,89 @@ const Header = () => {
                   </Link>
                 ))}
               </div>
-              <Button
-                className="bg-brand-800 hover:bg-brand-700 text-white"
-                onClick={() => signIn()}
-              >
-                Login In
-              </Button>
+
+              {session?.user ? (
+                <div className="mb-4">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="flex items-center gap-3 w-full justify-start text-white px-2 py-1"
+                      >
+                        {session.user.image ? (
+                          <Image
+                            src={session.user.image}
+                            alt="User Avatar"
+                            width={32}
+                            height={32}
+                            className="rounded-full border border-gray-500"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 bg-gray-500 rounded-full"></div>
+                        )}
+                        <div className="flex flex-col text-left">
+                          <span className="text-sm font-medium">{session.user.name}</span>
+                          <span className="text-xs text-gray-400 truncate max-w-[150px]">
+                            {session.user.email}
+                          </span>
+                        </div>
+                        <ChevronDown size={18} className="ml-auto text-gray-300" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-[260px] bg-white text-black">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          router.push("/profile");
+                          setIsSheetOpen(false);
+                        }}
+                      >
+                        Profile
+                      </DropdownMenuItem>
+                      {session.user.role === "ADMIN" ? (
+                        <DropdownMenuItem
+                          onClick={() => {
+                            router.push("/dashboard");
+                            setIsSheetOpen(false);
+                          }}
+                        >
+                          Dashboard
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          onClick={() => {
+                            router.push("/orders");
+                            setIsSheetOpen(false);
+                          }}
+                        >
+                          Order History
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuItem
+                        onClick={() => {
+                          signOut();
+                          setIsSheetOpen(false);
+                        }}
+                        className="text-red-500"
+                      >
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              ) : (
+                <Button
+                  className="bg-brand-800 hover:bg-brand-700 text-white"
+                  onClick={() => {
+                    signIn();
+                    setIsSheetOpen(false);
+                  }}
+                >
+                  Login In
+                </Button>
+              )}
+
             </SheetContent>
+
           </Sheet>
         </div>
       </div>
