@@ -118,10 +118,7 @@ export async function PUT(request: Request) {
     });
 
     if (!booking) {
-      return NextResponse.json(
-        { error: "Booking not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
     const updatedBooking = await prisma.booking.update({

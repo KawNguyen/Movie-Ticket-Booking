@@ -7,44 +7,47 @@ export async function POST(request: Request) {
     const { userId, showtimeId, totalPrice } = body;
 
     const showtime = await prisma.showtime.findUnique({
-      where: { id: showtimeId }
+      where: { id: showtimeId },
     });
 
     if (!showtime) {
       return NextResponse.json(
         { error: "Showtime not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     const existingBooking = await prisma.booking.findFirst({
       where: {
         userId,
-        showtimeId
-      }
+        showtimeId,
+      },
     });
 
     const booking = existingBooking
       ? await prisma.booking.update({
           where: { id: existingBooking.id },
-          data: { 
-            totalPrice: totalPrice
-          }
+          data: {
+            totalPrice: totalPrice,
+          },
         })
       : await prisma.booking.create({
           data: {
             userId,
             showtimeId,
-            totalPrice : totalPrice,
-            status: "PENDING"
-          }
+            totalPrice: totalPrice,
+            status: "PENDING",
+          },
         });
 
     return NextResponse.json(booking);
   } catch (error) {
-    return new NextResponse(JSON.stringify({ 
-      message: "Failed to upsert booking",
-      error: error instanceof Error ? error.message : "Unknown error"
-    }), { status: 500 });
+    return new NextResponse(
+      JSON.stringify({
+        message: "Failed to upsert booking",
+        error: error instanceof Error ? error.message : "Unknown error",
+      }),
+      { status: 500 },
+    );
   }
 }

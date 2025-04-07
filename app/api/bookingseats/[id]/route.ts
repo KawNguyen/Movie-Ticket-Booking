@@ -32,7 +32,8 @@ export async function DELETE(
           id: bookingSeat.booking.id,
         },
         data: {
-          totalPrice: bookingSeat.booking.totalPrice - bookingSeat.showtime.price,
+          totalPrice:
+            bookingSeat.booking.totalPrice - bookingSeat.showtime.price,
         },
       });
     }
@@ -49,22 +50,25 @@ export async function DELETE(
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
-export async function GET(request: Request, { params }: { params: { seatId: string } }) {
-    const { seatId } = params;
-  
-    try {
-      const bookingSeat = await prisma.bookingSeat.findFirst({
-        where: {
-          seatId: parseInt(seatId),
-        },
-      });
-  
-      return NextResponse.json({ exists: !!bookingSeat });
-    } catch (error) {
-      console.error(error)
-      return NextResponse.json(
-        { error: 'Failed to check seat status' },
-        { status: 500 }
-      );
-    }
+export async function GET(
+  request: Request,
+  { params }: { params: { seatId: string } },
+) {
+  const { seatId } = params;
+
+  try {
+    const bookingSeat = await prisma.bookingSeat.findFirst({
+      where: {
+        seatId: parseInt(seatId),
+      },
+    });
+
+    return NextResponse.json({ exists: !!bookingSeat });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Failed to check seat status" },
+      { status: 500 },
+    );
   }
+}

@@ -73,7 +73,9 @@ export const Profile = ({ user }: ProfileProps) => {
 
             <div className="flex-1 space-y-4 sm:space-y-6">
               <div>
-                <Label className="font-medium text-base sm:text-lg">Full Name</Label>
+                <Label className="font-medium text-base sm:text-lg">
+                  Full Name
+                </Label>
                 {!isEditing.name ? (
                   <div className="flex justify-between items-center mt-2">
                     <p className="text-gray-400">{profileData.name}</p>
@@ -89,7 +91,10 @@ export const Profile = ({ user }: ProfileProps) => {
                       <Button onClick={() => onSave("name", profileData.name)}>
                         Save
                       </Button>
-                      <Button variant="outline" onClick={() => onCancel("name")}>
+                      <Button
+                        variant="outline"
+                        onClick={() => onCancel("name")}
+                      >
                         Cancel
                       </Button>
                     </div>
@@ -98,7 +103,9 @@ export const Profile = ({ user }: ProfileProps) => {
               </div>
 
               <div>
-                <Label className="font-medium text-base sm:text-lg">Email</Label>
+                <Label className="font-medium text-base sm:text-lg">
+                  Email
+                </Label>
                 <p className="text-gray-400 mt-2">{profileData.email}</p>
               </div>
             </div>

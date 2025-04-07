@@ -48,8 +48,12 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto p-4 lg:p-8">
-        {currentView === "Profile" && session?.user && <Profile user={session?.user} />}
-        {currentView === "Booking History" && <BookingHistory session={session} />}
+        {currentView === "Profile" && session?.user && (
+          <Profile user={session?.user} />
+        )}
+        {currentView === "Booking History" && (
+          <BookingHistory session={session} />
+        )}
       </div>
     </div>
   );

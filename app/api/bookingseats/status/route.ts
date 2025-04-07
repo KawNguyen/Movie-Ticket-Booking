@@ -14,28 +14,31 @@ export async function PUT(request: Request) {
         },
       },
       data: {
-        status
-      }
+        status,
+      },
     });
 
     return NextResponse.json(updatedBookingSeat, { status: 200 });
   } catch (error) {
     console.error("[BOOKING_SEATS_UPDATE]", error);
-    return new NextResponse(JSON.stringify({ 
-      message: "Failed to update booking seat",
-      error: error instanceof Error ? error.message : "Unknown error"
-    }), { 
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    return new NextResponse(
+      JSON.stringify({
+        message: "Failed to update booking seat",
+        error: error instanceof Error ? error.message : "Unknown error",
+      }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
   }
 }
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { seatId, showtimeId, status = "PENDING", userId ,totalPrice} = body;
+    const { seatId, showtimeId, status = "PENDING", userId, totalPrice } = body;
 
     // Validate required fields
     if (!seatId || !showtimeId || !userId) {
@@ -45,8 +48,8 @@ export async function POST(request: Request) {
     // Get showtime information to get the price
     const showtime = await prisma.showtime.findUnique({
       where: {
-        id: showtimeId
-      }
+        id: showtimeId,
+      },
     });
 
     if (!showtime) {
@@ -57,22 +60,22 @@ export async function POST(request: Request) {
     const existingBooking = await prisma.booking.findFirst({
       where: {
         userId,
-        showtimeId
-      }
+        showtimeId,
+      },
     });
 
-    const booking = existingBooking 
+    const booking = existingBooking
       ? await prisma.booking.update({
           where: { id: existingBooking.id },
-          data: {}
+          data: {},
         })
       : await prisma.booking.create({
           data: {
             userId,
             showtimeId,
             totalPrice: totalPrice,
-            status: "PENDING"
-          }
+            status: "PENDING",
+          },
         });
 
     // Create booking seat linked to the booking
@@ -81,21 +84,24 @@ export async function POST(request: Request) {
         status,
         seatId,
         showtimeId,
-        bookingId: booking.id
-      }
+        bookingId: booking.id,
+      },
     });
 
     return NextResponse.json(newBookingSeat, { status: 201 });
   } catch (error) {
     console.error("[BOOKING_SEATS_POST]", error);
-    return new NextResponse(JSON.stringify({ 
-      message: "Failed to create booking seat",
-      error: error instanceof Error ? error.message : "Unknown error"
-    }), { 
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+    return new NextResponse(
+      JSON.stringify({
+        message: "Failed to create booking seat",
+        error: error instanceof Error ? error.message : "Unknown error",
+      }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
   }
 }

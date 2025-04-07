@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronDown, Menu, User } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
@@ -47,7 +47,7 @@ const Header = () => {
       className={cn(
         "h-16 flex items-center w-full z-50 fixed top-0 transform transition-all duration-300 ease-in-out px-4 lg:px-0 backdrop-blur-lg ",
         isScrolled ? "bg-black/80" : "",
-        isVisible ? "translate-y-0" : "-translate-y-full"
+        isVisible ? "translate-y-0" : "-translate-y-full",
       )}
     >
       <div className="container flex items-center justify-between">
@@ -68,7 +68,7 @@ const Header = () => {
               href={route.href}
               className={cn(
                 "relative hover:text-brand-300 transition-colors duration-300 ",
-                route.href === pathname ? "text-brand-500" : "text-bunker-600"
+                route.href === pathname ? "text-brand-500" : "text-bunker-600",
               )}
             >
               {route.name}

@@ -52,15 +52,18 @@ export function SeatsGrid({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>
-                    <Armchair
-  size={36}
-  className={`
+                      <Armchair
+                        size={36}
+                        className={`
     ${
       seat?.isBooked
         ? "text-red-500"
         : selectedSeats.includes(seatId)
           ? "text-green-500"
-          : pendingSeats.includes(seatId) && seat?.bookingSeats?.some(bs => bs.status === "PENDING" && bs.userId === currentUserId)
+          : pendingSeats.includes(seatId) &&
+              seat?.bookingSeats?.some(
+                (bs) => bs.status === "PENDING" && bs.userId === currentUserId,
+              )
             ? "text-green-500"
             : pendingSeats.includes(seatId)
               ? "text-yellow-500"
@@ -68,8 +71,7 @@ export function SeatsGrid({
     }
     transition-colors duration-200
   `}
-/>
-
+                      />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>

@@ -88,7 +88,15 @@ const AuthForm = <T extends FieldValues>({
               key={field}
               control={form.control}
               name={field as Path<T>}
-              render={({ field }: { field: { name: string; value: string; onChange: (value: any) => void } }) => (
+              render={({
+                field,
+              }: {
+                field: {
+                  name: string;
+                  value: string;
+                  onChange: (value: any) => void;
+                };
+              }) => (
                 <FormItem>
                   <FormLabel>
                     {FIELD_NAMES[field.name as keyof typeof FIELD_NAMES]}

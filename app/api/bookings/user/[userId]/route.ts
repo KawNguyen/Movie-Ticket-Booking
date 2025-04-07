@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: { userId: string } },
 ) {
   try {
     const userId = params.userId;
@@ -12,7 +12,7 @@ export async function GET(
       console.error("Missing userId:", userId);
       return NextResponse.json(
         { error: "User ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -23,15 +23,12 @@ export async function GET(
 
     if (!user) {
       console.error("User not found:", userId);
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const userBookings = await prisma.booking.findMany({
       where: {
-        userId: userId
+        userId: userId,
       },
       include: {
         bookingSeats: {
@@ -47,26 +44,26 @@ export async function GET(
         },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
     console.log("Fetched bookings:", userBookings);
-    return NextResponse.json(userBookings, {status: 200});
+    return NextResponse.json(userBookings, { status: 200 });
   } catch (error) {
     // Log detailed error information
     console.error("Detailed error:", {
       message: error instanceof Error ? error.message : "Unknown error",
       stack: error instanceof Error ? error.stack : undefined,
-      userId: params.userId
+      userId: params.userId,
     });
 
     return NextResponse.json(
-      { 
+      {
         error: "Error fetching user bookings",
-        details: error instanceof Error ? error.message : "Unknown error"
+        details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

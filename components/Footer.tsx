@@ -6,7 +6,7 @@ import { routes } from "@/constants";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import logoImage from '@/public/Images/logo.webp'
+import logoImage from "@/public/Images/logo.webp";
 
 const Footer = () => {
   const pathname = usePathname();

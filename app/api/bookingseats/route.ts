@@ -74,11 +74,11 @@ export async function GET(request: Request) {
       select: {
         seatId: true,
         status: true,
-          booking: {
-            select: {
-              userId: true
-            }
-          }
+        booking: {
+          select: {
+            userId: true,
+          },
+        },
       },
     });
 
@@ -86,7 +86,6 @@ export async function GET(request: Request) {
       seatId: seat.seatId,
       status: seat.status,
       userId: seat.booking?.userId,
-
     }));
     console.log(seatData);
     return NextResponse.json(seatData);
