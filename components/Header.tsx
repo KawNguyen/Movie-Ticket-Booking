@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { Menu, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
@@ -18,6 +18,8 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import SearchBar from "./SearchBar";
 import logoImage from '@/public/Images/logo.webp'
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 
 const Header = () => {
   const pathname = usePathname();
@@ -80,34 +82,24 @@ const Header = () => {
           {session?.user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="p-0 rounded-full hover:bg-muted/0"
-                >
-                  {session.user.image ? (
-                    <Image
-                      src={session.user.image}
-                      alt="User Avatar"
-                      width={32}
-                      height={32}
-                      className="rounded-full border border-gray-500"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 bg-gray-500 rounded-full"></div>
-                  )}
-                </Button>
+                <Avatar className="h-8 w-8 cursor-pointer flex items-center justify-center hover:border">
+                  <AvatarImage 
+                    src={session?.user?.image || undefined} 
+                    alt="Avatar"
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="text-white">
+                    {session?.user?.name?.charAt(0)?.toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => router.push("/profile")}>
+              <DropdownMenuContent align="end" className="bg-black border-none">
+                <DropdownMenuItem className="text-white" onClick={() => router.push("/profile")}>
                   Profile
                 </DropdownMenuItem>
-                {session.user.role === "ADMIN" ? (
-                  <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+                {session.user.role === "ADMIN" && (
+                  <DropdownMenuItem className="text-white" onClick={() => router.push("/dashboard")}>
                     Dashboard
-                  </DropdownMenuItem>
-                ) : (
-                  <DropdownMenuItem onClick={() => router.push("/orders")}>
-                    Order History
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem
