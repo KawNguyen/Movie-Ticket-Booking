@@ -12,6 +12,9 @@ import { BookingDetails } from "./components/BookingDetails";
 import { getShowtimesByMovieId } from "@/lib/api/showtimes";
 import { getSeatsByRoom } from "@/lib/api/seats";
 import { getBookingSeatsByShowtime } from "@/lib/api/booking-seat";
+import  createPaymentUrl  from "@/lib/api/vnpay";
+import  createMoMoUrl  from "@/lib/api/momo";
+
 
 const ROWS = ["A", "B", "C", "D", "E", "F"] as const;
 const COLUMNS = Array.from({ length: 8 }, (_, i) => i + 1);
@@ -46,6 +49,26 @@ const Booking = ({ slug }: { slug: string }) => {
   const socketRef = useRef<any>(null);
 
   useEffect(() => {
+    // Kiểm tra và khôi phục trạng thái đặt vé từ localStorage
+    const savedBooking = localStorage.getItem('selectedSeats');
+    if (savedBooking) {
+      try {
+        const { seats, showtimeId, expiryTime } = JSON.parse(savedBooking);
+        if (Date.now() < expiryTime) {
+          // Nếu chưa hết hạn, khôi phục trạng thái đặt vé
+          const showtime = showTimes.find(st => st.id === showtimeId);
+          if (showtime) {
+            setSelectedShowTime(showtime);
+            setSelectedSeats(seats);
+          }
+        }
+        // Xóa thông tin đã lưu
+        localStorage.removeItem('selectedSeats');
+      } catch (error) {
+        console.error('Error restoring booking state:', error);
+      }
+    }
+
     const fetchShowTimes = async () => {
       if (slug) {
         try {
@@ -302,7 +325,7 @@ const Booking = ({ slug }: { slug: string }) => {
     }
   };
 
-  const handleBookTickets = async () => {
+  const handleBookTickets = async (paymentMethod?: string) => {
     if (!session?.user) {
       toast({
         title: "Error",
@@ -312,49 +335,98 @@ const Booking = ({ slug }: { slug: string }) => {
       router.push("/sign-in");
       return;
     }
-
-    try {
-      const response = await fetch("/api/bookings", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          showtimeId: selectedShowTime?.id,
-          userId: session?.user?.id,
-          status: "BOOKED",
-          bookingSeats: seats
-            .filter((seat) =>
-              selectedSeats.includes(`${seat.row}${seat.number}`),
-            )
-            .map((seat) => ({
-              seatId: seat.id,
-              showtimeId: selectedShowTime?.id,
-            })),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create booking");
+  
+    const amount = selectedSeats.length * (selectedShowTime?.price || 0) * 10000;
+    const returnUrl = `http://localhost:3000/profile`;
+  
+    // Lưu thông tin ghế đã chọn vào localStorage trước khi chuyển hướng
+    localStorage.setItem('selectedSeats', JSON.stringify({
+      seats: selectedSeats,
+      showtimeId: selectedShowTime?.id,
+      expiryTime: Date.now() + 30 * 60 * 1000 // 30 phút
+    }));
+  
+    if (paymentMethod === "qr" || paymentMethod === "napas" || paymentMethod === "visa") {
+      try {
+        let requestType = 'payWithCC';
+        if (paymentMethod === 'qr') {
+          requestType = 'captureWallet';
+        } else if (paymentMethod === 'napas') {
+          requestType = 'payWithATM';
+        } else if (paymentMethod === 'visa') {
+          requestType = 'payWithCC';
+        }
+  
+        const response = await fetch('/api/momo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount,
+            orderInfo: `Booking for Movie Tickets`,
+            returnUrl,
+            ipnUrl: returnUrl,
+            requestType,
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to create payment URL');
+        }
+  
+        const { paymentUrl, bookingId } = await response.json();
+  
+        // Chuyển hướng đến trang thanh toán MoMo
+        window.location.href = paymentUrl;
+  
+        // Khi thanh toán thành công, cập nhật trạng thái của booking thành "BOOKED"
+        const bookingResponse = await fetch(`/api/bookings`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            showtimeId: selectedShowTime?.id,
+            userId: session?.user?.id,
+            status: "BOOKED",
+            bookingSeats: seats
+              .filter((seat) =>
+                selectedSeats.includes(`${seat.row}${seat.number}`),
+              )
+              .map((seat) => ({
+                seatId: seat.id,
+                showtimeId: selectedShowTime?.id,
+                status: "BOOKED",
+              })),
+          }),
+        });
+  
+        if (!bookingResponse.ok) {
+          throw new Error('Failed to update booking status');
+        }
+  
+        toast({
+          title: "Success",
+          description: "Booking confirmed successfully!",
+          variant: null,
+        });
+        
+        // Reset selection
+        setSelectedSeats([]);
+        handleShowtimeSelect(selectedShowTime!);
+  
+      } catch (error) {
+        console.error("[MOMO_ERROR]", error);
+        toast({
+          title: "Error",
+          description: "Failed to create MoMo payment",
+          variant: "destructive",
+        });
       }
-
-      toast({
-        title: "Success",
-        description: "Booking created successfully",
-      });
-
-      // Reset selection
-      setSelectedSeats([]);
-      handleShowtimeSelect(selectedShowTime!);
-    } catch (error) {
-      console.error("[BOOKING_ERROR]", error);
-      toast({
-        title: "Error",
-        description: "Failed to create booking",
-        variant: "destructive",
-      });
     }
   };
+  
 
   useEffect(() => {
     if (!socketRef.current) {

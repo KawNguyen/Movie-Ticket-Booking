@@ -14,7 +14,7 @@ const sidebarItems = [
 ];
 
 export default function DashboardPage() {
-  const [currentView, setCurrentView] = useState("Profile");
+  const [currentView, setCurrentView] = useState("Booking History");
   const { data: session } = useSession();
 
   return (

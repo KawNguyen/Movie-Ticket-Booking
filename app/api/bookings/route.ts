@@ -103,7 +103,15 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (error) {
+      return NextResponse.json(
+        { error: "Invalid JSON format in request body" },
+        { status: 400 }
+      );
+    }
     const { userId, showtimeId, status } = body;
 
     const booking = await prisma.booking.findFirst({

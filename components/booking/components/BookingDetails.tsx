@@ -2,11 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+import React, { useState  } from "react";
 interface BookingDetailsProps {
   selectedSeats: string[];
   selectedShowTime: Showtime | null;
-  onBookTickets: () => void;
+  onBookTickets: (paymentMethod: string) => void;
 }
 
 export function BookingDetails({
@@ -14,6 +16,8 @@ export function BookingDetails({
   selectedShowTime,
   onBookTickets,
 }: BookingDetailsProps) {
+  const [paymentMethod, setPaymentMethod] = useState<string>('vnpay');
+
   return (
     <Card className="bg-gray-700 border-gray-600">
       <CardHeader>
@@ -46,13 +50,25 @@ export function BookingDetails({
             </p>
           </div>
         </div>
-        <Button
-          className="w-full bg-brand-500 hover:bg-brand-700 mt-4"
-          size="lg"
-          onClick={onBookTickets}
-        >
-          Book Tickets
-        </Button>
+        <div className="space-y-4">
+          <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+            <SelectTrigger className="w-full text-white">
+              <SelectValue placeholder="Chọn phương thức thanh toán" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="qr">Quét Mã QR</SelectItem>
+              <SelectItem value="napas">Thẻ Napas nội địa</SelectItem>
+              <SelectItem value="visa">Thẻ Visa quốc tế</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button 
+            className="w-full bg-brand-500 hover:bg-brand-700"
+            size="lg"
+            onClick={() => onBookTickets(paymentMethod)}
+          >
+            Book Tickets
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
