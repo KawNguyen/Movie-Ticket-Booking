@@ -2,8 +2,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from "@/hooks/use-toast";
+import { type NextPage } from 'next';
 
-export default function PaymentSuccess() {
+// Add this export at the bottom of your file
+export const dynamic = 'force-dynamic';
+
+const PaymentSuccess: NextPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -131,3 +135,5 @@ export default function PaymentSuccess() {
     </div>
   );
 }
+
+export default PaymentSuccess;

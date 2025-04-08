@@ -42,10 +42,15 @@ const MovieDetail = () => {
   }
 
   return (
-    <main className="bg-black text-white min-h-screen">
-      <MovieTop movie={movie} cast={movie.credits?.cast?.slice() || []} />
-      <MovieBottom movie={movie} cast={movie.credits?.cast?.slice() || []} />
-    </main>
+    <>
+      <head>
+        <title>{movie.title}</title>
+      </head>
+      <main className="bg-black text-white min-h-screen">
+        <MovieTop movie={movie} cast={movie.credits?.cast?.slice() || []} />
+        <MovieBottom movie={movie} cast={movie.credits?.cast?.slice() || []} />
+      </main>
+    </>
   );
 };
 

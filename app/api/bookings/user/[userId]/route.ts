@@ -29,6 +29,7 @@ export async function GET(
     const userBookings = await prisma.booking.findMany({
       where: {
         userId: userId,
+        status: "BOOKED", // Add this line to filter by status
       },
       include: {
         bookingSeats: {
