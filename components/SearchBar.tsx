@@ -2,7 +2,6 @@
 
 import { useMovieSearch } from "@/hooks/useMovieSearch";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Search, Loader2 } from "lucide-react";
 import {
   Sheet,
@@ -27,9 +26,7 @@ const SearchBar = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="hover:bg-gray-800">
-          <Search className="h-5 w-5" />
-        </Button>
+        <Search size={20} className="text-bunker-600 hover:text-brand-300" />
       </SheetTrigger>
       <SheetContent
         side="top"
