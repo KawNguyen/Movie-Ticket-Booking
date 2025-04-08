@@ -12,8 +12,6 @@ import { BookingDetails } from "./components/BookingDetails";
 import { getShowtimesByMovieId } from "@/lib/api/showtimes";
 import { getSeatsByRoom } from "@/lib/api/seats";
 import { getBookingSeatsByShowtime } from "@/lib/api/booking-seat";
-import  createPaymentUrl  from "@/lib/api/vnpay";
-import  createMoMoUrl  from "@/lib/api/momo";
 
 
 const ROWS = ["A", "B", "C", "D", "E", "F"] as const;
@@ -336,136 +334,71 @@ const Booking = ({ slug }: { slug: string }) => {
       return;
     }
   
-    const amount = selectedSeats.length * (selectedShowTime?.price || 0) * 10000;
-    const returnUrl = `http://localhost:3000/profile`;
+    try {
+      // 1. Lấy tỷ giá USD → VND
+      const response = await fetch('/api/exchange-rate');
+      if (!response.ok) {
+        throw new Error('Failed to fetch exchange rate');
+      }
   
-    // Lưu thông tin ghế đã chọn vào localStorage trước khi chuyển hướng
-    localStorage.setItem('selectedSeats', JSON.stringify({
-      seats: selectedSeats,
-      showtimeId: selectedShowTime?.id,
-      expiryTime: Date.now() + 30 * 60 * 1000 // 30 phút
-    }));
+      const { rate } = await response.json();
   
-    if (paymentMethod === "qr" || paymentMethod === "napas" || paymentMethod === "visa") {
-      try {
+      // 2. Tính tổng số tiền (theo VND)
+      const amount = Math.round(
+        selectedSeats.length * (selectedShowTime?.price || 0) * rate
+      );
+  
+      const returnUrl = `http://localhost:3000/payment-success`;
+  
+      // 3. Lưu thông tin ghế và URL hiện tại vào localStorage
+      localStorage.setItem('selectedSeats', JSON.stringify({
+        seats: selectedSeats,
+        showtimeId: selectedShowTime?.id,
+        movieId: slug,
+        expiryTime: Date.now() + 30 * 60 * 1000, // 30 phút
+        previousUrl: window.location.href // Lưu URL hiện tại
+      }));
+  
+      // 4. Nếu dùng phương thức thanh toán MoMo
+      if (paymentMethod === "qr" || paymentMethod === "napas" || paymentMethod === "visa") {
         let requestType = 'payWithCC';
         if (paymentMethod === 'qr') {
           requestType = 'captureWallet';
         } else if (paymentMethod === 'napas') {
           requestType = 'payWithATM';
-        } else if (paymentMethod === 'visa') {
-          requestType = 'payWithCC';
         }
   
-        const response = await fetch('/api/momo', {
+        const momoRes = await fetch('/api/momo', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             amount,
-            orderInfo: `Booking for Movie Tickets`,
+            orderInfo: 'Booking for Movie Tickets',
             returnUrl,
             ipnUrl: returnUrl,
             requestType,
           }),
         });
   
-        if (!response.ok) {
-          throw new Error('Failed to create payment URL');
+        if (!momoRes.ok) {
+          throw new Error('Failed to create MoMo payment URL');
         }
   
-        const { paymentUrl, bookingId } = await response.json();
-  
-        // Chuyển hướng đến trang thanh toán MoMo
+        const { paymentUrl } = await momoRes.json();
         window.location.href = paymentUrl;
-  
-        // Khi thanh toán thành công, cập nhật trạng thái của booking thành "BOOKED"
-        const bookingResponse = await fetch(`/api/bookings`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            showtimeId: selectedShowTime?.id,
-            userId: session?.user?.id,
-            status: "BOOKED",
-            bookingSeats: seats
-              .filter((seat) =>
-                selectedSeats.includes(`${seat.row}${seat.number}`),
-              )
-              .map((seat) => ({
-                seatId: seat.id,
-                showtimeId: selectedShowTime?.id,
-                status: "BOOKED",
-              })),
-          }),
-        });
-  
-        if (!bookingResponse.ok) {
-          throw new Error('Failed to update booking status');
-        }
-  
-        toast({
-          title: "Success",
-          description: "Booking confirmed successfully!",
-          variant: null,
-        });
-        
-        // Reset selection
-        setSelectedSeats([]);
-        handleShowtimeSelect(selectedShowTime!);
-  
-      } catch (error) {
-        console.error("[MOMO_ERROR]", error);
-        toast({
-          title: "Error",
-          description: "Failed to create MoMo payment",
-          variant: "destructive",
-        });
       }
+    } catch (error) {
+      console.error("[BOOKING_PAYMENT_ERROR]", error);
+      toast({
+        title: "Error",
+        description: "Failed to process payment",
+        variant: "destructive",
+      });
     }
   };
   
-
-  useEffect(() => {
-    if (!socketRef.current) {
-      const socket = io(
-        "https://server-socket-production-8dee.up.railway.app",
-        {
-          transports: ["websocket"],
-        },
-      );
-      socketRef.current = socket;
-    }
-
-    socketRef.current.on("connect", () => {
-      console.log("Socket connected:", socketRef.current?.id);
-    });
-
-    socketRef.current.on(
-      "seat_selected",
-      ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
-        if (selectedShowTime?.id === showtimeId) {
-          setPendingSeats((prev) => [...new Set([...prev, seatId])]);
-        }
-      },
-    );
-
-    socketRef.current.on(
-      "seat_unselected",
-      ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
-        if (selectedShowTime?.id === showtimeId) {
-          setPendingSeats((prev) => prev.filter((id) => id !== seatId));
-        }
-      },
-    );
-
-    return () => {
-      socketRef.current?.disconnect();
-    };
-  }, [selectedShowTime]);
-
   // Update the return statement to show both sections
   return (
     <div className="space-y-8">
@@ -528,6 +461,8 @@ const Booking = ({ slug }: { slug: string }) => {
       )}
     </div>
   );
+  
 };
 
 export default Booking;
+{}

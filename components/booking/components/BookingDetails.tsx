@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import React, { useState } from "react";
 
-import React, { useState  } from "react";
 interface BookingDetailsProps {
   selectedSeats: string[];
   selectedShowTime: Showtime | null;
@@ -16,7 +17,20 @@ export function BookingDetails({
   selectedShowTime,
   onBookTickets,
 }: BookingDetailsProps) {
-  const [paymentMethod, setPaymentMethod] = useState<string>('vnpay');
+  const [paymentMethod, setPaymentMethod] = useState<string>('');
+  const { toast } = useToast();
+
+  const handleBookClick = () => {
+    if (!paymentMethod) {
+      toast({
+        title: "Error",
+        description: "Vui lòng chọn phương thức thanh toán",
+        variant: "destructive",
+      });
+      return;
+    }
+    onBookTickets(paymentMethod);
+  };
 
   return (
     <Card className="bg-gray-700 border-gray-600">
@@ -64,7 +78,7 @@ export function BookingDetails({
           <Button 
             className="w-full bg-brand-500 hover:bg-brand-700"
             size="lg"
-            onClick={() => onBookTickets(paymentMethod)}
+            onClick={handleBookClick}
           >
             Book Tickets
           </Button>

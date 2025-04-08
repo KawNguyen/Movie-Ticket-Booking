@@ -52,17 +52,17 @@ function createChecksum(params: VNPayParams) {
 
 
 // Hàm tạo ngày hết hạn
-function formatVNPayExpireDate() {
-  const date = new Date();
-  const vietnamTime = new Date(date.getTime() + (7 * 60 * 60 * 1000)); // Thêm 7 giờ vào UTC
-  const expireTime = new Date(vietnamTime.getTime() + (1 * 60 * 60 * 1000)); // Cộng thêm 1 giờ
-  const formattedDate = expireTime
-    .toISOString()
-    .replace(/[-T:.Z]/g, '')
-    .slice(0, 14);
+// function formatVNPayExpireDate() {
+//   const date = new Date();
+//   const vietnamTime = new Date(date.getTime() + (7 * 60 * 60 * 1000)); // Thêm 7 giờ vào UTC
+//   const expireTime = new Date(vietnamTime.getTime() + (1 * 60 * 60 * 1000)); // Cộng thêm 1 giờ
+//   const formattedDate = expireTime
+//     .toISOString()
+//     .replace(/[-T:.Z]/g, '')
+//     .slice(0, 14);
 
-  return formattedDate;
-}
+//   return formattedDate;
+// }
 
 // Hàm tạo ngày tạo
 function CreateDate() {
