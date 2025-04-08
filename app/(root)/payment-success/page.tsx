@@ -1,13 +1,11 @@
 "use client";
-import { useEffect, useState } from 'react';
+
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from "@/hooks/use-toast";
-import { type NextPage } from 'next';
+import { Loader2 } from "lucide-react";
 
-// Add this export at the bottom of your file
-export const dynamic = 'force-dynamic';
-
-const PaymentSuccess: NextPage = () => {
+const PaymentSuccessContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -136,4 +134,14 @@ const PaymentSuccess: NextPage = () => {
   );
 }
 
-export default PaymentSuccess;
+export default function PaymentSuccess() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
+  );
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -231,7 +231,6 @@ const Booking = ({ slug }: { slug: string }) => {
 
     try {
       if (isSelected) {
-        // Xoá ghế khi bỏ chọn
         const response = await fetch(`/api/bookingseats/${seat.id}`, {
           method: "DELETE",
         });
@@ -240,14 +239,13 @@ const Booking = ({ slug }: { slug: string }) => {
           throw new Error(await response.text());
         }
 
-        // Cập nhật UI khi bỏ chọn ghế
         setSeats((prev) =>
           prev.map((s) =>
             s.id === seat.id
               ? {
                   ...s,
-                  bookingSeats: [], // Xoá tất cả bookingSeats
-                  isBooked: false, // Đánh dấu ghế là AVAILABLE
+                  bookingSeats: [], 
+                  isBooked: false, 
                 }
               : s,
           ),
@@ -317,7 +315,7 @@ const Booking = ({ slug }: { slug: string }) => {
       );
       toast({
         title: "Error",
-        description: "Ghế này đang được người khác chọn",
+        description: "This seat is currently being selected by another user",
         variant: "destructive",
       });
     }
@@ -398,7 +396,100 @@ const Booking = ({ slug }: { slug: string }) => {
       });
     }
   };
-  
+
+  useEffect(() => {
+    if (!socketRef.current) {
+      const socket = io(
+        "https://server-socket-production-8dee.up.railway.app",
+        {
+          transports: ["websocket"],
+        },
+      );
+      socketRef.current = socket;
+    }
+
+    socketRef.current.on("connect", () => {
+      console.log("Socket connected:", socketRef.current?.id);
+    });
+
+    socketRef.current.on(
+      "seat_selected",
+      ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
+        if (selectedShowTime?.id === showtimeId) {
+          setPendingSeats((prev) => [...new Set([...prev, seatId])]);
+        }
+      },
+    );
+
+    socketRef.current.on(
+      "seat_unselected",
+      ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
+        if (selectedShowTime?.id === showtimeId) {
+          setPendingSeats((prev) => prev.filter((id) => id !== seatId));
+        }
+      },
+    );
+
+    return () => {
+      socketRef.current?.disconnect();
+    };
+  }, [selectedShowTime]);
+
+  useEffect(() => {
+    return () => {
+      selectedSeats.forEach(async (seatId) => {
+        const seat = seats.find(s => `${s.row}${s.number}` === seatId);
+        if (seat) {
+          try {
+            await fetch(`/api/bookingseats/${seat.id}`, {
+              method: "DELETE",
+            });
+            
+            if (socketRef.current) {
+              socketRef.current.emit("unselect_seat", {
+                seatId,
+                showtimeId: selectedShowTime?.id,
+                userId: session?.user?.id,
+              });
+            }
+          } catch (error) {
+            console.error("Cleanup error:", error);
+          }
+        }
+      });
+    };
+  }, [selectedSeats, seats, selectedShowTime, session]);
+
+  const handleSeatTimeout = async (seatId: string) => {
+    const seat = seats.find(s => `${s.row}${s.number}` === seatId);
+    if (seat) {
+      try {
+        await fetch(`/api/bookingseats/${seat.id}`, {
+          method: "DELETE",
+        });
+
+        setSelectedSeats(prev => prev.filter(id => id !== seatId));
+        setPendingSeats(prev => prev.filter(id => id !== seatId));
+
+        if (socketRef.current) {
+          socketRef.current.emit("unselect_seat", {
+            seatId,
+            showtimeId: selectedShowTime?.id,
+            userId: session?.user?.id,
+          });
+        }
+
+        toast({
+          title: "Seat Released",
+          description: `Your selection for seat ${seatId} has expired`,
+          variant: "destructive",
+        });
+      } catch (error) {
+        console.error("Timeout handling error:", error);
+      }
+    }
+  };
+
   // Update the return statement to show both sections
   return (
     <div className="space-y-8">
@@ -453,6 +544,7 @@ const Booking = ({ slug }: { slug: string }) => {
                   selectedSeats={selectedSeats}
                   selectedShowTime={selectedShowTime}
                   onBookTickets={handleBookTickets}
+                  onTimeout={handleSeatTimeout}
                 />
               )}
             </>

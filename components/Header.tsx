@@ -119,7 +119,7 @@ const Header = () => {
               className="bg-brand-800 hover:bg-brand-700 text-white"
               onClick={() => signIn()}
             >
-              Login In
+              Login
             </Button>
           )}
         </div>

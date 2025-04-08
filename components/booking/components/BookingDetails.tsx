@@ -2,20 +2,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import React, { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 interface BookingDetailsProps {
   selectedSeats: string[];
   selectedShowTime: Showtime | null;
-  onBookTickets: (paymentMethod: string) => void;
+  onBookTickets: (paymentMethod: string) => void;  // Updated to accept paymentMethod
+  onTimeout: (seatId: string) => void;
 }
 
 export function BookingDetails({
   selectedSeats,
   selectedShowTime,
   onBookTickets,
+  onTimeout,
 }: BookingDetailsProps) {
   const [paymentMethod, setPaymentMethod] = useState<string>('');
   const { toast } = useToast();
@@ -24,12 +27,48 @@ export function BookingDetails({
     if (!paymentMethod) {
       toast({
         title: "Error",
-        description: "Vui lòng chọn phương thức thanh toán",
+        description: "Please select a payment method",
         variant: "destructive",
       });
       return;
     }
     onBookTickets(paymentMethod);
+  };
+  const [timeLeft, setTimeLeft] = useState<{ [key: string]: number }>({});
+
+  useEffect(() => {
+    selectedSeats.forEach((seatId) => {
+      if (!timeLeft[seatId]) {
+        setTimeLeft((prev) => ({ ...prev, [seatId]: 600 })); 
+      }
+    });
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        const newTimeLeft = { ...prev };
+        let hasChanges = false;
+
+        selectedSeats.forEach((seatId) => {
+          if (newTimeLeft[seatId] > 0) {
+            newTimeLeft[seatId]--;
+            if (newTimeLeft[seatId] === 0) {
+              onTimeout(seatId);
+            }
+            hasChanges = true;
+          }
+        });
+
+        return hasChanges ? newTimeLeft : prev;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [selectedSeats, onTimeout]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -43,13 +82,17 @@ export function BookingDetails({
             <h3 className="text-white font-semibold">Selected Seats</h3>
             <div className="flex flex-wrap gap-2">
               {selectedSeats.map((seatId) => (
-                <Badge
-                  key={seatId}
-                  variant="outline"
-                  className=" text-white border-brand/20"
-                >
-                  {seatId}
-                </Badge>
+                <div key={seatId} className="flex flex-col items-center">
+                  <Badge
+                    variant="outline"
+                    className="text-white border-brand/20"
+                  >
+                    {seatId}
+                  </Badge>
+                  <span className={`text-xs mt-1 ${timeLeft[seatId] < 60 ? 'text-red-400' : 'text-gray-300'}`}>
+                    {formatTime(timeLeft[seatId] || 0)}
+                  </span>
+                </div>
               ))}
             </div>
           </div>
