@@ -2,23 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
+import { useToast } from "@/hooks/use-toast";
+import React, { useState } from "react";
 
 interface BookingDetailsProps {
   selectedSeats: string[];
   selectedShowTime: Showtime | null;
-  onBookTickets: (paymentMethod: string) => void;  // Updated to accept paymentMethod
-  onTimeout: (seatId: string) => void;
+  onBookTickets: (paymentMethod: string) => void;
 }
 
 export function BookingDetails({
   selectedSeats,
   selectedShowTime,
   onBookTickets,
-  onTimeout,
 }: BookingDetailsProps) {
   const [paymentMethod, setPaymentMethod] = useState<string>('');
   const { toast } = useToast();
@@ -33,42 +30,6 @@ export function BookingDetails({
       return;
     }
     onBookTickets(paymentMethod);
-  };
-  const [timeLeft, setTimeLeft] = useState<{ [key: string]: number }>({});
-
-  useEffect(() => {
-    selectedSeats.forEach((seatId) => {
-      if (!timeLeft[seatId]) {
-        setTimeLeft((prev) => ({ ...prev, [seatId]: 600 })); 
-      }
-    });
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        const newTimeLeft = { ...prev };
-        let hasChanges = false;
-
-        selectedSeats.forEach((seatId) => {
-          if (newTimeLeft[seatId] > 0) {
-            newTimeLeft[seatId]--;
-            if (newTimeLeft[seatId] === 0) {
-              onTimeout(seatId);
-            }
-            hasChanges = true;
-          }
-        });
-
-        return hasChanges ? newTimeLeft : prev;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [selectedSeats, onTimeout]);
-
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -89,9 +50,6 @@ export function BookingDetails({
                   >
                     {seatId}
                   </Badge>
-                  <span className={`text-xs mt-1 ${timeLeft[seatId] < 60 ? 'text-red-400' : 'text-gray-300'}`}>
-                    {formatTime(timeLeft[seatId] || 0)}
-                  </span>
                 </div>
               ))}
             </div>
