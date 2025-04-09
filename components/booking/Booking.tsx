@@ -346,8 +346,8 @@ const Booking = ({ slug }: { slug: string }) => {
         selectedSeats.length * (selectedShowTime?.price || 0) * rate
       );
   
-      // const returnUrl = "https://next-movie-ticket-booking.vercel.app/payment-success"
-      const returnUrl = "http://localhost:3000/payment-success"
+      const returnUrl = "https://next-movie-ticket-booking.vercel.app/payment-success"
+      // const returnUrl = "http://localhost:3000/payment-success"
 
       // 3. Lưu thông tin ghế và URL hiện tại vào localStorage
       localStorage.setItem('selectedSeats', JSON.stringify({
