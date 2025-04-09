@@ -5,6 +5,9 @@ import { getBookingsByUserId } from "@/lib/api/bookings";
 import { useEffect, useState } from "react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { QrCode } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Movie {
   id: number;
@@ -64,14 +67,14 @@ export const BookingHistory = ({ session }: { session: any }) => {
           bookingId: booking.id,
         }),
       });
-  
+
       const data = await response.json();
       setQrCodeUrl(data.qrCodeUrl);
     } catch (error) {
       console.error("Failed to fetch QR code:", error);
     }
   };
-  
+
   useEffect(() => {
     const fetchBookings = async () => {
       if (session?.user?.id) {
@@ -91,15 +94,42 @@ export const BookingHistory = ({ session }: { session: any }) => {
   }, [session?.user?.id]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <h2 className="text-2xl font-bold mb-6">Booking History</h2>
+        <div className="space-y-4">
+          {[1, 2, 3].map((index) => (
+            <Card key={index} className="bg-gray-900 text-white border">
+              <CardContent className="p-4 flex flex-col sm:flex-row gap-4 sm:gap-6 h-full">
+                <Skeleton className="w-full sm:w-32 h-48 bg-gray-800" />
+                <div className="flex-1 space-y-4">
+                  <Skeleton className="h-6 w-3/4 bg-gray-800" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-full bg-gray-800" />
+                    <Skeleton className="h-4 w-full bg-gray-800" />
+                    <Skeleton className="h-4 w-full bg-gray-800" />
+                    <Skeleton className="h-4 w-full bg-gray-800" />
+                    <Skeleton className="h-4 w-full bg-gray-800" />
+                    <Skeleton className="h-4 w-full bg-gray-800" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Booking History</h2>
-      <div className="space-y-4 cursor-pointer hover:-translate-y-1">
+      <div className="space-y-4">
         {bookings.map((booking) => (
-          <Card key={booking.id} className="bg-gray-900 text-white border" onClick={() => handleBookingClick(booking)}>
+          <Card
+            key={booking.id}
+            className="bg-gray-900 text-white border"
+          >
             <CardContent className="p-4 flex flex-col sm:flex-row gap-4 sm:gap-6 h-full">
               <div className="w-full sm:w-32 overflow-hidden rounded-lg h-full">
                 <AspectRatio ratio={isDesktop ? 2 / 3 : 16 / 9}>
@@ -157,15 +187,24 @@ export const BookingHistory = ({ session }: { session: any }) => {
                   </div>
                   <div className="flex flex-row justify-between sm:items-center gap-1">
                     <span className="font-medium">Status:</span>
-                    <Badge
-                      variant={
-                        booking.status === "COMPLETED"
-                          ? "default"
-                          : "destructive"
-                      }
-                    >
-                      {booking.status}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant={
+                          booking.status === "COMPLETED"
+                            ? "default"
+                            : "destructive"
+                        }
+                      >
+                        {booking.status}
+                      </Badge>
+                      <QrCode
+                        className="w-5 h-5 cursor-pointer hover:text-green-500 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleBookingClick(booking);
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -174,36 +213,42 @@ export const BookingHistory = ({ session }: { session: any }) => {
         ))}
       </div>
       {selectedBooking && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4" onClick={() => {
-    setSelectedBooking(null);
-    setQrCodeUrl(null);
-  }}>
-    <div className="bg-gray-900 p-6 rounded-lg max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-      {qrCodeUrl ? (
-        <div className="relative w-full aspect-square">
-          <Image
-            src={qrCodeUrl}
-            alt="QR Code"
-            fill
-            className="rounded-lg object-contain"
-          />
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center p-4"
+          onClick={() => {
+            setSelectedBooking(null);
+            setQrCodeUrl(null);
+          }}
+        >
+          <div
+            className="bg-gray-900 p-6 rounded-lg max-w-md w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {qrCodeUrl ? (
+              <div className="relative w-full aspect-square">
+                <Image
+                  src={qrCodeUrl}
+                  alt="QR Code"
+                  fill
+                  className="rounded-lg object-contain"
+                />
+              </div>
+            ) : (
+              <div className="text-white text-center">Loading QR code...</div>
+            )}
+            <Button
+              variant="destructive"
+              className="mt-4 w-full"
+              onClick={() => {
+                setSelectedBooking(null);
+                setQrCodeUrl(null);
+              }}
+            >
+              Close
+            </Button>
+          </div>
         </div>
-      ) : (
-        <div className="text-white text-center">Đang tải mã QR...</div>
       )}
-      <button
-        className="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-        onClick={() => {
-          setSelectedBooking(null);
-          setQrCodeUrl(null);
-        }}
-      >
-        Đóng
-      </button>
-    </div>
-  </div>
-)}
-
     </div>
   );
 };

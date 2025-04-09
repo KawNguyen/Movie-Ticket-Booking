@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface User {
   name: string;
@@ -26,6 +27,7 @@ interface ProfileProps {
 }
 
 export const Profile = ({ user }: ProfileProps) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [profileData, setProfileData] = useState<User>({
     name: user.name || "Anonymous",
     email: user.email || "",
@@ -50,6 +52,43 @@ export const Profile = ({ user }: ProfileProps) => {
   const onCancel = (field: keyof User) => {
     setIsEditing((prev) => ({ ...prev, [field]: false }));
   };
+
+  useEffect(() => {
+    // Simulate loading for demo purposes
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div>
+        <h2 className="text-2xl font-semibold mb-6">Personal Information</h2>
+        <Card className="mt-6 bg-gray-900 text-white p-4 sm:p-6">
+          <CardContent>
+            <div className="flex flex-col sm:flex-row sm:space-x-8 space-y-6 sm:space-y-0">
+              <div className="relative flex justify-center">
+                <Skeleton className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gray-800" />
+                <Skeleton className="absolute -bottom-2 w-24 h-8 bg-gray-800" />
+              </div>
+
+              <div className="flex-1 space-y-4 sm:space-y-6">
+                <div>
+                  <Skeleton className="h-6 w-24 mb-2 bg-gray-800" />
+                  <Skeleton className="h-8 w-2/3 bg-gray-800" />
+                </div>
+
+                <div>
+                  <Skeleton className="h-6 w-24 mb-2 bg-gray-800" />
+                  <Skeleton className="h-8 w-2/3 bg-gray-800" />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div>
