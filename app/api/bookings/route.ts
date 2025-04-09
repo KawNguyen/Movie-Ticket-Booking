@@ -110,7 +110,7 @@ export async function PUT(request: Request) {
       console.error("Error parsing JSON:", error);
       return NextResponse.json(
         { error: "Invalid JSON format in request body" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const { userId, showtimeId, status } = body;

@@ -2,7 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import React, { useState, useEffect } from "react";
 
@@ -19,7 +25,7 @@ export function BookingDetails({
   onBookTickets,
   onTimeout,
 }: BookingDetailsProps) {
-  const [paymentMethod, setPaymentMethod] = useState<string>('');
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [timeLeft, setTimeLeft] = useState(600); // 5 minutes in seconds
   const { toast } = useToast();
 
@@ -48,7 +54,7 @@ export function BookingDetails({
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
   const handleBookClick = () => {
@@ -112,7 +118,7 @@ export function BookingDetails({
               <SelectItem value="visa">Thẻ Visa quốc tế</SelectItem>
             </SelectContent>
           </Select>
-          <Button 
+          <Button
             className="w-full bg-brand-500 hover:bg-brand-700"
             size="lg"
             onClick={handleBookClick}

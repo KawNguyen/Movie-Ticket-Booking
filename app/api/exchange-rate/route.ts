@@ -6,7 +6,7 @@ export async function GET() {
 
   try {
     const response = await fetch(
-      `https://api.exchangerate.host/live?access_key=${accessKey}`
+      `https://api.exchangerate.host/live?access_key=${accessKey}`,
     );
 
     const data = await response.json();

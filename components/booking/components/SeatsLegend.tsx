@@ -11,9 +11,14 @@ export function SeatsLegend() {
   return (
     <div className="flex w-full  gap-3 sm:gap-6 mt-8">
       {LEGEND_ITEMS.map((item) => (
-        <div key={item.text} className="flex flex-col items-center gap-2 w-[25%]">
+        <div
+          key={item.text}
+          className="flex flex-col items-center gap-2 w-[25%]"
+        >
           <Badge variant="outline" className={`${item.color} w-6 h-6 p-0`} />
-          <span className="text-gray-300 text-sm sm:text-base text-center">{item.text}</span>
+          <span className="text-gray-300 text-sm sm:text-base text-center">
+            {item.text}
+          </span>
         </div>
       ))}
     </div>

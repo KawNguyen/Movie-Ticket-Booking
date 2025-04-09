@@ -126,10 +126,7 @@ export const BookingHistory = ({ session }: { session: any }) => {
       <h2 className="text-2xl font-bold mb-6">Booking History</h2>
       <div className="space-y-4">
         {bookings.map((booking) => (
-          <Card
-            key={booking.id}
-            className="bg-gray-900 text-white border"
-          >
+          <Card key={booking.id} className="bg-gray-900 text-white border">
             <CardContent className="p-4 flex flex-col sm:flex-row gap-4 sm:gap-6 h-full">
               <div className="w-full sm:w-32 overflow-hidden rounded-lg h-full">
                 <AspectRatio ratio={isDesktop ? 2 / 3 : 16 / 9}>

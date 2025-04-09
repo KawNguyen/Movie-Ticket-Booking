@@ -28,7 +28,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      
       <body className={`${heebo.className} antialiased bg-black text-white`}>
         <Toaster />
         <Providers>
