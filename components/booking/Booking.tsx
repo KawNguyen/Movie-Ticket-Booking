@@ -396,6 +396,45 @@ const Booking = ({ slug }: { slug: string }) => {
       });
     }
   };
+
+  const handleTimeout = async () => {
+    setSelectedSeats([]);
+
+    try {
+      for (const seat of seats) {
+        if (seat.bookingSeats?.some(bs => bs.userId === session?.user?.id)) {
+          await fetch(`/api/bookingseats/${seat.id}`, {
+            method: "DELETE",
+          });
+        }
+      }
+
+      // Update seats state
+      setSeats(prev =>
+        prev.map(s => ({
+          ...s,
+          bookingSeats: s.bookingSeats.filter(bs => bs.userId !== session?.user?.id),
+        }))
+      );
+
+      // Emit socket events for each unselected seat
+      selectedSeats.forEach(seatId => {
+        socketRef.current?.emit("unselect_seat", {
+          seatId,
+          showtimeId: selectedShowTime?.id,
+          userId: session?.user?.id,
+        });
+      });
+
+    } catch (error) {
+      console.error("[TIMEOUT_CLEAR_ERROR]", error);
+      toast({
+        title: "Error",
+        description: "Failed to clear expired seats",
+        variant: "destructive",
+      });
+    }
+  };
   
   return (
     <div className="space-y-8">
@@ -450,6 +489,7 @@ const Booking = ({ slug }: { slug: string }) => {
                   selectedSeats={selectedSeats}
                   selectedShowTime={selectedShowTime}
                   onBookTickets={handleBookTickets}
+                  onTimeout={handleTimeout}
                 />
               )}
             </>

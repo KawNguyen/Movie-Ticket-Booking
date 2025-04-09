@@ -4,21 +4,52 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface BookingDetailsProps {
   selectedSeats: string[];
   selectedShowTime: Showtime | null;
   onBookTickets: (paymentMethod: string) => void;
+  onTimeout: () => void;
 }
 
 export function BookingDetails({
   selectedSeats,
   selectedShowTime,
   onBookTickets,
+  onTimeout,
 }: BookingDetailsProps) {
   const [paymentMethod, setPaymentMethod] = useState<string>('');
+  const [timeLeft, setTimeLeft] = useState(30); // 5 minutes in seconds
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (selectedSeats.length > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(timer);
+            onTimeout();
+            toast({
+              title: "Time's up!",
+              description: "Your seat selection has expired",
+              variant: "destructive",
+            });
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [selectedSeats, onTimeout, toast]);
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   const handleBookClick = () => {
     if (!paymentMethod) {
@@ -35,7 +66,12 @@ export function BookingDetails({
   return (
     <Card className="bg-gray-700 border-gray-600">
       <CardHeader>
-        <CardTitle className="text-white">Booking Summary</CardTitle>
+        <CardTitle className="text-white flex justify-between items-center">
+          <span>Booking Summary</span>
+          <span className="text-sm font-normal">
+            Time remaining: {formatTime(timeLeft)}
+          </span>
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex justify-between items-start">
