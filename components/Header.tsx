@@ -94,7 +94,7 @@ const Header = () => {
               <DropdownMenuContent align="end" className="bg-black border-none">
                 <DropdownMenuItem
                   className="text-white"
-                  onClick={() => router.push("/profile")}
+                  onClick={() => router.push("/profile?tab=Profile")}
                 >
                   Profile
                 </DropdownMenuItem>
@@ -187,7 +187,7 @@ const Header = () => {
                     >
                       <DropdownMenuItem
                         onClick={() => {
-                          router.push("/profile");
+                          router.push("/profile?tab=Profile");
                           setIsSheetOpen(false);
                         }}
                         className="text-white"

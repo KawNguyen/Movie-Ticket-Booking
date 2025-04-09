@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { BookingHistory } from "@/components/profile/BookingHistory";
 import { Profile } from "@/components/profile/Profile";
 import { useSession } from "next-auth/react";
@@ -13,9 +14,19 @@ const sidebarItems = [
   { name: "Booking History", icon: <History size={18} /> },
 ];
 
-export default function DashboardPage() {
+function ProfileContent() {
+  const searchParams = useSearchParams();
   const [currentView, setCurrentView] = useState("Profile");
   const { data: session } = useSession();
+
+  useEffect(() => {
+    const tab = searchParams?.get("tab");
+    if (tab === "Profile") {
+      setCurrentView("Profile");
+    } else if (tab === "Booking History") {
+      setCurrentView("Booking History");
+    }
+  }, [searchParams]);
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen container mx-auto px-4">
@@ -29,6 +40,7 @@ export default function DashboardPage() {
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0 bg-black">
             <Sidebar
+              urlMother="profile"
               navItems={sidebarItems}
               activeTab={currentView}
               setActiveTab={setCurrentView}
@@ -40,6 +52,7 @@ export default function DashboardPage() {
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar
+          urlMother="profile"
           navItems={sidebarItems}
           activeTab={currentView}
           setActiveTab={setCurrentView}
@@ -56,5 +69,19 @@ export default function DashboardPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white" />
+        </div>
+      }
+    >
+      <ProfileContent />
+    </Suspense>
   );
 }

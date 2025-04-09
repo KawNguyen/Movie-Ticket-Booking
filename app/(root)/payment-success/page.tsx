@@ -10,7 +10,7 @@ function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const {data: session} = useSession();
   const { toast } = useToast();
-  const [countdown, setCountdown] = useState(3);
+  const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
     const resultCode = searchParams?.get("resultCode");
@@ -18,8 +18,8 @@ function PaymentSuccessContent() {
 
     if (resultCode !== "0") {
       toast({
-        title: "Thanh toán thất bại",
-        description: "Giao dịch đã bị hủy hoặc thất bại",
+        title: "Payment Failed",
+        description: "The transaction was cancelled or failed",
         variant: "destructive",
       });
 
@@ -27,7 +27,7 @@ function PaymentSuccessContent() {
         ? JSON.parse(bookingData)
         : { movieId: "" };
 
-      // Countdown timer cho trường hợp thất bại
+      // Countdown timer for failure case
       const timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
@@ -92,16 +92,16 @@ function PaymentSuccessContent() {
         toast({
           title: "Success",
           description: "Your booking is confirmed!",
+          variant: "destructive",
         });
 
         localStorage.removeItem("selectedSeats");
 
-        // Countdown timer cho trường hợp thành công
         const timer = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) {
               clearInterval(timer);
-              router.push("/profile");
+              router.push("/profile?tab=Booking%20History");
               return 0;
             }
             return prev - 1;
@@ -120,19 +120,19 @@ function PaymentSuccessContent() {
     };
 
     fetchSeats();
-  }, [router, searchParams, toast]); // Add all dependencies here
+  }, [router, searchParams, toast, session?.user?.id]); // Added session?.user?.id
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-10 text-center">
       <h1 className="text-3xl font-bold text-white dark:text-white">
         {searchParams?.get("resultCode") === "0"
-          ? "🎉 Thanh toán thành công!"
-          : "❌ Thanh toán thất bại!"}
+          ? "🎉 Payment Successful!"
+          : "❌ Payment Failed!"}
       </h1>
       <p className="mt-4 text-gray-600 dark:text-gray-400">
         {searchParams?.get("resultCode") === "0"
-          ? `Bạn sẽ được chuyển đến trang lịch sử đặt vé sau ${countdown} giây...`
-          : `Bạn sẽ được chuyển đến trang đặt vé sau ${countdown} giây...`}
+          ? `You will be redirected to booking history in ${countdown} seconds...`
+          : `You will be redirected to booking page in ${countdown} seconds...`}
       </p>
     </div>
   );

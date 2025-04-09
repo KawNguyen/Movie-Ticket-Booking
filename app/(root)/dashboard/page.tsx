@@ -18,6 +18,7 @@ const Dashboard = () => {
   return (
     <main className="container flex w-full">
       <Sidebar
+        urlMother="dashboard"
         navItems={sidebarItems}
         setActiveTab={setCurrentTab}
         activeTab={currentTab}
