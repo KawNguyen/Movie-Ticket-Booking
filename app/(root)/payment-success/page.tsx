@@ -16,7 +16,6 @@ function PaymentSuccessContent() {
     const resultCode = searchParams?.get("resultCode");
     const bookingData = localStorage.getItem("selectedSeats");
 
-    // Kiểm tra kết quả thanh toán từ MoMo
     if (resultCode !== "0") {
       toast({
         title: "Thanh toán thất bại",
