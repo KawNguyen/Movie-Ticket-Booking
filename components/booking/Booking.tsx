@@ -553,8 +553,6 @@ const Booking = ({ slug }: { slug: string }) => {
       )}
     </div>
   );
-  
 };
 
 export default Booking;
-{}
