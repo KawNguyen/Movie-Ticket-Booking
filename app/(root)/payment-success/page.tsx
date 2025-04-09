@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, use } from "react";
+import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
