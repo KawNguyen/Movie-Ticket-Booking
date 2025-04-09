@@ -20,7 +20,7 @@ export function BookingDetails({
   onTimeout,
 }: BookingDetailsProps) {
   const [paymentMethod, setPaymentMethod] = useState<string>('');
-  const [timeLeft, setTimeLeft] = useState(30); // 5 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(600); // 5 minutes in seconds
   const { toast } = useToast();
 
   useEffect(() => {
