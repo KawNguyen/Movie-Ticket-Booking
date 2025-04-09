@@ -1,9 +1,10 @@
 "use client";
+import { Suspense } from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from "@/hooks/use-toast";
 
-export default function PaymentSuccess() {
+function PaymentSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -129,5 +130,18 @@ export default function PaymentSuccess() {
         }
       </p>
     </div>
+  );
+}
+
+export default function PaymentSuccess() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col items-center justify-center p-10 text-center">
+        <h1 className="text-3xl font-bold text-white">Processing payment...</h1>
+        <p className="mt-4 text-gray-400">Please wait while we confirm your payment</p>
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }
