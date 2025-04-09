@@ -74,7 +74,7 @@ function PaymentSuccessContent() {
         }));
 
         const res = await fetch("/api/bookings", {
-          method: "PUT",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
