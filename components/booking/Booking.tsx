@@ -13,6 +13,7 @@ import { getShowtimesByMovieId } from "@/lib/api/showtimes";
 import { getSeatsByRoom } from "@/lib/api/seats";
 import { getBookingSeatsByShowtime } from "@/lib/api/booking-seat";
 
+
 const ROWS = ["A", "B", "C", "D", "E", "F"] as const;
 const COLUMNS = Array.from({ length: 8 }, (_, i) => i + 1);
 
@@ -46,6 +47,26 @@ const Booking = ({ slug }: { slug: string }) => {
   const socketRef = useRef<any>(null);
 
   useEffect(() => {
+    // Kiểm tra và khôi phục trạng thái đặt vé từ localStorage
+    const savedBooking = localStorage.getItem('selectedSeats');
+    if (savedBooking) {
+      try {
+        const { seats, showtimeId, expiryTime } = JSON.parse(savedBooking);
+        if (Date.now() < expiryTime) {
+          // Nếu chưa hết hạn, khôi phục trạng thái đặt vé
+          const showtime = showTimes.find(st => st.id === showtimeId);
+          if (showtime) {
+            setSelectedShowTime(showtime);
+            setSelectedSeats(seats);
+          }
+        }
+        // Xóa thông tin đã lưu
+        localStorage.removeItem('selectedSeats');
+      } catch (error) {
+        console.error('Error restoring booking state:', error);
+      }
+    }
+
     const fetchShowTimes = async () => {
       if (slug) {
         try {
@@ -300,7 +321,7 @@ const Booking = ({ slug }: { slug: string }) => {
     }
   };
 
-  const handleBookTickets = async () => {
+  const handleBookTickets = async (paymentMethod?: string) => {
     if (!session?.user) {
       toast({
         title: "Error",
@@ -310,144 +331,72 @@ const Booking = ({ slug }: { slug: string }) => {
       router.push("/sign-in");
       return;
     }
-
+  
     try {
-      const response = await fetch("/api/bookings", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          showtimeId: selectedShowTime?.id,
-          userId: session?.user?.id,
-          status: "BOOKED",
-          bookingSeats: seats
-            .filter((seat) =>
-              selectedSeats.includes(`${seat.row}${seat.number}`),
-            )
-            .map((seat) => ({
-              seatId: seat.id,
-              showtimeId: selectedShowTime?.id,
-            })),
-        }),
-      });
-
+      // 1. Lấy tỷ giá USD → VND
+      const response = await fetch('/api/exchange-rate');
       if (!response.ok) {
-        throw new Error("Failed to create booking");
+        throw new Error('Failed to fetch exchange rate');
       }
-
-      toast({
-        title: "Success",
-        description: "Booking created successfully",
-      });
-
-      // Reset selection
-      setSelectedSeats([]);
-      handleShowtimeSelect(selectedShowTime!);
+  
+      const { rate } = await response.json();
+  
+      // 2. Tính tổng số tiền (theo VND)
+      const amount = Math.round(
+        selectedSeats.length * (selectedShowTime?.price || 0) * rate
+      );
+  
+      const returnUrl = `http://localhost:3000/payment-success`;
+  
+      // 3. Lưu thông tin ghế và URL hiện tại vào localStorage
+      localStorage.setItem('selectedSeats', JSON.stringify({
+        seats: selectedSeats,
+        showtimeId: selectedShowTime?.id,
+        movieId: slug,
+        expiryTime: Date.now() + 30 * 60 * 1000, // 30 phút
+        previousUrl: window.location.href // Lưu URL hiện tại
+      }));
+  
+      // 4. Nếu dùng phương thức thanh toán MoMo
+      if (paymentMethod === "qr" || paymentMethod === "napas" || paymentMethod === "visa") {
+        let requestType = 'payWithCC';
+        if (paymentMethod === 'qr') {
+          requestType = 'captureWallet';
+        } else if (paymentMethod === 'napas') {
+          requestType = 'payWithATM';
+        }
+  
+        const momoRes = await fetch('/api/momo', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount,
+            orderInfo: 'Booking for Movie Tickets',
+            returnUrl,
+            ipnUrl: returnUrl,
+            requestType,
+          }),
+        });
+  
+        if (!momoRes.ok) {
+          throw new Error('Failed to create MoMo payment URL');
+        }
+  
+        const { paymentUrl } = await momoRes.json();
+        window.location.href = paymentUrl;
+      }
     } catch (error) {
-      console.error("[BOOKING_ERROR]", error);
+      console.error("[BOOKING_PAYMENT_ERROR]", error);
       toast({
         title: "Error",
-        description: "Failed to create booking",
+        description: "Failed to process payment",
         variant: "destructive",
       });
     }
   };
-
-  useEffect(() => {
-    if (!socketRef.current) {
-      const socket = io(
-        "https://server-socket-production-8dee.up.railway.app",
-        {
-          transports: ["websocket"],
-        },
-      );
-      socketRef.current = socket;
-    }
-
-    socketRef.current.on("connect", () => {
-      console.log("Socket connected:", socketRef.current?.id);
-    });
-
-    socketRef.current.on(
-      "seat_selected",
-      ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
-        if (selectedShowTime?.id === showtimeId) {
-          setPendingSeats((prev) => [...new Set([...prev, seatId])]);
-        }
-      },
-    );
-
-    socketRef.current.on(
-      "seat_unselected",
-      ({ seatId, showtimeId }: { seatId: string; showtimeId: number }) => {
-        if (selectedShowTime?.id === showtimeId) {
-          setPendingSeats((prev) => prev.filter((id) => id !== seatId));
-        }
-      },
-    );
-
-    return () => {
-      socketRef.current?.disconnect();
-    };
-  }, [selectedShowTime]);
-
-  useEffect(() => {
-    return () => {
-      selectedSeats.forEach(async (seatId) => {
-        const seat = seats.find(s => `${s.row}${s.number}` === seatId);
-        if (seat) {
-          try {
-            await fetch(`/api/bookingseats/${seat.id}`, {
-              method: "DELETE",
-            });
-            
-            if (socketRef.current) {
-              socketRef.current.emit("unselect_seat", {
-                seatId,
-                showtimeId: selectedShowTime?.id,
-                userId: session?.user?.id,
-              });
-            }
-          } catch (error) {
-            console.error("Cleanup error:", error);
-          }
-        }
-      });
-    };
-  }, [selectedSeats, seats, selectedShowTime, session]);
-
-  const handleSeatTimeout = async (seatId: string) => {
-    const seat = seats.find(s => `${s.row}${s.number}` === seatId);
-    if (seat) {
-      try {
-        await fetch(`/api/bookingseats/${seat.id}`, {
-          method: "DELETE",
-        });
-
-        setSelectedSeats(prev => prev.filter(id => id !== seatId));
-        setPendingSeats(prev => prev.filter(id => id !== seatId));
-
-        if (socketRef.current) {
-          socketRef.current.emit("unselect_seat", {
-            seatId,
-            showtimeId: selectedShowTime?.id,
-            userId: session?.user?.id,
-          });
-        }
-
-        toast({
-          title: "Seat Released",
-          description: `Your selection for seat ${seatId} has expired`,
-          variant: "destructive",
-        });
-      } catch (error) {
-        console.error("Timeout handling error:", error);
-      }
-    }
-  };
-
-  // Update the return statement to show both sections
+  
   return (
     <div className="space-y-8">
       <section className="bg-gray-800 rounded-lg p-6">
@@ -501,7 +450,6 @@ const Booking = ({ slug }: { slug: string }) => {
                   selectedSeats={selectedSeats}
                   selectedShowTime={selectedShowTime}
                   onBookTickets={handleBookTickets}
-                  onTimeout={handleSeatTimeout}
                 />
               )}
             </>
@@ -510,6 +458,8 @@ const Booking = ({ slug }: { slug: string }) => {
       )}
     </div>
   );
+  
 };
 
 export default Booking;
+{}

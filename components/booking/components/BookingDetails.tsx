@@ -2,56 +2,34 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import React, { useState } from "react";
 
 interface BookingDetailsProps {
   selectedSeats: string[];
   selectedShowTime: Showtime | null;
-  onBookTickets: () => void;
-  onTimeout: (seatId: string) => void;
+  onBookTickets: (paymentMethod: string) => void;
 }
 
 export function BookingDetails({
   selectedSeats,
   selectedShowTime,
   onBookTickets,
-  onTimeout,
 }: BookingDetailsProps) {
-  const [timeLeft, setTimeLeft] = useState<{ [key: string]: number }>({});
+  const [paymentMethod, setPaymentMethod] = useState<string>('');
+  const { toast } = useToast();
 
-  useEffect(() => {
-    selectedSeats.forEach((seatId) => {
-      if (!timeLeft[seatId]) {
-        setTimeLeft((prev) => ({ ...prev, [seatId]: 600 })); 
-      }
-    });
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        const newTimeLeft = { ...prev };
-        let hasChanges = false;
-
-        selectedSeats.forEach((seatId) => {
-          if (newTimeLeft[seatId] > 0) {
-            newTimeLeft[seatId]--;
-            if (newTimeLeft[seatId] === 0) {
-              onTimeout(seatId);
-            }
-            hasChanges = true;
-          }
-        });
-
-        return hasChanges ? newTimeLeft : prev;
+  const handleBookClick = () => {
+    if (!paymentMethod) {
+      toast({
+        title: "Error",
+        description: "Vui lòng chọn phương thức thanh toán",
+        variant: "destructive",
       });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [selectedSeats, onTimeout]);
-
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+      return;
+    }
+    onBookTickets(paymentMethod);
   };
 
   return (
@@ -72,9 +50,6 @@ export function BookingDetails({
                   >
                     {seatId}
                   </Badge>
-                  <span className={`text-xs mt-1 ${timeLeft[seatId] < 60 ? 'text-red-400' : 'text-gray-300'}`}>
-                    {formatTime(timeLeft[seatId] || 0)}
-                  </span>
                 </div>
               ))}
             </div>
@@ -90,13 +65,25 @@ export function BookingDetails({
             </p>
           </div>
         </div>
-        <Button
-          className="w-full bg-brand-500 hover:bg-brand-700 mt-4"
-          size="lg"
-          onClick={onBookTickets}
-        >
-          Book Tickets
-        </Button>
+        <div className="space-y-4">
+          <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+            <SelectTrigger className="w-full text-white">
+              <SelectValue placeholder="Chọn phương thức thanh toán" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="qr">Quét Mã QR</SelectItem>
+              <SelectItem value="napas">Thẻ Napas nội địa</SelectItem>
+              <SelectItem value="visa">Thẻ Visa quốc tế</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button 
+            className="w-full bg-brand-500 hover:bg-brand-700"
+            size="lg"
+            onClick={handleBookClick}
+          >
+            Book Tickets
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
