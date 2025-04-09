@@ -13,6 +13,7 @@ import { getShowtimesByMovieId } from "@/lib/api/showtimes";
 import { getSeatsByRoom } from "@/lib/api/seats";
 import { getBookingSeatsByShowtime } from "@/lib/api/booking-seat";
 
+
 const ROWS = ["A", "B", "C", "D", "E", "F"] as const;
 const COLUMNS = Array.from({ length: 8 }, (_, i) => i + 1);
 
@@ -47,22 +48,22 @@ const Booking = ({ slug }: { slug: string }) => {
 
   useEffect(() => {
     // Kiểm tra và khôi phục trạng thái đặt vé từ localStorage
-    const savedBooking = localStorage.getItem("selectedSeats");
+    const savedBooking = localStorage.getItem('selectedSeats');
     if (savedBooking) {
       try {
         const { seats, showtimeId, expiryTime } = JSON.parse(savedBooking);
         if (Date.now() < expiryTime) {
           // Nếu chưa hết hạn, khôi phục trạng thái đặt vé
-          const showtime = showTimes.find((st) => st.id === showtimeId);
+          const showtime = showTimes.find(st => st.id === showtimeId);
           if (showtime) {
             setSelectedShowTime(showtime);
             setSelectedSeats(seats);
           }
         }
         // Xóa thông tin đã lưu
-        localStorage.removeItem("selectedSeats");
+        localStorage.removeItem('selectedSeats');
       } catch (error) {
-        console.error("Error restoring booking state:", error);
+        console.error('Error restoring booking state:', error);
       }
     }
 
@@ -243,8 +244,8 @@ const Booking = ({ slug }: { slug: string }) => {
             s.id === seat.id
               ? {
                   ...s,
-                  bookingSeats: [],
-                  isBooked: false,
+                  bookingSeats: [], 
+                  isBooked: false, 
                 }
               : s,
           ),
@@ -330,66 +331,61 @@ const Booking = ({ slug }: { slug: string }) => {
       router.push("/sign-in");
       return;
     }
-
+  
     try {
       // 1. Lấy tỷ giá USD → VND
-      const response = await fetch("/api/exchange-rate");
+      const response = await fetch('/api/exchange-rate');
       if (!response.ok) {
-        throw new Error("Failed to fetch exchange rate");
+        throw new Error('Failed to fetch exchange rate');
       }
-
+  
       const { rate } = await response.json();
-
+  
       // 2. Tính tổng số tiền (theo VND)
       const amount = Math.round(
-        selectedSeats.length * (selectedShowTime?.price || 0) * rate,
+        selectedSeats.length * (selectedShowTime?.price || 0) * rate
       );
-
-      const returnUrl = `https://next-movie-ticket-booking.vercel.app/payment-success`;
-
+  
+      const returnUrl = process.env.VERCEL_URL 
+        ? `https://${process.env.VERCEL_URL}/payment-success`
+        : 'http://localhost:3000/payment-success';
+  
       // 3. Lưu thông tin ghế và URL hiện tại vào localStorage
-      localStorage.setItem(
-        "selectedSeats",
-        JSON.stringify({
-          seats: selectedSeats,
-          showtimeId: selectedShowTime?.id,
-          movieId: slug,
-          expiryTime: Date.now() + 30 * 60 * 1000, // 30 phút
-          previousUrl: window.location.href, // Lưu URL hiện tại
-        }),
-      );
-
+      localStorage.setItem('selectedSeats', JSON.stringify({
+        seats: selectedSeats,
+        showtimeId: selectedShowTime?.id,
+        movieId: slug,
+        expiryTime: Date.now() + 30 * 60 * 1000, // 30 phút
+        previousUrl: window.location.href // Lưu URL hiện tại
+      }));
+  
       // 4. Nếu dùng phương thức thanh toán MoMo
-      if (
-        paymentMethod === "qr" ||
-        paymentMethod === "napas" ||
-        paymentMethod === "visa"
-      ) {
-        let requestType = "payWithCC";
-        if (paymentMethod === "qr") {
-          requestType = "captureWallet";
-        } else if (paymentMethod === "napas") {
-          requestType = "payWithATM";
+      if (paymentMethod === "qr" || paymentMethod === "napas" || paymentMethod === "visa") {
+        let requestType = 'payWithCC';
+        if (paymentMethod === 'qr') {
+          requestType = 'captureWallet';
+        } else if (paymentMethod === 'napas') {
+          requestType = 'payWithATM';
         }
-
-        const momoRes = await fetch("/api/momo", {
-          method: "POST",
+  
+        const momoRes = await fetch('/api/momo', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             amount,
-            orderInfo: "Booking for Movie Tickets",
+            orderInfo: 'Booking for Movie Tickets',
             returnUrl,
             ipnUrl: returnUrl,
             requestType,
           }),
         });
-
+  
         if (!momoRes.ok) {
-          throw new Error("Failed to create MoMo payment URL");
+          throw new Error('Failed to create MoMo payment URL');
         }
-
+  
         const { paymentUrl } = await momoRes.json();
         window.location.href = paymentUrl;
       }
@@ -408,7 +404,7 @@ const Booking = ({ slug }: { slug: string }) => {
 
     try {
       for (const seat of seats) {
-        if (seat.bookingSeats?.some((bs) => bs.userId === session?.user?.id)) {
+        if (seat.bookingSeats?.some(bs => bs.userId === session?.user?.id)) {
           await fetch(`/api/bookingseats/${seat.id}`, {
             method: "DELETE",
           });
@@ -416,23 +412,22 @@ const Booking = ({ slug }: { slug: string }) => {
       }
 
       // Update seats state
-      setSeats((prev) =>
-        prev.map((s) => ({
+      setSeats(prev =>
+        prev.map(s => ({
           ...s,
-          bookingSeats: s.bookingSeats.filter(
-            (bs) => bs.userId !== session?.user?.id,
-          ),
-        })),
+          bookingSeats: s.bookingSeats.filter(bs => bs.userId !== session?.user?.id),
+        }))
       );
 
       // Emit socket events for each unselected seat
-      selectedSeats.forEach((seatId) => {
+      selectedSeats.forEach(seatId => {
         socketRef.current?.emit("unselect_seat", {
           seatId,
           showtimeId: selectedShowTime?.id,
           userId: session?.user?.id,
         });
       });
+
     } catch (error) {
       console.error("[TIMEOUT_CLEAR_ERROR]", error);
       toast({
@@ -442,7 +437,7 @@ const Booking = ({ slug }: { slug: string }) => {
       });
     }
   };
-
+  
   return (
     <div className="space-y-8">
       <section className="bg-gray-800 rounded-lg p-6">

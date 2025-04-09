@@ -1,12 +1,14 @@
 "use client";
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useSession } from "next-auth/react";
 
 function PaymentSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const {data: session} = useSession();
   const { toast } = useToast();
   const [countdown, setCountdown] = useState(3);
 
@@ -77,6 +79,7 @@ function PaymentSuccessContent() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            userId: session?.user?.id,
             showtimeId,
             status: "BOOKED",
             bookingSeats,
